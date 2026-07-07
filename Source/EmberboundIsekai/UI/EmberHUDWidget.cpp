@@ -1,0 +1,65 @@
+#include "UI/EmberHUDWidget.h"
+#include "Combat/EmberPlayerCharacter.h"
+#include "Combat/HealthComponent.h"
+#include "Combat/XPComponent.h"
+#include "Core/EconomySubsystem.h"
+#include "Blueprint/WidgetTree.h"
+#include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
+#include "Components/VerticalBox.h"
+#include "Kismet/GameplayStatics.h"
+
+void UEmberHUDWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
+	WidgetTree->RootWidget = Root;
+
+	HPBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("HPBar"));
+	XPBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("XPBar"));
+	LevelText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("LevelText"));
+	RoomText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("RoomText"));
+	ResourceText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("ResourceText"));
+
+	Root->AddChildToVerticalBox(HPBar);
+	Root->AddChildToVerticalBox(XPBar);
+	Root->AddChildToVerticalBox(LevelText);
+	Root->AddChildToVerticalBox(RoomText);
+	Root->AddChildToVerticalBox(ResourceText);
+}
+
+void UEmberHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	AEmberPlayerCharacter* Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (Player)
+	{
+		if (UHealthComponent* Health = Player->GetHealthComponent())
+		{
+			HPBar->SetPercent(Health->GetMaxHP() > 0.0f ? Health->GetCurrentHP() / Health->GetMaxHP() : 0.0f);
+		}
+		if (UXPComponent* XP = Player->GetXPComponent())
+		{
+			XPBar->SetPercent(XP->GetXPToNext() > 0 ? static_cast<float>(XP->GetXP()) / static_cast<float>(XP->GetXPToNext()) : 0.0f);
+			LevelText->SetText(FText::Format(NSLOCTEXT("EmberHUD", "LevelFmt", "Level {0}"), XP->GetLevel()));
+		}
+	}
+	RoomText->SetText(FText::Format(NSLOCTEXT("EmberHUD", "RoomFmt", "Room {0}/{1}"), CurrentRoom, TotalRooms));
+
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UEconomySubsystem* Economy = GameInstance->GetSubsystem<UEconomySubsystem>())
+		{
+			ResourceText->SetText(FText::Format(NSLOCTEXT("EmberHUD", "ResourcesFmt", "Gold {0}  Wood {1}  Ash {2}"),
+				Economy->Get(EEmberResource::Gold),
+				Economy->Get(EEmberResource::Wood),
+				Economy->Get(EEmberResource::SoulAsh)));
+		}
+	}
+}
+
+void UEmberHUDWidget::SetRoom(int32 Room, int32 MaxRooms)
+{
+	CurrentRoom = Room;
+	TotalRooms = MaxRooms;
+}

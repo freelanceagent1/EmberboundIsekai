@@ -1,0 +1,60 @@
+{
+  "_meta_note": "Minimal SDXL txt2img workflow in ComfyUI API prompt format. comfy_client.py loads this file, deep-copies it, and overwrites: node 4 ckpt_name, node 6/7 text, node 5 width/height, node 3 seed, node 9 filename_prefix before POSTing to /prompt. Kept loadable as literal defaults so it can also be dropped into the ComfyUI web UI (Load) for manual sanity-checks.",
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["4", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["5", 0],
+      "seed": 123456,
+      "steps": 25,
+      "cfg": 7.0,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1.0
+    }
+  },
+  "4": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    }
+  },
+  "5": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready",
+      "clip": ["4", 1]
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background",
+      "clip": ["4", 1]
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["3", 0],
+      "vae": ["4", 2]
+    }
+  },
+  "9": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "ember_asset",
+      "images": ["8", 0]
+    }
+  }
+}

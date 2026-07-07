@@ -1,0 +1,1527 @@
+{
+  "generated_at": "2026-07-07T20:23:54Z",
+  "checkpoint": "sd_xl_base_1.0.safetensors",
+  "assets": {
+    "gold": {
+      "id": "gold",
+      "category": "ui-icons",
+      "subject": "a shiny pile of gold coins icon, simple flat-shaded game icon",
+      "prompt": "a shiny pile of gold coins icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 865425,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Gold",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:49Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/gold.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/gold_512.png",
+        "GeneratedAssets/processed/ui-icons/gold_256.png"
+      ]
+    },
+    "rift-archer-full": {
+      "id": "rift-archer-full",
+      "category": "characters",
+      "subject": "solo single-pose full-body illustration, one figure only, of a young isekai hero archer, tattered cloak, glowing ember-orange bow, determined but weary expression, dynamic standing pose",
+      "prompt": "solo single-pose full-body illustration, one figure only, of a young isekai hero archer, tattered cloak, glowing ember-orange bow, determined but weary expression, dynamic standing pose, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 886923,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_RiftArcherFull",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:44Z",
+      "source_file": "GeneratedAssets/staging/characters/rift-archer-full.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/rift-archer-full_1024.png"
+      ]
+    },
+    "hit-spark": {
+      "id": "hit-spark",
+      "category": "vfx",
+      "subject": "a sharp warm ember-white hit spark burst sprite, impact flash",
+      "prompt": "a sharp warm ember-white hit spark burst sprite, impact flash, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 368578,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_HitSpark",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:53Z",
+      "source_file": "GeneratedAssets/staging/vfx/hit-spark.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/hit-spark_512.png",
+        "GeneratedAssets/processed/vfx/hit-spark_256.png"
+      ]
+    },
+    "rift-archer-portrait": {
+      "id": "rift-archer-portrait",
+      "category": "characters",
+      "subject": "solo close-up portrait bust, one figure only, of a young isekai hero archer, tattered cloak, weary determined expression, ember lighting on face",
+      "prompt": "solo close-up portrait bust, one figure only, of a young isekai hero archer, tattered cloak, weary determined expression, ember lighting on face, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 834089,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_RiftArcherPortrait",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:45Z",
+      "source_file": "GeneratedAssets/staging/characters/rift-archer-portrait.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/rift-archer-portrait_1024.png"
+      ]
+    },
+    "slime-companion": {
+      "id": "slime-companion",
+      "category": "characters",
+      "subject": "solo, one creature only, a small round translucent blue slime creature companion with big cute eyes, friendly grin, glossy jelly texture",
+      "prompt": "solo, one creature only, a small round translucent blue slime creature companion with big cute eyes, friendly grin, glossy jelly texture, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 814299,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_SlimeCompanion",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:45Z",
+      "source_file": "GeneratedAssets/staging/characters/slime-companion.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/slime-companion_1024.png"
+      ]
+    },
+    "bone-rat": {
+      "id": "bone-rat",
+      "category": "characters",
+      "subject": "solo, one creature only, a small skeletal rat monster, bare bones held together by dark magic, glowing red eye sockets, hunched creeping pose",
+      "prompt": "solo, one creature only, a small skeletal rat monster, bare bones held together by dark magic, glowing red eye sockets, hunched creeping pose, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 218282,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_BoneRat",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:45Z",
+      "source_file": "GeneratedAssets/staging/characters/bone-rat.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/bone-rat_1024.png"
+      ]
+    },
+    "skeleton-archer": {
+      "id": "skeleton-archer",
+      "category": "characters",
+      "subject": "solo single-pose full-body illustration, one figure only, of a lanky skeleton warrior wielding a crude bone bow, tattered cloak, glowing eye sockets, ready-to-fire pose",
+      "prompt": "solo single-pose full-body illustration, one figure only, of a lanky skeleton warrior wielding a crude bone bow, tattered cloak, glowing eye sockets, ready-to-fire pose, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 576125,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_SkeletonArcher",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:45Z",
+      "source_file": "GeneratedAssets/staging/characters/skeleton-archer.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/skeleton-archer_1024.png"
+      ]
+    },
+    "goblin-stabber": {
+      "id": "goblin-stabber",
+      "category": "characters",
+      "subject": "solo single-pose full-body illustration, one figure only, of a scrappy green goblin monster wielding a rusty dagger, hunched aggressive stance, torn leather scraps",
+      "prompt": "solo single-pose full-body illustration, one figure only, of a scrappy green goblin monster wielding a rusty dagger, hunched aggressive stance, torn leather scraps, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 599182,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_GoblinStabber",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:45Z",
+      "source_file": "GeneratedAssets/staging/characters/goblin-stabber.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/goblin-stabber_1024.png"
+      ]
+    },
+    "goblin-archer": {
+      "id": "goblin-archer",
+      "category": "characters",
+      "subject": "solo single-pose full-body illustration, one figure only, of a scrappy green goblin monster wielding a crude wooden bow, mischievous grin, ready-to-fire pose",
+      "prompt": "solo single-pose full-body illustration, one figure only, of a scrappy green goblin monster wielding a crude wooden bow, mischievous grin, ready-to-fire pose, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 418023,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_GoblinArcher",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:45Z",
+      "source_file": "GeneratedAssets/staging/characters/goblin-archer.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/goblin-archer_1024.png"
+      ]
+    },
+    "red-slime": {
+      "id": "red-slime",
+      "category": "characters",
+      "subject": "solo, one creature only, a small round red jelly slime creature with a mischievous grin, glossy glowing texture",
+      "prompt": "solo, one creature only, a small round red jelly slime creature with a mischievous grin, glossy glowing texture, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 447114,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_RedSlime",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:46Z",
+      "source_file": "GeneratedAssets/staging/characters/red-slime.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/red-slime_1024.png"
+      ]
+    },
+    "green-slime": {
+      "id": "green-slime",
+      "category": "characters",
+      "subject": "solo, one creature only, a small round green jelly slime creature with a curious expression, glossy glowing texture",
+      "prompt": "solo, one creature only, a small round green jelly slime creature with a curious expression, glossy glowing texture, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 318848,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_GreenSlime",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:46Z",
+      "source_file": "GeneratedAssets/staging/characters/green-slime.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/green-slime_1024.png"
+      ]
+    },
+    "tutorial-dragon": {
+      "id": "tutorial-dragon",
+      "category": "characters",
+      "subject": "solo, one creature only, a small chibi baby dragon mentor character, stubby wings, warm ember-orange scales, wise but silly expression, sitting pose",
+      "prompt": "solo, one creature only, a small chibi baby dragon mentor character, stubby wings, warm ember-orange scales, wise but silly expression, sitting pose, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 689435,
+      "width": 832,
+      "height": 1216,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Characters/T_TutorialDragon",
+      "usage_note": "Character billboard sprite / portrait source texture",
+      "generated_at": "2026-07-07T20:23:46Z",
+      "source_file": "GeneratedAssets/staging/characters/tutorial-dragon.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/characters/tutorial-dragon_1024.png"
+      ]
+    },
+    "campfire-core": {
+      "id": "campfire-core",
+      "category": "buildings",
+      "subject": "a cozy stone-ringed campfire hub structure with warm ember glow, small hanging pot, central camp landmark",
+      "prompt": "a cozy stone-ringed campfire hub structure with warm ember glow, small hanging pot, central camp landmark, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 794433,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024,
+        512
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Buildings/T_CampfireCore",
+      "usage_note": "Camp building sprite/icon source texture",
+      "generated_at": "2026-07-07T20:23:46Z",
+      "source_file": "GeneratedAssets/staging/buildings/campfire-core.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/buildings/campfire-core_1024.png",
+        "GeneratedAssets/processed/buildings/campfire-core_512.png"
+      ]
+    },
+    "grim-forge": {
+      "id": "grim-forge",
+      "category": "buildings",
+      "subject": "a small dark-comedy blacksmith forge structure, glowing furnace, crooked chimney, patched metal roof",
+      "prompt": "a small dark-comedy blacksmith forge structure, glowing furnace, crooked chimney, patched metal roof, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 758400,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024,
+        512
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Buildings/T_GrimForge",
+      "usage_note": "Camp building sprite/icon source texture",
+      "generated_at": "2026-07-07T20:23:46Z",
+      "source_file": "GeneratedAssets/staging/buildings/grim-forge.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/buildings/grim-forge_1024.png",
+        "GeneratedAssets/processed/buildings/grim-forge_512.png"
+      ]
+    },
+    "monster-pen": {
+      "id": "monster-pen",
+      "category": "buildings",
+      "subject": "a rickety wooden fenced pen enclosure for captured small monsters, rope and wood construction, faint ember lanterns",
+      "prompt": "a rickety wooden fenced pen enclosure for captured small monsters, rope and wood construction, faint ember lanterns, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 213147,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024,
+        512
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Buildings/T_MonsterPen",
+      "usage_note": "Camp building sprite/icon source texture",
+      "generated_at": "2026-07-07T20:23:46Z",
+      "source_file": "GeneratedAssets/staging/buildings/monster-pen.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/buildings/monster-pen_1024.png",
+        "GeneratedAssets/processed/buildings/monster-pen_512.png"
+      ]
+    },
+    "watchtower": {
+      "id": "watchtower",
+      "category": "buildings",
+      "subject": "a small crooked wooden watchtower structure with a lookout platform, warm lantern light, patched planks",
+      "prompt": "a small crooked wooden watchtower structure with a lookout platform, warm lantern light, patched planks, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 531560,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024,
+        512
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Buildings/T_Watchtower",
+      "usage_note": "Camp building sprite/icon source texture",
+      "generated_at": "2026-07-07T20:23:47Z",
+      "source_file": "GeneratedAssets/staging/buildings/watchtower.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/buildings/watchtower_1024.png",
+        "GeneratedAssets/processed/buildings/watchtower_512.png"
+      ]
+    },
+    "expedition-portal": {
+      "id": "expedition-portal",
+      "category": "buildings",
+      "subject": "a mystical stone archway portal crackling with soft ember-orange energy, moss-covered ancient runes",
+      "prompt": "a mystical stone archway portal crackling with soft ember-orange energy, moss-covered ancient runes, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 448904,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024,
+        512
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Buildings/T_ExpeditionPortal",
+      "usage_note": "Camp building sprite/icon source texture",
+      "generated_at": "2026-07-07T20:23:47Z",
+      "source_file": "GeneratedAssets/staging/buildings/expedition-portal.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/buildings/expedition-portal_1024.png",
+        "GeneratedAssets/processed/buildings/expedition-portal_512.png"
+      ]
+    },
+    "ritual-circle": {
+      "id": "ritual-circle",
+      "category": "buildings",
+      "subject": "a stone ritual circle platform with glowing ember runes etched into the ground, candles around the perimeter",
+      "prompt": "a stone ritual circle platform with glowing ember runes etched into the ground, candles around the perimeter, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 215788,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024,
+        512
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Buildings/T_RitualCircle",
+      "usage_note": "Camp building sprite/icon source texture",
+      "generated_at": "2026-07-07T20:23:47Z",
+      "source_file": "GeneratedAssets/staging/buildings/ritual-circle.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/buildings/ritual-circle_1024.png",
+        "GeneratedAssets/processed/buildings/ritual-circle_512.png"
+      ]
+    },
+    "meadow-grass": {
+      "id": "meadow-grass",
+      "category": "environment",
+      "subject": "seamless tileable stylized meadow grass ground texture, low-poly painterly style, warm daylight",
+      "prompt": "seamless tileable stylized meadow grass ground texture, low-poly painterly style, warm daylight, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background",
+      "seed": 210305,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Environment/T_MeadowGrass",
+      "usage_note": "Tileable-ish ground/wall/decal texture",
+      "generated_at": "2026-07-07T20:23:47Z",
+      "source_file": "GeneratedAssets/staging/environment/meadow-grass.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/environment/meadow-grass_1024.png"
+      ]
+    },
+    "corrupted-grass": {
+      "id": "corrupted-grass",
+      "category": "environment",
+      "subject": "seamless tileable stylized corrupted dark grass ground texture, low-poly painterly style, faint ember-purple glow patches",
+      "prompt": "seamless tileable stylized corrupted dark grass ground texture, low-poly painterly style, faint ember-purple glow patches, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background",
+      "seed": 487417,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Environment/T_CorruptedGrass",
+      "usage_note": "Tileable-ish ground/wall/decal texture",
+      "generated_at": "2026-07-07T20:23:47Z",
+      "source_file": "GeneratedAssets/staging/environment/corrupted-grass.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/environment/corrupted-grass_1024.png"
+      ]
+    },
+    "camp-dirt": {
+      "id": "camp-dirt",
+      "category": "environment",
+      "subject": "seamless tileable stylized packed dirt camp ground texture, low-poly painterly style, warm campfire-lit tones",
+      "prompt": "seamless tileable stylized packed dirt camp ground texture, low-poly painterly style, warm campfire-lit tones, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background",
+      "seed": 973329,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Environment/T_CampDirt",
+      "usage_note": "Tileable-ish ground/wall/decal texture",
+      "generated_at": "2026-07-07T20:23:48Z",
+      "source_file": "GeneratedAssets/staging/environment/camp-dirt.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/environment/camp-dirt_1024.png"
+      ]
+    },
+    "stone-path": {
+      "id": "stone-path",
+      "category": "environment",
+      "subject": "seamless tileable stylized cobblestone path texture, low-poly painterly style, worn stone slabs",
+      "prompt": "seamless tileable stylized cobblestone path texture, low-poly painterly style, worn stone slabs, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background",
+      "seed": 976564,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Environment/T_StonePath",
+      "usage_note": "Tileable-ish ground/wall/decal texture",
+      "generated_at": "2026-07-07T20:23:48Z",
+      "source_file": "GeneratedAssets/staging/environment/stone-path.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/environment/stone-path_1024.png"
+      ]
+    },
+    "room-wall": {
+      "id": "room-wall",
+      "category": "environment",
+      "subject": "seamless tileable stylized stone dungeon room wall texture, low-poly painterly style, faint torch-lit warm tones",
+      "prompt": "seamless tileable stylized stone dungeon room wall texture, low-poly painterly style, faint torch-lit warm tones, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background",
+      "seed": 486813,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Environment/T_RoomWall",
+      "usage_note": "Tileable-ish ground/wall/decal texture",
+      "generated_at": "2026-07-07T20:23:48Z",
+      "source_file": "GeneratedAssets/staging/environment/room-wall.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/environment/room-wall_1024.png"
+      ]
+    },
+    "firelight-glow": {
+      "id": "firelight-glow",
+      "category": "environment",
+      "subject": "seamless tileable stylized warm ember firelight glow overlay texture, soft radial orange gradient, low-poly painterly style",
+      "prompt": "seamless tileable stylized warm ember firelight glow overlay texture, soft radial orange gradient, low-poly painterly style, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background",
+      "seed": 758869,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Environment/T_FirelightGlow",
+      "usage_note": "Tileable-ish ground/wall/decal texture",
+      "generated_at": "2026-07-07T20:23:48Z",
+      "source_file": "GeneratedAssets/staging/environment/firelight-glow.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/environment/firelight-glow_1024.png"
+      ]
+    },
+    "corruption-decal": {
+      "id": "corruption-decal",
+      "category": "environment",
+      "subject": "seamless tileable stylized dark corruption ground decal texture, cracked purple-black veins with faint ember glow",
+      "prompt": "seamless tileable stylized dark corruption ground decal texture, cracked purple-black veins with faint ember glow, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background",
+      "seed": 386660,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        1024
+      ],
+      "ue_path": "/Game/Emberbound/Generated/Environment/T_CorruptionDecal",
+      "usage_note": "Tileable-ish ground/wall/decal texture",
+      "generated_at": "2026-07-07T20:23:49Z",
+      "source_file": "GeneratedAssets/staging/environment/corruption-decal.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/environment/corruption-decal_1024.png"
+      ]
+    },
+    "wood": {
+      "id": "wood",
+      "category": "ui-icons",
+      "subject": "a small bundle of wooden logs icon, simple flat-shaded game icon",
+      "prompt": "a small bundle of wooden logs icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 928525,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Wood",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:49Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/wood.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/wood_512.png",
+        "GeneratedAssets/processed/ui-icons/wood_256.png"
+      ]
+    },
+    "soul-ash": {
+      "id": "soul-ash",
+      "category": "ui-icons",
+      "subject": "a small glowing jar of soul ash icon, faint ember-purple wisps, simple flat-shaded game icon",
+      "prompt": "a small glowing jar of soul ash icon, faint ember-purple wisps, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 989059,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_SoulAsh",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:49Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/soul-ash.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/soul-ash_512.png",
+        "GeneratedAssets/processed/ui-icons/soul-ash_256.png"
+      ]
+    },
+    "monster-essence": {
+      "id": "monster-essence",
+      "category": "ui-icons",
+      "subject": "a small glowing vial of monster essence icon, faint green-ember glow, simple flat-shaded game icon",
+      "prompt": "a small glowing vial of monster essence icon, faint green-ember glow, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 985654,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_MonsterEssence",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:49Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/monster-essence.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/monster-essence_512.png",
+        "GeneratedAssets/processed/ui-icons/monster-essence_256.png"
+      ]
+    },
+    "embers": {
+      "id": "embers",
+      "category": "ui-icons",
+      "subject": "a small cluster of glowing warm embers icon, simple flat-shaded game icon",
+      "prompt": "a small cluster of glowing warm embers icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 222823,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Embers",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:49Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/embers.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/embers_512.png",
+        "GeneratedAssets/processed/ui-icons/embers_256.png"
+      ]
+    },
+    "health": {
+      "id": "health",
+      "category": "ui-icons",
+      "subject": "a warm ember-red heart icon, simple flat-shaded game icon",
+      "prompt": "a warm ember-red heart icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 102323,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Health",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:49Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/health.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/health_512.png",
+        "GeneratedAssets/processed/ui-icons/health_256.png"
+      ]
+    },
+    "xp": {
+      "id": "xp",
+      "category": "ui-icons",
+      "subject": "a glowing ember-gold star burst icon representing experience points, simple flat-shaded game icon",
+      "prompt": "a glowing ember-gold star burst icon representing experience points, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 133149,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Xp",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:49Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/xp.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/xp_512.png",
+        "GeneratedAssets/processed/ui-icons/xp_256.png"
+      ]
+    },
+    "bow": {
+      "id": "bow",
+      "category": "ui-icons",
+      "subject": "a simple wooden hunting bow icon, simple flat-shaded game icon",
+      "prompt": "a simple wooden hunting bow icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 200555,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Bow",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:49Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/bow.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/bow_512.png",
+        "GeneratedAssets/processed/ui-icons/bow_256.png"
+      ]
+    },
+    "campfire": {
+      "id": "campfire",
+      "category": "ui-icons",
+      "subject": "a small cozy campfire icon with warm flames, simple flat-shaded game icon",
+      "prompt": "a small cozy campfire icon with warm flames, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 844408,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Campfire",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:50Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/campfire.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/campfire_512.png",
+        "GeneratedAssets/processed/ui-icons/campfire_256.png"
+      ]
+    },
+    "monster-shard": {
+      "id": "monster-shard",
+      "category": "ui-icons",
+      "subject": "a small jagged glowing monster shard crystal icon, simple flat-shaded game icon",
+      "prompt": "a small jagged glowing monster shard crystal icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 233155,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_MonsterShard",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:50Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/monster-shard.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/monster-shard_512.png",
+        "GeneratedAssets/processed/ui-icons/monster-shard_256.png"
+      ]
+    },
+    "defense-shield": {
+      "id": "defense-shield",
+      "category": "ui-icons",
+      "subject": "a small round wooden and metal shield icon, simple flat-shaded game icon",
+      "prompt": "a small round wooden and metal shield icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 334545,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_DefenseShield",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:50Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/defense-shield.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/defense-shield_512.png",
+        "GeneratedAssets/processed/ui-icons/defense-shield_256.png"
+      ]
+    },
+    "reroll": {
+      "id": "reroll",
+      "category": "ui-icons",
+      "subject": "a pair of dice mid-roll icon, warm ember highlight, simple flat-shaded game icon",
+      "prompt": "a pair of dice mid-roll icon, warm ember highlight, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 276678,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Reroll",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:50Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/reroll.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/reroll_512.png",
+        "GeneratedAssets/processed/ui-icons/reroll_256.png"
+      ]
+    },
+    "title-badge": {
+      "id": "title-badge",
+      "category": "ui-icons",
+      "subject": "an ornate ember-gold badge emblem icon, simple flat-shaded game icon",
+      "prompt": "an ornate ember-gold badge emblem icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 188032,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UIIcons/T_TitleBadge",
+      "usage_note": "HUD resource/stat icon",
+      "generated_at": "2026-07-07T20:23:50Z",
+      "source_file": "GeneratedAssets/staging/ui-icons/title-badge.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/ui-icons/title-badge_512.png",
+        "GeneratedAssets/processed/ui-icons/title-badge_256.png"
+      ]
+    },
+    "split-shot": {
+      "id": "split-shot",
+      "category": "upgrade-icons",
+      "subject": "an icon of three arrows splitting apart in a fan pattern, simple flat-shaded game icon",
+      "prompt": "an icon of three arrows splitting apart in a fan pattern, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 878367,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_SplitShot",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:50Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/split-shot.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/split-shot_512.png",
+        "GeneratedAssets/processed/upgrade-icons/split-shot_256.png"
+      ]
+    },
+    "piercing-shot": {
+      "id": "piercing-shot",
+      "category": "upgrade-icons",
+      "subject": "an icon of a single glowing arrow piercing through a target ring, simple flat-shaded game icon",
+      "prompt": "an icon of a single glowing arrow piercing through a target ring, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 908025,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_PiercingShot",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:50Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/piercing-shot.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/piercing-shot_512.png",
+        "GeneratedAssets/processed/upgrade-icons/piercing-shot_256.png"
+      ]
+    },
+    "ricochet-shot": {
+      "id": "ricochet-shot",
+      "category": "upgrade-icons",
+      "subject": "an icon of an arrow bouncing between angled lines, simple flat-shaded game icon",
+      "prompt": "an icon of an arrow bouncing between angled lines, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 255928,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_RicochetShot",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:50Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/ricochet-shot.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/ricochet-shot_512.png",
+        "GeneratedAssets/processed/upgrade-icons/ricochet-shot_256.png"
+      ]
+    },
+    "rapid-fire": {
+      "id": "rapid-fire",
+      "category": "upgrade-icons",
+      "subject": "an icon of three arrows in quick succession with speed lines, simple flat-shaded game icon",
+      "prompt": "an icon of three arrows in quick succession with speed lines, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 418456,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_RapidFire",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:51Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/rapid-fire.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/rapid-fire_512.png",
+        "GeneratedAssets/processed/upgrade-icons/rapid-fire_256.png"
+      ]
+    },
+    "heavy-arrow": {
+      "id": "heavy-arrow",
+      "category": "upgrade-icons",
+      "subject": "an icon of a large thick oversized arrow, simple flat-shaded game icon",
+      "prompt": "an icon of a large thick oversized arrow, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 835014,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_HeavyArrow",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:51Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/heavy-arrow.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/heavy-arrow_512.png",
+        "GeneratedAssets/processed/upgrade-icons/heavy-arrow_256.png"
+      ]
+    },
+    "fire-arrow": {
+      "id": "fire-arrow",
+      "category": "upgrade-icons",
+      "subject": "an icon of an arrow wreathed in warm ember flames, simple flat-shaded game icon",
+      "prompt": "an icon of an arrow wreathed in warm ember flames, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 809306,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_FireArrow",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:51Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/fire-arrow.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/fire-arrow_512.png",
+        "GeneratedAssets/processed/upgrade-icons/fire-arrow_256.png"
+      ]
+    },
+    "poison-arrow": {
+      "id": "poison-arrow",
+      "category": "upgrade-icons",
+      "subject": "an icon of an arrow dripping glowing green poison, simple flat-shaded game icon",
+      "prompt": "an icon of an arrow dripping glowing green poison, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 446283,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_PoisonArrow",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:51Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/poison-arrow.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/poison-arrow_512.png",
+        "GeneratedAssets/processed/upgrade-icons/poison-arrow_256.png"
+      ]
+    },
+    "frost-arrow": {
+      "id": "frost-arrow",
+      "category": "upgrade-icons",
+      "subject": "an icon of an arrow rimmed with icy blue crystals, simple flat-shaded game icon",
+      "prompt": "an icon of an arrow rimmed with icy blue crystals, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 175975,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_FrostArrow",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:51Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/frost-arrow.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/frost-arrow_512.png",
+        "GeneratedAssets/processed/upgrade-icons/frost-arrow_256.png"
+      ]
+    },
+    "bone-shield": {
+      "id": "bone-shield",
+      "category": "upgrade-icons",
+      "subject": "an icon of a small shield made of bound bones, simple flat-shaded game icon",
+      "prompt": "an icon of a small shield made of bound bones, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 855926,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_BoneShield",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:51Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/bone-shield.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/bone-shield_512.png",
+        "GeneratedAssets/processed/upgrade-icons/bone-shield_256.png"
+      ]
+    },
+    "healing-wisp": {
+      "id": "healing-wisp",
+      "category": "upgrade-icons",
+      "subject": "an icon of a small glowing warm healing wisp orb with sparkles, simple flat-shaded game icon",
+      "prompt": "an icon of a small glowing warm healing wisp orb with sparkles, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 929313,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_HealingWisp",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:52Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/healing-wisp.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/healing-wisp_512.png",
+        "GeneratedAssets/processed/upgrade-icons/healing-wisp_256.png"
+      ]
+    },
+    "pickup-magnet": {
+      "id": "pickup-magnet",
+      "category": "upgrade-icons",
+      "subject": "an icon of a horseshoe magnet glowing with ember energy, simple flat-shaded game icon",
+      "prompt": "an icon of a horseshoe magnet glowing with ember energy, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 446393,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_PickupMagnet",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:52Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/pickup-magnet.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/pickup-magnet_512.png",
+        "GeneratedAssets/processed/upgrade-icons/pickup-magnet_256.png"
+      ]
+    },
+    "crit-focus": {
+      "id": "crit-focus",
+      "category": "upgrade-icons",
+      "subject": "an icon of a glowing target reticle with ember highlight, simple flat-shaded game icon",
+      "prompt": "an icon of a glowing target reticle with ember highlight, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 568546,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_CritFocus",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:52Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/crit-focus.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/crit-focus_512.png",
+        "GeneratedAssets/processed/upgrade-icons/crit-focus_256.png"
+      ]
+    },
+    "companion-slime": {
+      "id": "companion-slime",
+      "category": "upgrade-icons",
+      "subject": "an icon of a small cute jelly slime face, simple flat-shaded game icon",
+      "prompt": "an icon of a small cute jelly slime face, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 866147,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_CompanionSlime",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:52Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/companion-slime.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/companion-slime_512.png",
+        "GeneratedAssets/processed/upgrade-icons/companion-slime_256.png"
+      ]
+    },
+    "soul-flame-trail": {
+      "id": "soul-flame-trail",
+      "category": "upgrade-icons",
+      "subject": "an icon of a wispy ember-purple flame trail swirl, simple flat-shaded game icon",
+      "prompt": "an icon of a wispy ember-purple flame trail swirl, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 665259,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_SoulFlameTrail",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:52Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/soul-flame-trail.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/soul-flame-trail_512.png",
+        "GeneratedAssets/processed/upgrade-icons/soul-flame-trail_256.png"
+      ]
+    },
+    "gold-rush": {
+      "id": "gold-rush",
+      "category": "upgrade-icons",
+      "subject": "an icon of a cascading burst of gold coins, simple flat-shaded game icon",
+      "prompt": "an icon of a cascading burst of gold coins, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 799375,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_GoldRush",
+      "usage_note": "Upgrade card icon",
+      "generated_at": "2026-07-07T20:23:52Z",
+      "source_file": "GeneratedAssets/staging/upgrade-icons/gold-rush.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/upgrade-icons/gold-rush_512.png",
+        "GeneratedAssets/processed/upgrade-icons/gold-rush_256.png"
+      ]
+    },
+    "arrow-projectile": {
+      "id": "arrow-projectile",
+      "category": "vfx",
+      "subject": "a single glowing wooden arrow projectile sprite, motion streak, side view",
+      "prompt": "a single glowing wooden arrow projectile sprite, motion streak, side view, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 199693,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_ArrowProjectile",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:52Z",
+      "source_file": "GeneratedAssets/staging/vfx/arrow-projectile.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/arrow-projectile_512.png",
+        "GeneratedAssets/processed/vfx/arrow-projectile_256.png"
+      ]
+    },
+    "fire-projectile": {
+      "id": "fire-projectile",
+      "category": "vfx",
+      "subject": "a glowing ember fireball projectile sprite with flame trail, side view",
+      "prompt": "a glowing ember fireball projectile sprite with flame trail, side view, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 692739,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_FireProjectile",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:52Z",
+      "source_file": "GeneratedAssets/staging/vfx/fire-projectile.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/fire-projectile_512.png",
+        "GeneratedAssets/processed/vfx/fire-projectile_256.png"
+      ]
+    },
+    "poison-impact": {
+      "id": "poison-impact",
+      "category": "vfx",
+      "subject": "a splattering green poison impact burst sprite, glowing droplets",
+      "prompt": "a splattering green poison impact burst sprite, glowing droplets, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 345437,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_PoisonImpact",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:52Z",
+      "source_file": "GeneratedAssets/staging/vfx/poison-impact.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/poison-impact_512.png",
+        "GeneratedAssets/processed/vfx/poison-impact_256.png"
+      ]
+    },
+    "frost-impact": {
+      "id": "frost-impact",
+      "category": "vfx",
+      "subject": "a shattering icy blue frost impact burst sprite, crystal shards",
+      "prompt": "a shattering icy blue frost impact burst sprite, crystal shards, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 398634,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_FrostImpact",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:53Z",
+      "source_file": "GeneratedAssets/staging/vfx/frost-impact.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/frost-impact_512.png",
+        "GeneratedAssets/processed/vfx/frost-impact_256.png"
+      ]
+    },
+    "soul-ash-pickup": {
+      "id": "soul-ash-pickup",
+      "category": "vfx",
+      "subject": "a small glowing ember-purple soul ash wisp pickup sprite, swirling particles",
+      "prompt": "a small glowing ember-purple soul ash wisp pickup sprite, swirling particles, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 605649,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_SoulAshPickup",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:53Z",
+      "source_file": "GeneratedAssets/staging/vfx/soul-ash-pickup.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/soul-ash-pickup_512.png",
+        "GeneratedAssets/processed/vfx/soul-ash-pickup_256.png"
+      ]
+    },
+    "gold-pickup": {
+      "id": "gold-pickup",
+      "category": "vfx",
+      "subject": "a small glowing gold coin sparkle pickup sprite, shiny burst",
+      "prompt": "a small glowing gold coin sparkle pickup sprite, shiny burst, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 423545,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_GoldPickup",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:53Z",
+      "source_file": "GeneratedAssets/staging/vfx/gold-pickup.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/gold-pickup_512.png",
+        "GeneratedAssets/processed/vfx/gold-pickup_256.png"
+      ]
+    },
+    "death-puff": {
+      "id": "death-puff",
+      "category": "vfx",
+      "subject": "a soft grey-purple smoke puff death effect sprite, dissipating cloud",
+      "prompt": "a soft grey-purple smoke puff death effect sprite, dissipating cloud, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 366595,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_DeathPuff",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:53Z",
+      "source_file": "GeneratedAssets/staging/vfx/death-puff.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/death-puff_512.png",
+        "GeneratedAssets/processed/vfx/death-puff_256.png"
+      ]
+    },
+    "campfire-flame": {
+      "id": "campfire-flame",
+      "category": "vfx",
+      "subject": "a small isolated warm campfire flame sprite, flickering ember tongues",
+      "prompt": "a small isolated warm campfire flame sprite, flickering ember tongues, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 206280,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_CampfireFlame",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:53Z",
+      "source_file": "GeneratedAssets/staging/vfx/campfire-flame.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/campfire-flame_512.png",
+        "GeneratedAssets/processed/vfx/campfire-flame_256.png"
+      ]
+    },
+    "boss-telegraph": {
+      "id": "boss-telegraph",
+      "category": "vfx",
+      "subject": "a glowing ember-red warning telegraph ring sprite on the ground, ominous pulse",
+      "prompt": "a glowing ember-red warning telegraph ring sprite on the ground, ominous pulse, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "seed": 705633,
+      "width": 1024,
+      "height": 1024,
+      "target_sizes": [
+        512,
+        256
+      ],
+      "ue_path": "/Game/Emberbound/Generated/VFX/T_BossTelegraph",
+      "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
+      "generated_at": "2026-07-07T20:23:53Z",
+      "source_file": "GeneratedAssets/staging/vfx/boss-telegraph.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/vfx/boss-telegraph_512.png",
+        "GeneratedAssets/processed/vfx/boss-telegraph_256.png"
+      ]
+    },
+    "main-splash": {
+      "id": "main-splash",
+      "category": "keyart",
+      "subject": "wide cinematic key art of a weary isekai hero standing beside a magical glowing campfire with a small jelly slime companion, dark mysterious forest background, warm ember lighting contrasted with cool shadows, dark-comedy cozy-grim mood, no readable text",
+      "prompt": "wide cinematic key art of a weary isekai hero standing beside a magical glowing campfire with a small jelly slime companion, dark mysterious forest background, warm ember lighting contrasted with cool shadows, dark-comedy cozy-grim mood, no readable text, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background",
+      "seed": 714532,
+      "width": 1344,
+      "height": 768,
+      "target_sizes": [
+        [
+          1536,
+          1024
+        ]
+      ],
+      "ue_path": "/Game/Emberbound/Generated/KeyArt/T_MainSplash",
+      "usage_note": "Title screen / marketing key art",
+      "generated_at": "2026-07-07T20:23:53Z",
+      "source_file": "GeneratedAssets/staging/keyart/main-splash.png",
+      "status": "generated",
+      "attempts": 0,
+      "elapsed_sec": 0.0,
+      "processed_files": [
+        "GeneratedAssets/processed/keyart/main-splash_1536x1024.png"
+      ]
+    }
+  },
+  "last_batch_elapsed_sec": 9.2,
+  "last_batch_asset_count": 62,
+  "full_generation_run_elapsed_sec": 383.19,
+  "full_generation_run_note": "First full run (all 62 assets hit ComfyUI, none cached) took 383.19s wall time. A subsequent run (last_batch_elapsed_sec below) only re-authored manifest metadata (added the subject field) and re-ran Pillow post-processing on already-staged PNGs -- no new ComfyUI calls -- hence the much smaller last_batch_elapsed_sec/per-asset elapsed_sec values."
+}

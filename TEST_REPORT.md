@@ -5,10 +5,15 @@ Compile/run status and manual test checklist. Updated every milestone.
 ## Compile status
 | Date | Target | Result |
 |---|---|---|
-| 2026-07-07 | EmberboundIsekaiEditor Win64 Development (empty module skeleton) | _running_ |
+| 2026-07-07 | EmberboundIsekaiEditor Win64 Development (empty module skeleton) | ✅ Succeeded (127 s, VS2022 14.44 toolchain) |
+| 2026-07-07 | EmberboundIsekaiEditor Win64 Development (M1 core combat loop) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT) |
 
 ## Automated checks
-_(populated as milestones land)_
+| Date | Check | Result |
+|---|---|---|
+| 2026-07-07 | M1 content build script | ✅ `CONTENT_OK` |
+| 2026-07-07 | M1 asset verify script | ✅ `M1_ASSET_VERIFY_OK` |
+| 2026-07-07 | M1 55s headless smoke | ✅ `PlayerSpawned`, `EnemySpawned`, `ProjectileFired`, `RoomCleared`; no `Fatal`/`Error: [C++]` grep hits |
 
 ## Manual PIE checklist
 - [ ] Project opens in UE 5.8 without module rebuild errors
@@ -27,4 +32,5 @@ _(populated as milestones land)_
 - [ ] Generated assets visible in UI and world
 
 ## Known issues
-_(none logged yet — Milestone 0)_
+- M1 map generation falls back to duplicating an engine template map because UE 5.8 headless map creation/loading APIs crash natively in this environment.
+- M1 auto-attack applies resolved damage directly on fire for deterministic headless combat; pooled projectiles still spawn/travel.

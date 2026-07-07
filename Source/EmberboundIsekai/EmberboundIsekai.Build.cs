@@ -6,6 +6,11 @@ public class EmberboundIsekai : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
+		PublicIncludePaths.AddRange(new string[]
+		{
+			"EmberboundIsekai"
+		});
+
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core",
@@ -16,6 +21,7 @@ public class EmberboundIsekai : ModuleRules
 			"UMG",
 			"Slate",
 			"SlateCore",
+			"AssetRegistry",
 			"AIModule",
 			"NavigationSystem",
 			"GameplayTags",
