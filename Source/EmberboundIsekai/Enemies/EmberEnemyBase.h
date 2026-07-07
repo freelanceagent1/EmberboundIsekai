@@ -28,10 +28,13 @@ public:
 	virtual void OnReleased_Implementation() override;
 
 	void InitFromData(UEmberEnemyData* InEnemyData);
+	void ApplyRuntimeModifiers(float HealthMultiplier, float DamageMultiplier, float ScaleMultiplier, const FLinearColor& TintOverride);
+	void ConfigureRuntimeStats(float MaxHealth, float ContactDamage, float MoveSpeed, const FVector& VisualScale, const FLinearColor& Tint);
 	bool IsAlive() const;
 	void SetStatusMoveSpeedScale(float InScale);
+	UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 
-private:
+protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Collision;
 
@@ -58,6 +61,8 @@ private:
 	TMap<TWeakObjectPtr<AActor>, float> ContactCooldowns;
 	FVector DesiredDirection = FVector::ZeroVector;
 	float StatusMoveSpeedScale = 1.0f;
+	float RuntimeContactDamage = 0.0f;
+	float RuntimeMoveSpeed = 250.0f;
 
 	void UpdateDesiredDirection();
 	void FireRangedProjectile();

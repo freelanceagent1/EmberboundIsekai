@@ -14,10 +14,19 @@ struct EMBERBOUNDISEKAI_API FEmberRunResult
 	bool bRunComplete = false;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Run")
+	bool bVictory = false;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Run")
 	int32 RoomsCleared = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Run")
 	TMap<EEmberResource, int32> EarnedResources;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Run")
+	TMap<EEmberResource, int32> BankedResources;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Run")
+	TMap<FName, int32> MonsterShards;
 };
 
 UCLASS()

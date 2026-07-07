@@ -1,16 +1,41 @@
 #include "Expedition/ExpeditionGameMode.h"
 #include "Combat/EmberPlayerCharacter.h"
+#include "Combat/HealthComponent.h"
 #include "Core/EconomySubsystem.h"
+#include "Core/EmberGameInstance.h"
 #include "Data/EmberEnemyData.h"
+#include "Enemies/BossTutorialDragon.h"
 #include "Enemies/EmberEnemyBase.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
 #include "Expedition/ExpeditionPortal.h"
 #include "Run/RunUpgradeManager.h"
 #include "UI/EmberHUDWidget.h"
+#include "UI/RunResultWidget.h"
 #include "Camera/PlayerCameraManager.h"
+#include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "EmberboundIsekai.h"
+
+static TAutoConsoleVariable<int32> CVarEmberStartRoom(
+	TEXT("Ember.StartRoom"),
+	1,
+	TEXT("Start expedition at this 1-based room number."));
+
+static TAutoConsoleVariable<float> CVarEmberPlayerDamageMult(
+	TEXT("Ember.PlayerDamageMult"),
+	1.0f,
+	TEXT("Multiplier applied to player auto-attack projectile damage."));
+
+static TAutoConsoleVariable<int32> CVarEmberDebugAutoDamageBoss(
+	TEXT("Ember.DebugAutoDamageBoss"),
+	0,
+	TEXT("Development smoke hook: periodically apply Ember.DamageBoss 40 while a boss is alive."));
+
+static TAutoConsoleVariable<float> CVarEmberDebugKillPlayerAfter(
+	TEXT("Ember.DebugKillPlayerAfter"),
+	0.0f,
+	TEXT("Development smoke hook: kill the player after N seconds if N > 0."));
 
 AExpeditionGameMode::AExpeditionGameMode()
 {
@@ -29,7 +54,16 @@ void AExpeditionGameMode::BeginPlay()
 			HUDWidget->AddToViewport();
 		}
 	}
-	StartCurrentRoom();
+	RegisterDebugHooks();
+	BindPlayerDeath();
+	FTimerHandle DelayedStartHandle;
+	GetWorldTimerManager().SetTimer(DelayedStartHandle, this, &AExpeditionGameMode::StartCurrentRoom, 0.25f, false);
+}
+
+void AExpeditionGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	UnregisterDebugHooks();
+	Super::EndPlay(EndPlayReason);
 }
 
 void AExpeditionGameMode::BuildRoomSequence()
@@ -40,17 +74,32 @@ void AExpeditionGameMode::BuildRoomSequence()
 	Rooms.Add({ { TEXT("GoblinStabber"), TEXT("GreenSlime") }, 4, 0.7f });
 	Rooms.Add({ { TEXT("GoblinArcher"), TEXT("RedSlime"), TEXT("BoneRat") }, 5, 0.65f });
 	Rooms.Add({ { TEXT("GoblinStabber"), TEXT("GoblinArcher"), TEXT("BoneRat") }, 6, 0.6f });
+	Rooms.Add({ { TEXT("GoblinStabber") }, 2, 0.35f, EEmberRoomType::Elite });
+	Rooms.Add({ {}, 1, 0.0f, EEmberRoomType::Boss });
 }
 
 void AExpeditionGameMode::StartCurrentRoom()
 {
+	if (bRunEnded)
+	{
+		return;
+	}
+	if (!bResolvedStartRoom)
+	{
+		CurrentRoomIndex = FMath::Clamp(CVarEmberStartRoom.GetValueOnGameThread(), 1, Rooms.Num()) - 1;
+		bResolvedStartRoom = true;
+		const float KillAfterSeconds = CVarEmberDebugKillPlayerAfter.GetValueOnGameThread();
+		if (KillAfterSeconds > 0.0f)
+		{
+			bDebugKillPending = true;
+			FTimerHandle KillPlayerTimerHandle;
+			GetWorldTimerManager().SetTimer(KillPlayerTimerHandle, this, &AExpeditionGameMode::KillPlayerNow, KillAfterSeconds, false);
+			GetWorldTimerManager().SetTimer(DebugKeepAliveTimerHandle, this, &AExpeditionGameMode::DebugKeepPlayerAlive, 0.2f, true);
+		}
+	}
 	if (!Rooms.IsValidIndex(CurrentRoomIndex))
 	{
-		UE_LOG(LogEmberbound, Log, TEXT("EMBER: RUN COMPLETE"));
-		if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
-		{
-			UpgradeManager->ResetRun();
-		}
+		EndRun(true);
 		return;
 	}
 	SpawnedThisRoom = 0;
@@ -58,6 +107,16 @@ void AExpeditionGameMode::StartCurrentRoom()
 	if (HUDWidget)
 	{
 		HUDWidget->SetRoom(CurrentRoomIndex + 1, Rooms.Num());
+		HUDWidget->ClearBossHealthSource();
+	}
+	if (Rooms[CurrentRoomIndex].RoomType == EEmberRoomType::Boss)
+	{
+		SpawnBoss();
+		if (CVarEmberDebugAutoDamageBoss.GetValueOnGameThread() != 0)
+		{
+			GetWorldTimerManager().SetTimer(AutoDamageBossTimerHandle, this, &AExpeditionGameMode::AutoDamageBossTick, 1.0f, true, 2.0f);
+		}
+		return;
 	}
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AExpeditionGameMode::SpawnWaveEnemy, Rooms[CurrentRoomIndex].SpawnInterval, true, 0.2f);
 	GetWorldTimerManager().SetTimer(RoomCheckTimerHandle, this, &AExpeditionGameMode::CheckRoomClear, 0.5f, true, 1.0f);
@@ -91,8 +150,26 @@ void AExpeditionGameMode::SpawnWaveEnemy()
 	if (Enemy)
 	{
 		Enemy->InitFromData(Data);
+		if (Room.RoomType == EEmberRoomType::Elite)
+		{
+			Enemy->ApplyRuntimeModifiers(3.0f, 1.5f, 1.3f, FLinearColor(0.55f, 0.08f, 1.0f));
+		}
 		Enemy->OnAcquired_Implementation();
 		++SpawnedThisRoom;
+	}
+}
+
+void AExpeditionGameMode::SpawnBoss()
+{
+	ActiveBoss = GetWorld()->SpawnActor<ABossTutorialDragon>(ABossTutorialDragon::StaticClass(), FVector(520.0f, 0.0f, 90.0f), FRotator::ZeroRotator);
+	if (ActiveBoss)
+	{
+		ActiveBoss->OnAcquired_Implementation();
+		ActiveBoss->OnBossDefeated.AddUObject(this, &AExpeditionGameMode::HandleBossDefeated);
+		if (HUDWidget)
+		{
+			HUDWidget->SetBossHealthSource(ActiveBoss->GetHealthComponent());
+		}
 	}
 }
 
@@ -118,11 +195,7 @@ void AExpeditionGameMode::CompleteRoom()
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: RoomCleared Room=%d"), CurrentRoomIndex + 1);
 	if (CurrentRoomIndex + 1 >= Rooms.Num())
 	{
-		UE_LOG(LogEmberbound, Log, TEXT("EMBER: RUN COMPLETE"));
-		if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
-		{
-			UpgradeManager->ResetRun();
-		}
+		EndRun(true);
 		return;
 	}
 	SpawnPortal();
@@ -164,17 +237,219 @@ void AExpeditionGameMode::EnterNextRoom()
 
 void AExpeditionGameMode::GrantRoomReward()
 {
-	if (UEconomySubsystem* Economy = GetGameInstance()->GetSubsystem<UEconomySubsystem>())
+	float GoldMultiplier = 1.0f;
+	if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
 	{
-		float GoldMultiplier = 1.0f;
-		if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
-		{
-			GoldMultiplier = UpgradeManager->GetGoldMultiplier();
-		}
-		Economy->Add(EEmberResource::Gold, FMath::Max(1, FMath::RoundToInt(static_cast<float>(FMath::RandRange(4, 8)) * GoldMultiplier)));
-		Economy->Add(EEmberResource::Wood, FMath::RandRange(1, 2));
-		Economy->Add(EEmberResource::SoulAsh, 1);
+		GoldMultiplier = UpgradeManager->GetGoldMultiplier();
 	}
+	const int32 RewardMultiplier = Rooms.IsValidIndex(CurrentRoomIndex) && Rooms[CurrentRoomIndex].RoomType == EEmberRoomType::Elite ? 2 : 1;
+	AddRunResource(EEmberResource::Gold, FMath::Max(1, FMath::RoundToInt(static_cast<float>(FMath::RandRange(4, 8) * RewardMultiplier) * GoldMultiplier)));
+	AddRunResource(EEmberResource::Wood, FMath::RandRange(1, 2) * RewardMultiplier);
+	AddRunResource(EEmberResource::SoulAsh, RewardMultiplier);
+}
+
+void AExpeditionGameMode::AddRunResource(EEmberResource Resource, int32 Amount)
+{
+	if (Amount <= 0 || bRunEnded)
+	{
+		return;
+	}
+	RunResourceTally.FindOrAdd(Resource) += Amount;
+}
+
+void AExpeditionGameMode::EndRun(bool bVictory)
+{
+	if (bRunEnded)
+	{
+		return;
+	}
+	bRunEnded = true;
+	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+	GetWorldTimerManager().ClearTimer(RoomCheckTimerHandle);
+	GetWorldTimerManager().ClearTimer(AutoDamageBossTimerHandle);
+	GetWorldTimerManager().ClearTimer(DebugKeepAliveTimerHandle);
+	if (!bVictory && ActiveBoss)
+	{
+		ActiveBoss->Destroy();
+		ActiveBoss = nullptr;
+	}
+	BankRunResult(bVictory);
+	if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
+	{
+		UpgradeManager->ResetRun();
+	}
+	ShowRunResult();
+}
+
+void AExpeditionGameMode::BankRunResult(bool bVictory)
+{
+	UEmberGameInstance* EmberGI = Cast<UEmberGameInstance>(GetGameInstance());
+	UEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEconomySubsystem>() : nullptr;
+	if (!EmberGI)
+	{
+		return;
+	}
+	FEmberRunResult Result;
+	Result.bRunComplete = true;
+	Result.bVictory = bVictory;
+	Result.RoomsCleared = bVictory ? Rooms.Num() : CurrentRoomIndex;
+	Result.EarnedResources = RunResourceTally;
+	const float KeepFraction = bVictory ? 1.0f : 0.6f;
+	for (const TPair<EEmberResource, int32>& Pair : RunResourceTally)
+	{
+		const int32 Banked = FMath::FloorToInt(static_cast<float>(Pair.Value) * KeepFraction);
+		if (Banked > 0)
+		{
+			Result.BankedResources.Add(Pair.Key, Banked);
+		}
+	}
+	if (bVictory)
+	{
+		Result.BankedResources.FindOrAdd(EEmberResource::Gold) += 25;
+		Result.BankedResources.FindOrAdd(EEmberResource::Wood) += 10;
+		Result.BankedResources.FindOrAdd(EEmberResource::SoulAsh) += 8;
+		if (FMath::FRand() <= 0.3f)
+		{
+			Result.BankedResources.FindOrAdd(EEmberResource::Embers) += 1;
+		}
+		Result.MonsterShards.Add(TEXT("TutorialDragon"), FMath::RandRange(2, 3));
+	}
+	for (const TPair<EEmberResource, int32>& Pair : Result.BankedResources)
+	{
+		if (Economy)
+		{
+			Economy->Add(Pair.Key, Pair.Value);
+		}
+	}
+	EmberGI->LastRunResult = Result;
+	UE_LOG(LogEmberbound, Log, TEXT("EMBER: RunResult %s KeepPct=%d Gold=%d Wood=%d SoulAsh=%d Embers=%d Shards=%d"),
+		bVictory ? TEXT("Victory") : TEXT("Defeat"),
+		bVictory ? 100 : 60,
+		Result.BankedResources.FindRef(EEmberResource::Gold),
+		Result.BankedResources.FindRef(EEmberResource::Wood),
+		Result.BankedResources.FindRef(EEmberResource::SoulAsh),
+		Result.BankedResources.FindRef(EEmberResource::Embers),
+		Result.MonsterShards.FindRef(TEXT("TutorialDragon")));
+}
+
+void AExpeditionGameMode::ShowRunResult()
+{
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+	UEmberGameInstance* EmberGI = Cast<UEmberGameInstance>(GetGameInstance());
+	if (!PC || !EmberGI)
+	{
+		return;
+	}
+	ResultWidget = CreateWidget<URunResultWidget>(PC, URunResultWidget::StaticClass());
+	if (ResultWidget)
+	{
+		ResultWidget->SetResult(EmberGI->LastRunResult);
+		ResultWidget->AddToViewport(200);
+		PC->SetShowMouseCursor(true);
+		PC->SetInputMode(FInputModeGameAndUI());
+	}
+}
+
+void AExpeditionGameMode::RegisterDebugHooks()
+{
+	IConsoleManager::Get().RegisterConsoleCommand(
+		TEXT("Ember.KillPlayer"),
+		TEXT("Kill the current expedition player."),
+		FConsoleCommandWithArgsDelegate::CreateUObject(this, &AExpeditionGameMode::KillPlayerConsole),
+		ECVF_Default);
+	IConsoleManager::Get().RegisterConsoleCommand(
+		TEXT("Ember.DamageBoss"),
+		TEXT("Damage the active boss. Usage: Ember.DamageBoss 40"),
+		FConsoleCommandWithArgsDelegate::CreateUObject(this, &AExpeditionGameMode::DamageBossConsole),
+		ECVF_Default);
+}
+
+void AExpeditionGameMode::UnregisterDebugHooks()
+{
+	IConsoleManager::Get().UnregisterConsoleObject(TEXT("Ember.KillPlayer"), false);
+	IConsoleManager::Get().UnregisterConsoleObject(TEXT("Ember.DamageBoss"), false);
+}
+
+void AExpeditionGameMode::KillPlayerConsole(const TArray<FString>&)
+{
+	KillPlayerNow();
+}
+
+void AExpeditionGameMode::KillPlayerNow()
+{
+	bDebugKillPending = false;
+	GetWorldTimerManager().ClearTimer(DebugKeepAliveTimerHandle);
+	if (AEmberPlayerCharacter* Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		if (UHealthComponent* Health = Player->GetHealthComponent())
+		{
+			Health->ApplyDamage(100000.0f);
+		}
+	}
+}
+
+void AExpeditionGameMode::DebugKeepPlayerAlive()
+{
+	if (!bDebugKillPending)
+	{
+		return;
+	}
+	if (AEmberPlayerCharacter* Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		if (UHealthComponent* Health = Player->GetHealthComponent())
+		{
+			Health->Heal(1000.0f);
+		}
+	}
+}
+
+void AExpeditionGameMode::DamageBossConsole(const TArray<FString>& Args)
+{
+	const float Amount = Args.Num() > 0 ? FCString::Atof(*Args[0]) : 40.0f;
+	if (ActiveBoss)
+	{
+		ActiveBoss->DamageBoss(Amount);
+	}
+}
+
+void AExpeditionGameMode::AutoDamageBossTick()
+{
+	if (ActiveBoss && ActiveBoss->IsAlive())
+	{
+		ActiveBoss->DamageBoss(40.0f);
+	}
+	if (AEmberPlayerCharacter* Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		if (UHealthComponent* Health = Player->GetHealthComponent())
+		{
+			Health->Heal(1000.0f);
+		}
+	}
+}
+
+void AExpeditionGameMode::BindPlayerDeath()
+{
+	if (AEmberPlayerCharacter* Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		if (UHealthComponent* Health = Player->GetHealthComponent())
+		{
+			Health->OnDied.AddDynamic(this, &AExpeditionGameMode::HandlePlayerDied);
+		}
+	}
+}
+
+void AExpeditionGameMode::HandlePlayerDied(AActor*)
+{
+	EndRun(false);
+}
+
+void AExpeditionGameMode::HandleBossDefeated(ABossTutorialDragon*)
+{
+	if (HUDWidget)
+	{
+		HUDWidget->ClearBossHealthSource();
+	}
+	EndRun(true);
 }
 
 UEmberEnemyData* AExpeditionGameMode::LoadEnemyData(FName AssetName) const

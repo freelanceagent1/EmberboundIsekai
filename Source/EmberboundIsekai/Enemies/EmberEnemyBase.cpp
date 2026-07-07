@@ -69,7 +69,7 @@ void AEmberEnemyBase::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	if (IsAlive() && !DesiredDirection.IsNearlyZero())
 	{
-		const float Speed = (EnemyData ? EnemyData->MoveSpeed : 250.0f) * StatusMoveSpeedScale;
+		const float Speed = RuntimeMoveSpeed * StatusMoveSpeedScale;
 		AddActorWorldOffset(DesiredDirection * Speed * DeltaSeconds, true);
 	}
 }
@@ -111,7 +111,9 @@ void AEmberEnemyBase::InitFromData(UEmberEnemyData* InEnemyData)
 	{
 		return;
 	}
-	Movement->MaxSpeed = EnemyData->MoveSpeed;
+	RuntimeMoveSpeed = EnemyData->MoveSpeed;
+	RuntimeContactDamage = EnemyData->ContactDamage;
+	Movement->MaxSpeed = RuntimeMoveSpeed;
 	HealthComponent->SetMaxHealth(EnemyData->MaxHP, true);
 	LootDropComponent->SetEnemyData(EnemyData);
 	Visual->SetRelativeScale3D(EnemyData->VisualScale);
@@ -127,6 +129,42 @@ void AEmberEnemyBase::InitFromData(UEmberEnemyData* InEnemyData)
 	if (EnemyData->AttackType == EEmberEnemyAttackType::Ranged && GetWorld())
 	{
 		GetWorld()->GetTimerManager().SetTimer(RangedTimerHandle, this, &AEmberEnemyBase::FireRangedProjectile, EnemyData->ProjectileInterval, true, 1.0f);
+	}
+}
+
+void AEmberEnemyBase::ApplyRuntimeModifiers(float HealthMultiplier, float DamageMultiplier, float ScaleMultiplier, const FLinearColor& TintOverride)
+{
+	if (!EnemyData)
+	{
+		return;
+	}
+	RuntimeContactDamage = EnemyData->ContactDamage * FMath::Max(0.0f, DamageMultiplier);
+	RuntimeMoveSpeed = EnemyData->MoveSpeed;
+	Movement->MaxSpeed = RuntimeMoveSpeed;
+	HealthComponent->SetMaxHealth(EnemyData->MaxHP * FMath::Max(0.1f, HealthMultiplier), true);
+	Visual->SetRelativeScale3D(EnemyData->VisualScale * FMath::Max(0.1f, ScaleMultiplier));
+	if (UMaterialInstanceDynamic* MID = Visual->CreateAndSetMaterialInstanceDynamic(0))
+	{
+		MID->SetVectorParameterValue(TEXT("Tint"), TintOverride);
+		MID->SetScalarParameterValue(TEXT("Flash"), 0.0f);
+	}
+}
+
+void AEmberEnemyBase::ConfigureRuntimeStats(float MaxHealth, float ContactDamage, float MoveSpeed, const FVector& VisualScale, const FLinearColor& Tint)
+{
+	RuntimeContactDamage = FMath::Max(0.0f, ContactDamage);
+	RuntimeMoveSpeed = FMath::Max(0.0f, MoveSpeed);
+	Movement->MaxSpeed = RuntimeMoveSpeed;
+	HealthComponent->SetMaxHealth(MaxHealth, true);
+	Visual->SetRelativeScale3D(VisualScale);
+	if (UMaterialInterface* EnemyMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Emberbound/Materials/Stylized/M_Enemy.M_Enemy")))
+	{
+		Visual->SetMaterial(0, EnemyMaterial);
+	}
+	if (UMaterialInstanceDynamic* MID = Visual->CreateAndSetMaterialInstanceDynamic(0))
+	{
+		MID->SetVectorParameterValue(TEXT("Tint"), Tint);
+		MID->SetScalarParameterValue(TEXT("Flash"), 0.0f);
 	}
 }
 
@@ -184,7 +222,7 @@ void AEmberEnemyBase::FireRangedProjectile()
 
 void AEmberEnemyBase::HandleOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
-	if (!EnemyData || !OtherActor || !OtherActor->IsA<AEmberPlayerCharacter>())
+	if (RuntimeContactDamage <= 0.0f || !OtherActor || !OtherActor->IsA<AEmberPlayerCharacter>())
 	{
 		return;
 	}
@@ -197,7 +235,7 @@ void AEmberEnemyBase::HandleOverlap(UPrimitiveComponent*, AActor* OtherActor, UP
 	ContactCooldowns.Add(OtherActor, Now + 0.8f);
 	if (UHealthComponent* Health = OtherActor->FindComponentByClass<UHealthComponent>())
 	{
-		Health->ApplyDamage(EnemyData->ContactDamage);
+		Health->ApplyDamage(RuntimeContactDamage);
 	}
 }
 

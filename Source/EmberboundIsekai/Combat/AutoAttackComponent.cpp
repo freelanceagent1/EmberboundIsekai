@@ -6,6 +6,7 @@
 #include "Enemies/EnemySpawnerSubsystem.h"
 #include "Run/RunUpgradeManager.h"
 #include "EmberboundIsekai.h"
+#include "HAL/IConsoleManager.h"
 #include "TimerManager.h"
 
 UAutoAttackComponent::UAutoAttackComponent()
@@ -118,13 +119,18 @@ void UAutoAttackComponent::SpawnProjectile(const FVector& Direction, float Resol
 	const FVector SpawnLocation = Owner->GetActorLocation() + Direction * 70.0f + FVector(0.0f, 0.0f, 45.0f);
 	if (AEmberProjectile* Projectile = Pool->Acquire<AEmberProjectile>(AEmberProjectile::StaticClass(), FTransform(Direction.Rotation(), SpawnLocation)))
 	{
+		float DamageMultiplier = 1.0f;
+		if (IConsoleVariable* DamageCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("Ember.PlayerDamageMult")))
+		{
+			DamageMultiplier = FMath::Max(0.0f, DamageCVar->GetFloat());
+		}
 		FEmberProjectileStatusPayload StatusPayload;
 		if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
 		{
 			StatusPayload = UpgradeManager->GetProjectileStatusPayload();
 		}
 		Projectile->SetStatusPayload(StatusPayload);
-		Projectile->Fire(Direction, ResolvedDamage, ProjectileSpeed, PierceCount, RicochetCount, Owner, false);
+		Projectile->Fire(Direction, ResolvedDamage * DamageMultiplier, ProjectileSpeed, PierceCount, RicochetCount, Owner, false);
 		UE_LOG(LogEmberbound, Log, TEXT("EMBER: ProjectileFired"));
 	}
 }

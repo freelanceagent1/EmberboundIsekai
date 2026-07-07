@@ -3,6 +3,7 @@
 #include "Combat/XPComponent.h"
 #include "Core/EconomySubsystem.h"
 #include "Core/ObjectPoolSubsystem.h"
+#include "Expedition/ExpeditionGameMode.h"
 #include "Run/RunUpgradeManager.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -77,20 +78,27 @@ void AEmberPickup::Collect(AEmberPlayerCharacter* Player)
 			XPComponent->AddXP(Amount);
 		}
 	}
-	else if (UGameInstance* GameInstance = GetGameInstance())
+	else
 	{
-		if (UEconomySubsystem* Economy = GameInstance->GetSubsystem<UEconomySubsystem>())
+		const EEmberResource Resource = PickupType == EEmberPickupType::Wood ? EEmberResource::Wood : PickupType == EEmberPickupType::SoulAsh ? EEmberResource::SoulAsh : EEmberResource::Gold;
+		int32 FinalAmount = Amount;
+		if (Resource == EEmberResource::Gold)
 		{
-			const EEmberResource Resource = PickupType == EEmberPickupType::Wood ? EEmberResource::Wood : PickupType == EEmberPickupType::SoulAsh ? EEmberResource::SoulAsh : EEmberResource::Gold;
-			int32 FinalAmount = Amount;
-			if (Resource == EEmberResource::Gold)
+			if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
 			{
-				if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
-				{
-					FinalAmount = FMath::Max(1, FMath::RoundToInt(static_cast<float>(Amount) * UpgradeManager->GetGoldMultiplier()));
-				}
+				FinalAmount = FMath::Max(1, FMath::RoundToInt(static_cast<float>(Amount) * UpgradeManager->GetGoldMultiplier()));
 			}
-			Economy->Add(Resource, FinalAmount);
+		}
+		if (AExpeditionGameMode* ExpeditionMode = GetWorld() ? GetWorld()->GetAuthGameMode<AExpeditionGameMode>() : nullptr)
+		{
+			ExpeditionMode->AddRunResource(Resource, FinalAmount);
+		}
+		else if (UGameInstance* GameInstance = GetGameInstance())
+		{
+			if (UEconomySubsystem* Economy = GameInstance->GetSubsystem<UEconomySubsystem>())
+			{
+				Economy->Add(Resource, FinalAmount);
+			}
 		}
 	}
 	if (UObjectPoolSubsystem* Pool = GetWorld()->GetSubsystem<UObjectPoolSubsystem>())

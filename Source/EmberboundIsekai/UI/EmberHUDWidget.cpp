@@ -17,15 +17,21 @@ void UEmberHUDWidget::NativeOnInitialized()
 
 	HPBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("HPBar"));
 	XPBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("XPBar"));
+	BossHPBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("BossHPBar"));
+	BossText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("BossText"));
 	LevelText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("LevelText"));
 	RoomText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("RoomText"));
 	ResourceText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("ResourceText"));
 
 	Root->AddChildToVerticalBox(HPBar);
 	Root->AddChildToVerticalBox(XPBar);
+	Root->AddChildToVerticalBox(BossText);
+	Root->AddChildToVerticalBox(BossHPBar);
 	Root->AddChildToVerticalBox(LevelText);
 	Root->AddChildToVerticalBox(RoomText);
 	Root->AddChildToVerticalBox(ResourceText);
+	BossText->SetVisibility(ESlateVisibility::Collapsed);
+	BossHPBar->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UEmberHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -45,6 +51,18 @@ void UEmberHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		}
 	}
 	RoomText->SetText(FText::Format(NSLOCTEXT("EmberHUD", "RoomFmt", "Room {0}/{1}"), CurrentRoom, TotalRooms));
+	if (BossHealth.IsValid())
+	{
+		BossText->SetVisibility(ESlateVisibility::HitTestInvisible);
+		BossHPBar->SetVisibility(ESlateVisibility::HitTestInvisible);
+		BossText->SetText(NSLOCTEXT("EmberHUD", "BossName", "Tutorial Dragon Lv.3"));
+		BossHPBar->SetPercent(BossHealth->GetMaxHP() > 0.0f ? BossHealth->GetCurrentHP() / BossHealth->GetMaxHP() : 0.0f);
+	}
+	else
+	{
+		BossText->SetVisibility(ESlateVisibility::Collapsed);
+		BossHPBar->SetVisibility(ESlateVisibility::Collapsed);
+	}
 
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
@@ -62,4 +80,14 @@ void UEmberHUDWidget::SetRoom(int32 Room, int32 MaxRooms)
 {
 	CurrentRoom = Room;
 	TotalRooms = MaxRooms;
+}
+
+void UEmberHUDWidget::SetBossHealthSource(UHealthComponent* InBossHealth)
+{
+	BossHealth = InBossHealth;
+}
+
+void UEmberHUDWidget::ClearBossHealthSource()
+{
+	BossHealth.Reset();
 }

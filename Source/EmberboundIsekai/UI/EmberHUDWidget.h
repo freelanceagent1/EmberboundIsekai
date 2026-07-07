@@ -7,6 +7,7 @@
 
 class UProgressBar;
 class UTextBlock;
+class UHealthComponent;
 
 UCLASS()
 class EMBERBOUNDISEKAI_API UEmberHUDWidget : public UUserWidget
@@ -18,6 +19,8 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void SetRoom(int32 Room, int32 MaxRooms);
+	void SetBossHealthSource(UHealthComponent* InBossHealth);
+	void ClearBossHealthSource();
 
 private:
 	UPROPERTY()
@@ -25,6 +28,12 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UProgressBar> XPBar;
+
+	UPROPERTY()
+	TObjectPtr<UProgressBar> BossHPBar;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> BossText;
 
 	UPROPERTY()
 	TObjectPtr<UTextBlock> LevelText;
@@ -37,4 +46,7 @@ private:
 
 	int32 CurrentRoom = 1;
 	int32 TotalRooms = 5;
+
+	UPROPERTY()
+	TWeakObjectPtr<UHealthComponent> BossHealth;
 };
