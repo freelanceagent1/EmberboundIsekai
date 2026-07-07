@@ -110,6 +110,92 @@ def relpath(p: str) -> str:
 # Post-processing
 # ----------------------------------------------------------------------
 
+def _border_connected_mask(candidate: np.ndarray) -> np.ndarray:
+    """
+    Given a boolean 2D candidate mask, return the subset that is
+    8-connected to the image border (i.e. actually reaches an edge, not
+    an isolated island of matching pixels fully enclosed by the subject).
+    Shared by every keying strategy below so "only remove background that
+    touches the frame edge" stays a single implementation.
+    """
+    if HAVE_SCIPY:
+        structure = np.ones((3, 3), dtype=int)
+        labeled, _num = _ndimage.label(candidate, structure=structure)
+        border_labels = set(labeled[0, :]) | set(labeled[-1, :]) | set(labeled[:, 0]) | set(labeled[:, -1])
+        border_labels.discard(0)
+        return np.isin(labeled, list(border_labels)) if border_labels else np.zeros_like(candidate)
+
+    # Fallback: simple BFS flood fill from the four corners.
+    h, w = candidate.shape
+    visited = np.zeros_like(candidate)
+    stack = [(0, 0), (0, w - 1), (h - 1, 0), (h - 1, w - 1)]
+    seen = set(stack)
+    while stack:
+        y, x = stack.pop()
+        if not candidate[y, x] or visited[y, x]:
+            continue
+        visited[y, x] = True
+        for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
+            if 0 <= ny < h and 0 <= nx < w and (ny, nx) not in seen and candidate[ny, nx] and not visited[ny, nx]:
+                seen.add((ny, nx))
+                stack.append((ny, nx))
+    return visited
+
+
+def _magenta_candidate_mask(rgb: Image.Image) -> np.ndarray:
+    """Boolean mask of pixels whose HUE is near-magenta (see module docstring
+    on alpha_key_magenta for why hue, not RGB distance)."""
+    hsv = rgb.convert("HSV")
+    h_arr, s_arr, v_arr = (np.asarray(band).astype(np.int16) for band in hsv.split())
+    hue_diff = np.abs(h_arr - MAGENTA_HUE_PIL)
+    hue_diff = np.minimum(hue_diff, 255 - hue_diff)  # circular distance
+    return (hue_diff <= MAGENTA_HUE_TOLERANCE_PIL) & (s_arr >= MAGENTA_SAT_MIN) & (v_arr >= MAGENTA_VAL_MIN)
+
+
+FLAT_BG_COLOR_TOLERANCE = 34   # euclidean RGB distance tolerance for corner flood-fill keying
+FLAT_BG_CORNER_STD_MAX = 42    # corners must be this uniform to be trusted as a flat backdrop
+FLAT_BG_CORNER_FRAC = 0.05     # corner sample size (fraction of min(width,height)) for the reference color
+
+
+def _flat_background_candidate_mask(rgb: Image.Image) -> np.ndarray:
+    """
+    Generic near-uniform-background flood fill. Complements the hue-based
+    magenta keyer for renders where SDXL ignored the "magenta background"
+    instruction outright and came back on a flat WHITE/GREY (or any other
+    near-solid) backdrop instead -- see Docs/orchestration/M5a_QA_notes.md
+    (ui-icons/gold_512: white background + coin scatter, silently passed
+    through fully opaque by the magenta-only keyer because it isn't
+    magenta hue at all).
+
+    Samples a small block in each of the 4 corners, takes their pooled
+    median as a background reference color, and -- only if the corners are
+    actually near-uniform (this really looks like a flat backdrop, not
+    busy subject detail poking into a corner, and not a strong magenta
+    lighting gradient which pools to a high corner-to-corner std) --
+    flags every pixel within FLAT_BG_COLOR_TOLERANCE of that reference.
+    Border-connection filtering happens in the caller, same as the
+    magenta mask, so this can never eat into subject detail that doesn't
+    touch the frame edge.
+    """
+    arr = np.asarray(rgb).astype(np.int16)
+    h, w, _ = arr.shape
+    cs = max(3, int(min(h, w) * FLAT_BG_CORNER_FRAC))
+    corner_blocks = [
+        arr[0:cs, 0:cs], arr[0:cs, w - cs:w],
+        arr[h - cs:h, 0:cs], arr[h - cs:h, w - cs:w],
+    ]
+    corner_pixels = np.concatenate([c.reshape(-1, 3) for c in corner_blocks], axis=0)
+    if corner_pixels.std(axis=0).mean() > FLAT_BG_CORNER_STD_MAX:
+        # Corners disagree too much to trust a single reference color
+        # (typical of the magenta lighting gradient, or a subject that
+        # fills a corner) -- bail out, let the magenta mask handle it.
+        return np.zeros((h, w), dtype=bool)
+
+    ref_color = np.median(corner_pixels, axis=0)
+    dist = np.sqrt(((arr - ref_color) ** 2).sum(axis=2))
+    return dist <= FLAT_BG_COLOR_TOLERANCE
+
+
 def alpha_key_magenta(img: Image.Image) -> Image.Image:
     """
     Flood-fill-from-corners magenta background removal.
@@ -125,36 +211,39 @@ def alpha_key_magenta(img: Image.Image) -> Image.Image:
     the image border becomes transparent; near-magenta-hue pixels
     fully enclosed by the subject (e.g. a purple/soul-ash detail in
     the artwork) are left opaque since they don't touch the border.
+
+    Kept standalone (in addition to alpha_key_smart below) for direct
+    reuse/testing; production post-processing calls alpha_key_smart.
     """
     rgb = img.convert("RGB")
-    hsv = rgb.convert("HSV")
-    h_arr, s_arr, v_arr = (np.asarray(band).astype(np.int16) for band in hsv.split())
-    hue_diff = np.abs(h_arr - MAGENTA_HUE_PIL)
-    hue_diff = np.minimum(hue_diff, 255 - hue_diff)  # circular distance
-    candidate = (hue_diff <= MAGENTA_HUE_TOLERANCE_PIL) & (s_arr >= MAGENTA_SAT_MIN) & (v_arr >= MAGENTA_VAL_MIN)
+    candidate = _magenta_candidate_mask(rgb)
+    bg_mask = _border_connected_mask(candidate)
 
-    if HAVE_SCIPY:
-        structure = np.ones((3, 3), dtype=int)
-        labeled, _num = _ndimage.label(candidate, structure=structure)
-        border_labels = set(labeled[0, :]) | set(labeled[-1, :]) | set(labeled[:, 0]) | set(labeled[:, -1])
-        border_labels.discard(0)
-        bg_mask = np.isin(labeled, list(border_labels)) if border_labels else np.zeros_like(candidate)
-    else:
-        # Fallback: simple BFS flood fill from the four corners.
-        h, w = candidate.shape
-        visited = np.zeros_like(candidate)
-        stack = [(0, 0), (0, w - 1), (h - 1, 0), (h - 1, w - 1)]
-        seen = set(stack)
-        while stack:
-            y, x = stack.pop()
-            if not candidate[y, x] or visited[y, x]:
-                continue
-            visited[y, x] = True
-            for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
-                if 0 <= ny < h and 0 <= nx < w and (ny, nx) not in seen and candidate[ny, nx] and not visited[ny, nx]:
-                    seen.add((ny, nx))
-                    stack.append((ny, nx))
-        bg_mask = visited
+    alpha = np.where(bg_mask, 0, 255).astype(np.uint8)
+    alpha_img = Image.fromarray(alpha, mode="L").filter(ImageFilter.GaussianBlur(radius=1.0))
+    rgba = rgb.convert("RGBA")
+    rgba.putalpha(alpha_img)
+    return rgba
+
+
+def alpha_key_smart(img: Image.Image) -> Image.Image:
+    """
+    Combined background keyer used by post_process for all alpha_key
+    categories: magenta-hue keying OR'd with a generic near-uniform
+    corner-color flood fill (alpha_key_magenta + _flat_background_candidate_mask),
+    so a render that ignored the "magenta background" instruction and came
+    back on a flat white/grey/other solid backdrop still gets keyed instead
+    of silently passing through fully opaque (M5a QA fix pass,
+    Docs/orchestration/M5a_QA_notes.md). Both candidate masks are restricted
+    to border-connected regions before being OR'd together, so this is
+    strictly additive versus alpha_key_magenta alone -- it can only remove
+    *more* border-touching background, never eat into interior subject
+    detail that doesn't reach the frame edge.
+    """
+    rgb = img.convert("RGB")
+    magenta_mask = _border_connected_mask(_magenta_candidate_mask(rgb))
+    flat_mask = _border_connected_mask(_flat_background_candidate_mask(rgb))
+    bg_mask = magenta_mask | flat_mask
 
     alpha = np.where(bg_mask, 0, 255).astype(np.uint8)
     alpha_img = Image.fromarray(alpha, mode="L").filter(ImageFilter.GaussianBlur(radius=1.0))
@@ -244,7 +333,7 @@ def post_process(raw_path: str, asset: dict) -> list:
     img = Image.open(raw_path)
 
     if asset.get("alpha_key"):
-        keyed = alpha_key_magenta(img)
+        keyed = alpha_key_smart(img)
         content = crop_to_content(keyed)
         return save_variants(content, out_dir, asset_id, target_sizes)
 

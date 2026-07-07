@@ -14,6 +14,9 @@ Saved/
 # Generated art staging (imported copies live in Content/)
 GeneratedAssets/staging/
 
+# Worker session logs (huge)
+Docs/orchestration/codex_*.log
+
 # Python
 __pycache__/
 *.pyc

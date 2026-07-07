@@ -2,6 +2,13 @@
 
 Continue engineering Emberbound Isekai (UE 5.8, E:\mobilegamer\EmberboundIsekai). M1 (core combat) is merged: read `Docs/orchestration/M1_report.md` and the existing `Source/EmberboundIsekai/` code first, and build on it — do not rewrite working systems. Same hard rules as M1 (UBT green loop, headless python for content, one editor process, mobile perf, original content).
 
+## PREREQUISITE FIX (mandatory, before upgrade features)
+M1 shipped a **double-damage bug**: `UAutoAttackComponent::FireAtTarget` applies damage directly to the target (AutoAttackComponent.cpp:87) AND the pooled projectile applies damage again on overlap (EmberProjectile.cpp:84). Fix properly:
+1. Remove the direct `ApplyDamage` on fire. Damage resolves ONLY on projectile hit (crit resolved at fire time is fine to carry on the projectile).
+2. Make projectile hits reliable: use swept movement (trace from previous to current position each tick against enemy/player object types) so fast projectiles and headless large-delta frames can't tunnel; keep overlap as secondary. Verify enemy pawns' collision object type/responses actually match the trace channel.
+3. Add log marker `EMBER: ProjectileHit` on every resolved hit; the M2 smoke MUST show kills happening via projectile hits only (add a debug assert/log if any other damage path fires during smoke).
+This fix is required because Split/Pierce/Ricochet below are meaningless without real per-projectile hit resolution.
+
 ## Scope: level-up → pause → 3 upgrade cards → apply → reset at run end
 
 ### Data
