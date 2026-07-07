@@ -3,10 +3,13 @@
 #include "Combat/EmberPlayerCharacter.h"
 #include "Core/ObjectPoolSubsystem.h"
 #include "Enemies/EmberEnemyBase.h"
+#include "Enemies/EnemySpawnerSubsystem.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/OverlapResult.h"
 #include "Engine/StaticMesh.h"
 #include "TimerManager.h"
+#include "EmberboundIsekai.h"
 
 AEmberProjectile::AEmberProjectile()
 {
@@ -31,7 +34,14 @@ AEmberProjectile::AEmberProjectile()
 void AEmberProjectile::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	AddActorWorldOffset(MoveDirection * Speed * DeltaSeconds, true);
+	const FVector Start = GetActorLocation();
+	const FVector End = Start + MoveDirection * Speed * DeltaSeconds;
+	TraceMovement(Start, End);
+	if (!IsActorBeingDestroyed())
+	{
+		SetActorLocation(End, false);
+		PreviousLocation = End;
+	}
 }
 
 void AEmberProjectile::OnAcquired_Implementation()
@@ -51,9 +61,11 @@ void AEmberProjectile::OnReleased_Implementation()
 	}
 	SourceActor = nullptr;
 	Damage = 0.0f;
+	HitActors.Reset();
+	StatusPayload = FEmberProjectileStatusPayload();
 }
 
-void AEmberProjectile::Fire(const FVector& Direction, float InDamage, float InSpeed, int32 InPierceCount, AActor* InSource, bool bInEnemyProjectile)
+void AEmberProjectile::Fire(const FVector& Direction, float InDamage, float InSpeed, int32 InPierceCount, int32 InRicochetCount, AActor* InSource, bool bInEnemyProjectile)
 {
 	MoveDirection = Direction.GetSafeNormal2D();
 	if (MoveDirection.IsNearlyZero())
@@ -63,12 +75,49 @@ void AEmberProjectile::Fire(const FVector& Direction, float InDamage, float InSp
 	Damage = InDamage;
 	Speed = InSpeed;
 	PierceRemaining = InPierceCount;
+	RicochetRemaining = InRicochetCount;
 	SourceActor = InSource;
 	bEnemyProjectile = bInEnemyProjectile;
+	PreviousLocation = GetActorLocation();
+	HitActors.Reset();
 	SetActorRotation(MoveDirection.Rotation());
 }
 
 void AEmberProjectile::HandleOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32, bool, const FHitResult&)
+{
+	ResolveHit(OtherActor);
+}
+
+void AEmberProjectile::TraceMovement(const FVector& From, const FVector& To)
+{
+	if (!GetWorld())
+	{
+		return;
+	}
+	FCollisionObjectQueryParams ObjectParams;
+	ObjectParams.AddObjectTypesToQuery(ECC_Pawn);
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(EmberProjectileTrace), false, this);
+	Params.AddIgnoredActor(this);
+	if (SourceActor)
+	{
+		Params.AddIgnoredActor(SourceActor);
+	}
+	TArray<FHitResult> Hits;
+	GetWorld()->SweepMultiByObjectType(Hits, From, To, FQuat::Identity, ObjectParams, FCollisionShape::MakeSphere(42.0f), Params);
+	for (const FHitResult& Hit : Hits)
+	{
+		if (AActor* HitActor = Hit.GetActor())
+		{
+			ResolveHit(HitActor);
+			if (!IsValid(this) || IsActorBeingDestroyed())
+			{
+				return;
+			}
+		}
+	}
+}
+
+void AEmberProjectile::ResolveHit(AActor* OtherActor)
 {
 	if (!OtherActor || OtherActor == this || OtherActor == SourceActor)
 	{
@@ -79,18 +128,75 @@ void AEmberProjectile::HandleOverlap(UPrimitiveComponent*, AActor* OtherActor, U
 	{
 		return;
 	}
+	if (HitActors.Contains(OtherActor))
+	{
+		return;
+	}
+	HitActors.Add(OtherActor);
 	if (UHealthComponent* Health = OtherActor->FindComponentByClass<UHealthComponent>())
 	{
 		Health->ApplyDamage(Damage);
+		if (StatusPayload.BurnDps > 0.0f)
+		{
+			Health->AddDamageStatus(EEmberStatusEffectType::Burn, StatusPayload.BurnDps, StatusPayload.BurnDuration);
+		}
+		if (StatusPayload.PoisonDps > 0.0f)
+		{
+			Health->AddDamageStatus(EEmberStatusEffectType::Poison, StatusPayload.PoisonDps, StatusPayload.PoisonDuration);
+		}
+		if (StatusPayload.FrostSlowFraction > 0.0f)
+		{
+			Health->AddFrostStatus(StatusPayload.FrostSlowFraction, StatusPayload.FrostDuration);
+		}
+		UE_LOG(LogEmberbound, Log, TEXT("EMBER: ProjectileHit target=%s damage=%.1f"), *OtherActor->GetName(), Damage);
 		if (PierceRemaining > 0)
 		{
 			--PierceRemaining;
+		}
+		else if (TryRicochet(OtherActor))
+		{
 		}
 		else
 		{
 			ReleaseSelf();
 		}
 	}
+}
+
+bool AEmberProjectile::TryRicochet(AActor* HitActor)
+{
+	if (bEnemyProjectile || RicochetRemaining <= 0 || !GetWorld())
+	{
+		return false;
+	}
+	UEnemySpawnerSubsystem* Spawner = GetWorld()->GetSubsystem<UEnemySpawnerSubsystem>();
+	if (!Spawner)
+	{
+		return false;
+	}
+	AEmberEnemyBase* NewTarget = nullptr;
+	float BestDistanceSq = FMath::Square(520.0f);
+	for (AEmberEnemyBase* Enemy : Spawner->GetLiveEnemies())
+	{
+		if (!Enemy || !Enemy->IsAlive() || Enemy == HitActor || HitActors.Contains(Enemy))
+		{
+			continue;
+		}
+		const float DistSq = FVector::DistSquared2D(HitActor->GetActorLocation(), Enemy->GetActorLocation());
+		if (DistSq < BestDistanceSq)
+		{
+			BestDistanceSq = DistSq;
+			NewTarget = Enemy;
+		}
+	}
+	if (!NewTarget)
+	{
+		return false;
+	}
+	--RicochetRemaining;
+	MoveDirection = (NewTarget->GetActorLocation() - GetActorLocation()).GetSafeNormal2D();
+	SetActorRotation(MoveDirection.Rotation());
+	return true;
 }
 
 void AEmberProjectile::ReleaseSelf()

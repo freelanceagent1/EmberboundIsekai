@@ -23,6 +23,7 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	float GetPickupRadius() const { return PickupRadius; }
+	void ApplyPickupRadiusMultiplier(float Multiplier);
 
 	UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 	UXPComponent* GetXPComponent() const { return XPComponent; }

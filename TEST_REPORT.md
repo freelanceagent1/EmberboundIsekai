@@ -7,6 +7,7 @@ Compile/run status and manual test checklist. Updated every milestone.
 |---|---|---|
 | 2026-07-07 | EmberboundIsekaiEditor Win64 Development (empty module skeleton) | ✅ Succeeded (127 s, VS2022 14.44 toolchain) |
 | 2026-07-07 | EmberboundIsekaiEditor Win64 Development (M1 core combat loop) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT) |
+| 2026-07-07 | EmberboundIsekaiEditor Win64 Development (M2 run upgrade system) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT) |
 
 ## Automated checks
 | Date | Check | Result |
@@ -14,6 +15,8 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-07 | M1 content build script | ✅ `CONTENT_OK` |
 | 2026-07-07 | M1 asset verify script | ✅ `M1_ASSET_VERIFY_OK` |
 | 2026-07-07 | M1 55s headless smoke | ✅ `PlayerSpawned`, `EnemySpawned`, `ProjectileFired`, `RoomCleared`; no `Fatal`/`Error: [C++]` grep hits |
+| 2026-07-07 | M2 upgrade content script + asset check | ✅ `CONTENT_OK`; 15/15 upgrade `.uasset` files present |
+| 2026-07-07 | M2 65s headless smoke | ✅ 9 `LevelUp`, 9 `UpgradeApplied`, stacked upgrades, 39 `ProjectileHit`, continued `ProjectileFired`; no `Fatal`/`Error: [C++]` grep hits |
 
 ## Manual PIE checklist
 - [ ] Project opens in UE 5.8 without module rebuild errors
@@ -33,4 +36,5 @@ Compile/run status and manual test checklist. Updated every milestone.
 
 ## Known issues
 - M1 map generation falls back to duplicating an engine template map because UE 5.8 headless map creation/loading APIs crash natively in this environment.
-- M1 auto-attack applies resolved damage directly on fire for deterministic headless combat; pooled projectiles still spawn/travel.
+- M2 removed M1's direct fire-time auto-attack damage path; damage now resolves from projectile hits.
+- M2 `Ember.AutoPickUpgrades` selects immediately under pause for headless smoke because this UE 5.8 timer API does not expose paused world timers.

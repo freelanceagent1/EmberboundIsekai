@@ -4,6 +4,7 @@
 #include "Core/ObjectPoolSubsystem.h"
 #include "Enemies/EmberEnemyBase.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
+#include "Run/RunUpgradeManager.h"
 #include "EmberboundIsekai.h"
 #include "TimerManager.h"
 
@@ -30,6 +31,28 @@ void UAutoAttackComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		World->GetTimerManager().ClearTimer(FireTimerHandle);
 	}
 	Super::EndPlay(EndPlayReason);
+}
+
+void UAutoAttackComponent::ApplyAttackSpeedMultiplier(float Multiplier)
+{
+	if (Multiplier <= 0.0f)
+	{
+		return;
+	}
+	AttackInterval = FMath::Max(0.12f, AttackInterval * Multiplier);
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(FireTimerHandle);
+		World->GetTimerManager().SetTimer(FireTimerHandle, this, &UAutoAttackComponent::FireAtTarget, AttackInterval, true, AttackInterval);
+	}
+}
+
+void UAutoAttackComponent::ApplyDamageMultiplier(float Multiplier)
+{
+	if (Multiplier > 0.0f)
+	{
+		Damage *= Multiplier;
+	}
 }
 
 void UAutoAttackComponent::AcquireTarget()
@@ -71,21 +94,37 @@ void UAutoAttackComponent::FireAtTarget()
 		return;
 	}
 	const FVector Direction = (CurrentTarget->GetActorLocation() - Owner->GetActorLocation()).GetSafeNormal2D();
-	UObjectPoolSubsystem* Pool = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
-	if (!Pool)
+	const bool bCrit = FMath::FRand() < CritChance;
+	const float ResolvedDamage = bCrit ? Damage * CritMultiplier : Damage;
+	SpawnProjectile(Direction, ResolvedDamage);
+	if (SplitCount > 0)
+	{
+		for (int32 Index = 1; Index <= SplitCount; ++Index)
+		{
+			const float Angle = 8.0f * static_cast<float>((Index + 1) / 2) * (Index % 2 == 0 ? -1.0f : 1.0f);
+			SpawnProjectile(Direction.RotateAngleAxis(Angle, FVector::UpVector), ResolvedDamage * 0.75f);
+		}
+	}
+}
+
+void UAutoAttackComponent::SpawnProjectile(const FVector& Direction, float ResolvedDamage)
+{
+	AActor* Owner = GetOwner();
+	UObjectPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<UObjectPoolSubsystem>() : nullptr;
+	if (!Owner || !Pool)
 	{
 		return;
 	}
 	const FVector SpawnLocation = Owner->GetActorLocation() + Direction * 70.0f + FVector(0.0f, 0.0f, 45.0f);
-	const bool bCrit = FMath::FRand() < CritChance;
-	const float ResolvedDamage = bCrit ? Damage * CritMultiplier : Damage;
 	if (AEmberProjectile* Projectile = Pool->Acquire<AEmberProjectile>(AEmberProjectile::StaticClass(), FTransform(Direction.Rotation(), SpawnLocation)))
 	{
-		Projectile->Fire(Direction, ResolvedDamage, ProjectileSpeed, PierceCount, Owner, false);
-		if (UHealthComponent* Health = CurrentTarget->FindComponentByClass<UHealthComponent>())
+		FEmberProjectileStatusPayload StatusPayload;
+		if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
 		{
-			Health->ApplyDamage(ResolvedDamage);
+			StatusPayload = UpgradeManager->GetProjectileStatusPayload();
 		}
+		Projectile->SetStatusPayload(StatusPayload);
+		Projectile->Fire(Direction, ResolvedDamage, ProjectileSpeed, PierceCount, RicochetCount, Owner, false);
 		UE_LOG(LogEmberbound, Log, TEXT("EMBER: ProjectileFired"));
 	}
 }

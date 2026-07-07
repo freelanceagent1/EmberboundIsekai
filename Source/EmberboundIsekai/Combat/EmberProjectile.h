@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Core/Poolable.h"
+#include "Run/RunUpgradeManager.h"
 #include "EmberProjectile.generated.h"
 
 class USphereComponent;
@@ -20,7 +21,8 @@ public:
 	virtual void OnAcquired_Implementation() override;
 	virtual void OnReleased_Implementation() override;
 
-	void Fire(const FVector& Direction, float InDamage, float InSpeed, int32 InPierceCount, AActor* InSource, bool bInEnemyProjectile);
+	void Fire(const FVector& Direction, float InDamage, float InSpeed, int32 InPierceCount, int32 InRicochetCount, AActor* InSource, bool bInEnemyProjectile);
+	void SetStatusPayload(const FEmberProjectileStatusPayload& InPayload) { StatusPayload = InPayload; }
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -42,15 +44,30 @@ private:
 	int32 PierceRemaining = 0;
 
 	UPROPERTY()
+	int32 RicochetRemaining = 0;
+
+	UPROPERTY()
 	bool bEnemyProjectile = false;
 
 	UPROPERTY()
 	TObjectPtr<AActor> SourceActor;
+
+	UPROPERTY()
+	FVector PreviousLocation = FVector::ZeroVector;
+
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> HitActors;
+
+	UPROPERTY()
+	FEmberProjectileStatusPayload StatusPayload;
 
 	FTimerHandle LifetimeTimerHandle;
 
 	UFUNCTION()
 	void HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	void ResolveHit(AActor* OtherActor);
+	void TraceMovement(const FVector& From, const FVector& To);
+	bool TryRicochet(AActor* HitActor);
 	void ReleaseSelf();
 };

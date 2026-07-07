@@ -29,6 +29,7 @@ public:
 
 	void InitFromData(UEmberEnemyData* InEnemyData);
 	bool IsAlive() const;
+	void SetStatusMoveSpeedScale(float InScale);
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -56,6 +57,7 @@ private:
 	FTimerHandle RangedTimerHandle;
 	TMap<TWeakObjectPtr<AActor>, float> ContactCooldowns;
 	FVector DesiredDirection = FVector::ZeroVector;
+	float StatusMoveSpeedScale = 1.0f;
 
 	void UpdateDesiredDirection();
 	void FireRangedProjectile();

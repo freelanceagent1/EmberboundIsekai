@@ -3,6 +3,7 @@
 #include "Combat/XPComponent.h"
 #include "Core/EconomySubsystem.h"
 #include "Core/ObjectPoolSubsystem.h"
+#include "Run/RunUpgradeManager.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -81,7 +82,15 @@ void AEmberPickup::Collect(AEmberPlayerCharacter* Player)
 		if (UEconomySubsystem* Economy = GameInstance->GetSubsystem<UEconomySubsystem>())
 		{
 			const EEmberResource Resource = PickupType == EEmberPickupType::Wood ? EEmberResource::Wood : PickupType == EEmberPickupType::SoulAsh ? EEmberResource::SoulAsh : EEmberResource::Gold;
-			Economy->Add(Resource, Amount);
+			int32 FinalAmount = Amount;
+			if (Resource == EEmberResource::Gold)
+			{
+				if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
+				{
+					FinalAmount = FMath::Max(1, FMath::RoundToInt(static_cast<float>(Amount) * UpgradeManager->GetGoldMultiplier()));
+				}
+			}
+			Economy->Add(Resource, FinalAmount);
 		}
 	}
 	if (UObjectPoolSubsystem* Pool = GetWorld()->GetSubsystem<UObjectPoolSubsystem>())

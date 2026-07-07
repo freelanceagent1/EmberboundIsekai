@@ -69,7 +69,7 @@ void AEmberEnemyBase::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	if (IsAlive() && !DesiredDirection.IsNearlyZero())
 	{
-		const float Speed = EnemyData ? EnemyData->MoveSpeed : 250.0f;
+		const float Speed = (EnemyData ? EnemyData->MoveSpeed : 250.0f) * StatusMoveSpeedScale;
 		AddActorWorldOffset(DesiredDirection * Speed * DeltaSeconds, true);
 	}
 }
@@ -101,6 +101,7 @@ void AEmberEnemyBase::OnReleased_Implementation()
 	}
 	ContactCooldowns.Reset();
 	DesiredDirection = FVector::ZeroVector;
+	StatusMoveSpeedScale = 1.0f;
 }
 
 void AEmberEnemyBase::InitFromData(UEmberEnemyData* InEnemyData)
@@ -132,6 +133,11 @@ void AEmberEnemyBase::InitFromData(UEmberEnemyData* InEnemyData)
 bool AEmberEnemyBase::IsAlive() const
 {
 	return HealthComponent && HealthComponent->IsAlive();
+}
+
+void AEmberEnemyBase::SetStatusMoveSpeedScale(float InScale)
+{
+	StatusMoveSpeedScale = FMath::Clamp(InScale, 0.1f, 1.0f);
 }
 
 void AEmberEnemyBase::UpdateDesiredDirection()
@@ -171,7 +177,7 @@ void AEmberEnemyBase::FireRangedProjectile()
 		const FVector SpawnLocation = GetActorLocation() + Direction * 60.0f + FVector(0.0f, 0.0f, 45.0f);
 		if (AEmberProjectile* Projectile = Pool->Acquire<AEmberProjectile>(AEmberProjectile::StaticClass(), FTransform(Direction.Rotation(), SpawnLocation)))
 		{
-			Projectile->Fire(Direction, EnemyData->ProjectileDamage, EnemyData->ProjectileSpeed, 0, this, true);
+			Projectile->Fire(Direction, EnemyData->ProjectileDamage, EnemyData->ProjectileSpeed, 0, 0, this, true);
 		}
 	}
 }

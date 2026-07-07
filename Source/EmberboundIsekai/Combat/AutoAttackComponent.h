@@ -16,6 +16,8 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	void ApplyAttackSpeedMultiplier(float Multiplier);
+	void ApplyDamageMultiplier(float Multiplier);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	float Damage = 12.0f;
@@ -53,4 +55,5 @@ private:
 
 	void AcquireTarget();
 	void FireAtTarget();
+	void SpawnProjectile(const FVector& Direction, float ResolvedDamage);
 };

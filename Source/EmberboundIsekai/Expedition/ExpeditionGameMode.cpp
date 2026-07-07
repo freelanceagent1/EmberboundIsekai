@@ -5,6 +5,7 @@
 #include "Enemies/EmberEnemyBase.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
 #include "Expedition/ExpeditionPortal.h"
+#include "Run/RunUpgradeManager.h"
 #include "UI/EmberHUDWidget.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -46,6 +47,10 @@ void AExpeditionGameMode::StartCurrentRoom()
 	if (!Rooms.IsValidIndex(CurrentRoomIndex))
 	{
 		UE_LOG(LogEmberbound, Log, TEXT("EMBER: RUN COMPLETE"));
+		if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
+		{
+			UpgradeManager->ResetRun();
+		}
 		return;
 	}
 	SpawnedThisRoom = 0;
@@ -114,6 +119,10 @@ void AExpeditionGameMode::CompleteRoom()
 	if (CurrentRoomIndex + 1 >= Rooms.Num())
 	{
 		UE_LOG(LogEmberbound, Log, TEXT("EMBER: RUN COMPLETE"));
+		if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
+		{
+			UpgradeManager->ResetRun();
+		}
 		return;
 	}
 	SpawnPortal();
@@ -157,7 +166,12 @@ void AExpeditionGameMode::GrantRoomReward()
 {
 	if (UEconomySubsystem* Economy = GetGameInstance()->GetSubsystem<UEconomySubsystem>())
 	{
-		Economy->Add(EEmberResource::Gold, FMath::RandRange(4, 8));
+		float GoldMultiplier = 1.0f;
+		if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
+		{
+			GoldMultiplier = UpgradeManager->GetGoldMultiplier();
+		}
+		Economy->Add(EEmberResource::Gold, FMath::Max(1, FMath::RoundToInt(static_cast<float>(FMath::RandRange(4, 8)) * GoldMultiplier)));
 		Economy->Add(EEmberResource::Wood, FMath::RandRange(1, 2));
 		Economy->Add(EEmberResource::SoulAsh, 1);
 	}

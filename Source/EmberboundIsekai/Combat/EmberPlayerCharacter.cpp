@@ -70,6 +70,11 @@ void AEmberPlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+void AEmberPlayerCharacter::ApplyPickupRadiusMultiplier(float Multiplier)
+{
+	PickupRadius *= FMath::Max(1.0f, Multiplier);
+}
+
 void AEmberPlayerCharacter::BuildRuntimeInput()
 {
 	if (!MoveAction)
