@@ -1,0 +1,20 @@
+# UE
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+
+# Generated art staging (imported copies live in Content/)
+GeneratedAssets/staging/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
