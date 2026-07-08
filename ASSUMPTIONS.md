@@ -29,6 +29,14 @@ All practical assumptions made during autonomous development. Updated per milest
 12. **Enhanced Input** is available (built-in plugin) and used; touch joystick uses UE's virtual joystick + custom UMG fallback.
 13. **Mobile targets:** project settings target Mobile/Scalable, landscape, Android package `com.emberbound.isekai`. Actual device packaging (SDK/NDK) is documented but not executed — no Android SDK verified on this machine (packaging notes in README).
 
+## Environment quirks discovered during implementation
+
+14. **UE 5.8 headless map creation/mutation APIs crash** (`new_level`, `new_blank_map`, level-edit save paths) in `UnrealEditor-Cmd`. Workaround used everywhere: duplicate an engine template map for new levels; spawn floor/wall visuals at runtime from game modes instead of editing map content offline.
+15. **`-ExecCmds="quit N"` doesn't delay-quit** in this commandlet path; smokes use externally timed process termination instead.
+16. **PCH virtual-memory failures** under shared-machine load → module builds with `PCHUsage = NoPCHs` (slightly slower compiles, deterministic under memory pressure).
+17. Content-script log markers emit via `unreal.log_warning` because plain `print` is suppressed in this commandlet path.
+18. Machine is shared with the user's own concurrent workloads: UBT capped at `-MaxParallelActions=10`; no foreign processes are ever terminated.
+
 ## Open risks
 
 - UE 5.8 API drift vs worker-model knowledge: mitigated by compile-gate loop (workers get compiler errors back until green).
