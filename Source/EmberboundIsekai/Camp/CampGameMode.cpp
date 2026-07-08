@@ -3,6 +3,7 @@
 #include "Combat/EmberPlayerCharacter.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Core/MonsterCollectionSubsystem.h"
+#include "Core/EmberCaptureDebug.h"
 #include "UI/CampHUDWidget.h"
 #include "UI/OfflineRewardWidget.h"
 #include "UI/VirtualJoystickWidget.h"
@@ -38,7 +39,7 @@ namespace
 #endif
 			Floor->GetStaticMeshComponent()->SetStaticMesh(PlaneMesh);
 			Floor->GetStaticMeshComponent()->SetMaterial(0, Material);
-			Floor->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			Floor->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			Floor->SetActorScale3D(Scale);
 		}
 	}
@@ -52,8 +53,8 @@ ACampGameMode::ACampGameMode()
 void ACampGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	SpawnCampFloor(GetWorld(), TEXT("M5b_CampMeadowFloor"), FVector(0.0f, 0.0f, -2.0f), FVector(24.0f, 24.0f, 1.0f), TEXT("/Game/Emberbound/Materials/Generated/MI_CampFloor_MeadowGrass.MI_CampFloor_MeadowGrass"));
-	SpawnCampFloor(GetWorld(), TEXT("M5b_CampDirtPatch"), FVector(0.0f, 0.0f, -1.0f), FVector(7.0f, 7.0f, 1.0f), TEXT("/Game/Emberbound/Materials/Generated/MI_CampDirt.MI_CampDirt"));
+	SpawnCampFloor(GetWorld(), TEXT("M5b_CampMeadowFloor"), FVector(0.0f, 0.0f, 6.0f), FVector(24.0f, 24.0f, 1.0f), TEXT("/Game/Emberbound/Materials/Generated/MI_CampFloor_MeadowGrass.MI_CampFloor_MeadowGrass"));
+	SpawnCampFloor(GetWorld(), TEXT("M5b_CampDirtPatch"), FVector(0.0f, 0.0f, 7.0f), FVector(7.0f, 7.0f, 1.0f), TEXT("/Game/Emberbound/Materials/Generated/MI_CampDirt.MI_CampDirt"));
 	if (USaveManagerSubsystem* Save = GetGameInstance() ? GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
 	{
 		const bool bBankedRun = Save->BankPendingRunResult();
@@ -94,6 +95,7 @@ void ACampGameMode::BeginPlay()
 	ShowJoystickIfNeeded();
 	FTimerHandle JoystickCheckHandle;
 	GetWorldTimerManager().SetTimer(JoystickCheckHandle, this, &ACampGameMode::ShowJoystickIfNeeded, 0.5f, true);
+	FEmberCaptureDebug::ScheduleFromCommandLine(GetWorld());
 }
 
 void ACampGameMode::SpawnCampActors()

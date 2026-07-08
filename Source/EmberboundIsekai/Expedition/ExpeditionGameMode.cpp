@@ -3,6 +3,7 @@
 #include "Combat/HealthComponent.h"
 #include "Core/EconomySubsystem.h"
 #include "Core/EmberGameInstance.h"
+#include "Core/EmberCaptureDebug.h"
 #include "Core/MonsterCollectionSubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
@@ -25,6 +26,7 @@
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInterface.h"
+#include "Misc/CommandLine.h"
 #include "TimerManager.h"
 #include "EmberboundIsekai.h"
 
@@ -42,7 +44,7 @@ namespace
 		{
 			return;
 		}
-		AStaticMeshActor* Floor = World->SpawnActor<AStaticMeshActor>(FVector(0.0f, 0.0f, -2.0f), FRotator::ZeroRotator);
+		AStaticMeshActor* Floor = World->SpawnActor<AStaticMeshActor>(FVector(0.0f, 0.0f, 6.0f), FRotator::ZeroRotator);
 		if (Floor && Floor->GetStaticMeshComponent())
 		{
 #if WITH_EDITOR
@@ -50,9 +52,36 @@ namespace
 #endif
 			Floor->GetStaticMeshComponent()->SetStaticMesh(PlaneMesh);
 			Floor->GetStaticMeshComponent()->SetMaterial(0, Material);
-			Floor->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			Floor->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			Floor->SetActorScale3D(FVector(28.0f, 28.0f, 1.0f));
 		}
+	}
+
+	bool ParseExecCommandInt(const TCHAR* CommandName, int32& OutValue)
+	{
+		const FString CommandLine(FCommandLine::Get());
+		const int32 CommandIndex = CommandLine.Find(CommandName, ESearchCase::IgnoreCase);
+		if (CommandIndex == INDEX_NONE)
+		{
+			return false;
+		}
+
+		FString Args = CommandLine.Mid(CommandIndex + FCString::Strlen(CommandName));
+		int32 EndIndex = INDEX_NONE;
+		if (Args.FindChar(TEXT(','), EndIndex) || Args.FindChar(TEXT('"'), EndIndex))
+		{
+			Args = Args.Left(EndIndex);
+		}
+
+		TArray<FString> Tokens;
+		Args.ParseIntoArrayWS(Tokens);
+		if (Tokens.Num() == 0)
+		{
+			return false;
+		}
+
+		OutValue = FCString::Atoi(*Tokens[0]);
+		return true;
 	}
 }
 
@@ -91,6 +120,19 @@ void AExpeditionGameMode::BeginPlay()
 	Super::BeginPlay();
 	SpawnExpeditionFloor(GetWorld());
 	BuildRoomSequence();
+	int32 StartRoomOverride = 0;
+	if (ParseExecCommandInt(TEXT("Ember.StartRoom"), StartRoomOverride))
+	{
+		CVarEmberStartRoom.AsVariable()->Set(StartRoomOverride, ECVF_SetByConsole);
+	}
+	int32 AutoPickUpgradesOverride = 0;
+	if (ParseExecCommandInt(TEXT("Ember.AutoPickUpgrades"), AutoPickUpgradesOverride))
+	{
+		if (IConsoleVariable* AutoPickUpgrades = IConsoleManager::Get().FindConsoleVariable(TEXT("Ember.AutoPickUpgrades")))
+		{
+			AutoPickUpgrades->Set(AutoPickUpgradesOverride, ECVF_SetByConsole);
+		}
+	}
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
 		HUDWidget = CreateWidget<UEmberHUDWidget>(PC, UEmberHUDWidget::StaticClass());
@@ -111,6 +153,7 @@ void AExpeditionGameMode::BeginPlay()
 	}
 	FTimerHandle DelayedStartHandle;
 	GetWorldTimerManager().SetTimer(DelayedStartHandle, this, &AExpeditionGameMode::StartCurrentRoom, 0.25f, false);
+	FEmberCaptureDebug::ScheduleFromCommandLine(GetWorld());
 }
 
 void AExpeditionGameMode::ShowJoystickIfNeeded()
