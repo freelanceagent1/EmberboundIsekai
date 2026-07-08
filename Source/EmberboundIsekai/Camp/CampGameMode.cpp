@@ -1,6 +1,7 @@
 #include "Camp/CampGameMode.h"
 #include "Camp/CampBuildingActor.h"
 #include "Combat/EmberPlayerCharacter.h"
+#include "Core/EmberAutopilotSubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Core/MonsterCollectionSubsystem.h"
 #include "Core/EmberCaptureDebug.h"
@@ -96,6 +97,10 @@ void ACampGameMode::BeginPlay()
 	FTimerHandle JoystickCheckHandle;
 	GetWorldTimerManager().SetTimer(JoystickCheckHandle, this, &ACampGameMode::ShowJoystickIfNeeded, 0.5f, true);
 	FEmberCaptureDebug::ScheduleFromCommandLine(GetWorld());
+	if (UEmberAutopilotSubsystem* Autopilot = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEmberAutopilotSubsystem>() : nullptr)
+	{
+		Autopilot->OnCampBeginPlay(this);
+	}
 }
 
 void ACampGameMode::SpawnCampActors()

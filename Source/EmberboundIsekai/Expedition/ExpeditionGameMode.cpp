@@ -2,6 +2,7 @@
 #include "Combat/EmberPlayerCharacter.h"
 #include "Combat/HealthComponent.h"
 #include "Core/EconomySubsystem.h"
+#include "Core/EmberAutopilotSubsystem.h"
 #include "Core/EmberGameInstance.h"
 #include "Core/EmberCaptureDebug.h"
 #include "Core/MonsterCollectionSubsystem.h"
@@ -159,6 +160,10 @@ void AExpeditionGameMode::BeginPlay()
 	FTimerHandle DelayedStartHandle;
 	GetWorldTimerManager().SetTimer(DelayedStartHandle, this, &AExpeditionGameMode::StartCurrentRoom, 0.25f, false);
 	FEmberCaptureDebug::ScheduleFromCommandLine(GetWorld());
+	if (UEmberAutopilotSubsystem* Autopilot = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEmberAutopilotSubsystem>() : nullptr)
+	{
+		Autopilot->OnExpeditionBeginPlay(this);
+	}
 }
 
 void AExpeditionGameMode::ShowJoystickIfNeeded()

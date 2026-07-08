@@ -1,4 +1,5 @@
 #include "Combat/HealthComponent.h"
+#include "Combat/EmberDamageTextSubsystem.h"
 #include "Enemies/EmberEnemyBase.h"
 #include "Components/MeshComponent.h"
 #include "Engine/World.h"
@@ -41,6 +42,13 @@ void UHealthComponent::ApplyDamage(float Damage)
 		return;
 	}
 	CurrentHP = FMath::Max(0.0f, CurrentHP - Damage);
+	if (UWorld* World = GetWorld())
+	{
+		if (UEmberDamageTextSubsystem* DamageText = World->GetSubsystem<UEmberDamageTextSubsystem>())
+		{
+			DamageText->ShowDamage(GetOwner(), Damage);
+		}
+	}
 	SetFlash(1.0f);
 	if (UWorld* World = GetWorld())
 	{

@@ -18,6 +18,8 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | EmberboundIsekai Win64 Development (M7 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M8 mobile polish, titles, audio) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekai Win64 Development (M8 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M10 damage text + autopilot) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekai Win64 Development (M10 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 
 ## Automated checks
 | Date | Check | Result |
@@ -51,6 +53,10 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | M8 titles/effects smoke | ✅ Offline reward plus debug counters unlocked 4 active titles; `TitleEffects offline120=126 cost20=19 xp20=21 damageLow=13.20 damageHigh=12.00` |
 | 2026-07-08 | M8 settings save/reload smoke | ✅ Reboot loaded `titles=4 volume=0.75` with resources and monster assignment intact |
 | 2026-07-08 | M8 joystick desktop smoke | ✅ `Ember.SetJoystick 1` logged `JoystickSetting 1` and `JoystickShown` |
+| 2026-07-08 | M10 continuous autopilot full-loop smoke | ✅ Single `-game` session logged ordered chain `CampStart → travel=Expedition → Expedition → roomsCleared → bossKilled → travel=Camp → CampReturn → bought=campfire-core → bought=grim-forge → defenseDone → offlineDone → saved → AUTOPILOT COMPLETE`; `RunBanked Gold=65 Wood=20 SoulAsh=15`; no `Fatal`/`Error: [C++]` in final successful log |
+| 2026-07-08 | M10 pooled damage text smoke | ✅ Final autopilot log includes repeated pooled damage markers, including `DamageText n=1` and `DamageText n=5` |
+| 2026-07-08 | M10 defender assignment in autopilot | ✅ Final autopilot log includes `MonsterAssigned bone-rat role=defender slots=1/1 defender=4.0` and `DefenderSpawned bone-rat` |
+| 2026-07-08 | M10 reboot after autopilot | ✅ Fresh Camp boot loaded `Gold=512 Wood=220 SoulAsh=122 campfire=1 forge=1 slimeShards=203 owned=2 assignments=1 titles=2` |
 
 ## M9 orchestrator end-to-end validation (independent re-runs, 2026-07-08)
 Run by the overseer (not the milestone author), full clean builds + fresh `-game` runs. Logs in `Docs/validation/`.

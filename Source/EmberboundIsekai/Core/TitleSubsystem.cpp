@@ -265,10 +265,11 @@ void UTitleSubsystem::ShowTitleToast(FName TitleId)
 	}
 	Toast->SetTitleId(TitleId);
 	Toast->AddToViewport(185);
+	TWeakObjectPtr<UTitleUnlockToastWidget> WeakToast = Toast;
 	FTimerHandle RemoveHandle;
-	World->GetTimerManager().SetTimer(RemoveHandle, [Toast]()
+	World->GetTimerManager().SetTimer(RemoveHandle, [WeakToast]()
 	{
-		if (Toast)
+		if (UTitleUnlockToastWidget* Toast = WeakToast.Get())
 		{
 			Toast->RemoveFromParent();
 		}

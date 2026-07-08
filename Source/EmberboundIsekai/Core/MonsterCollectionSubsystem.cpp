@@ -280,10 +280,11 @@ void UMonsterCollectionSubsystem::ShowUnlockToast(FName MonsterId)
 	}
 	Toast->SetMonsterId(MonsterId);
 	Toast->AddToViewport(180);
+	TWeakObjectPtr<UMonsterUnlockToastWidget> WeakToast = Toast;
 	FTimerHandle RemoveHandle;
-	World->GetTimerManager().SetTimer(RemoveHandle, [Toast]()
+	World->GetTimerManager().SetTimer(RemoveHandle, [WeakToast]()
 	{
-		if (Toast)
+		if (UMonsterUnlockToastWidget* Toast = WeakToast.Get())
 		{
 			Toast->RemoveFromParent();
 		}

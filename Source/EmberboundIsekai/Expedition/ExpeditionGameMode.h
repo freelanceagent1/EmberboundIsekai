@@ -49,6 +49,8 @@ public:
 	AExpeditionGameMode();
 
 	virtual void BeginPlay() override;
+	int32 GetAutopilotRoomNumber() const { return CurrentRoomIndex + 1; }
+	ABossTutorialDragon* GetAutopilotActiveBoss() const { return ActiveBoss; }
 
 private:
 	static constexpr int32 MaxActiveEnemies = 24;

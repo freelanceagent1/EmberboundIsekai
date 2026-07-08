@@ -1,4 +1,5 @@
 #include "Core/EmberGameInstance.h"
+#include "Core/EmberAutopilotSubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "UI/EmberSplashWidget.h"
 #include "Kismet/GameplayStatics.h"
@@ -8,6 +9,7 @@ void UEmberGameInstance::Init()
 {
 	Super::Init();
 	GetSubsystem<USaveManagerSubsystem>();
+	GetSubsystem<UEmberAutopilotSubsystem>();
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: GameInstanceInit"));
 }
 
