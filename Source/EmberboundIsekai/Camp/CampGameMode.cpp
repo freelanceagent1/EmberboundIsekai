@@ -5,6 +5,7 @@
 #include "Core/MonsterCollectionSubsystem.h"
 #include "UI/CampHUDWidget.h"
 #include "UI/OfflineRewardWidget.h"
+#include "UI/VirtualJoystickWidget.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/GameInstance.h"
 #include "Engine/StaticMesh.h"
@@ -12,6 +13,8 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInterface.h"
+#include "TimerManager.h"
+#include "EmberboundIsekai.h"
 
 namespace
 {
@@ -88,6 +91,9 @@ void ACampGameMode::BeginPlay()
 			CampHUD->AddToViewport();
 		}
 	}
+	ShowJoystickIfNeeded();
+	FTimerHandle JoystickCheckHandle;
+	GetWorldTimerManager().SetTimer(JoystickCheckHandle, this, &ACampGameMode::ShowJoystickIfNeeded, 0.5f, true);
 }
 
 void ACampGameMode::SpawnCampActors()
@@ -102,4 +108,21 @@ void ACampGameMode::SpawnCampActors()
 	World->SpawnActor<AMonsterPenActor>(FVector(-360.0f, 0.0f, 70.0f), FRotator::ZeroRotator);
 	World->SpawnActor<AWatchtowerActor>(FVector(0.0f, 360.0f, 70.0f), FRotator::ZeroRotator);
 	World->SpawnActor<AExpeditionPortalActor>(FVector(0.0f, -420.0f, 70.0f), FRotator::ZeroRotator);
+}
+
+void ACampGameMode::ShowJoystickIfNeeded()
+{
+	if (JoystickWidget || !UVirtualJoystickWidget::ShouldShowJoystick(this))
+	{
+		return;
+	}
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+	{
+		JoystickWidget = CreateWidget<UVirtualJoystickWidget>(PC, UVirtualJoystickWidget::StaticClass());
+		if (JoystickWidget)
+		{
+			JoystickWidget->AddToViewport(80);
+			UE_LOG(LogEmberbound, Log, TEXT("EMBER: JoystickShown"));
+		}
+	}
 }

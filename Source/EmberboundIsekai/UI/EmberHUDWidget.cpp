@@ -8,6 +8,7 @@
 #include "Components/HorizontalBox.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
+#include "Components/SafeZone.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Engine/GameInstance.h"
@@ -18,8 +19,10 @@
 void UEmberHUDWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+	USafeZone* SafeRoot = WidgetTree->ConstructWidget<USafeZone>(USafeZone::StaticClass(), TEXT("SafeRoot"));
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
-	WidgetTree->RootWidget = Root;
+	SafeRoot->AddChild(Root);
+	WidgetTree->RootWidget = SafeRoot;
 
 	HPBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("HPBar"));
 	XPBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("XPBar"));

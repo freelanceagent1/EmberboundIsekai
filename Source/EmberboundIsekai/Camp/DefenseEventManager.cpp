@@ -5,6 +5,7 @@
 #include "Combat/EmberPlayerCharacter.h"
 #include "Combat/HealthComponent.h"
 #include "Core/EconomySubsystem.h"
+#include "Core/EmberAudioSubsystem.h"
 #include "Core/EmberSaveGame.h"
 #include "Core/MonsterCollectionSubsystem.h"
 #include "Core/ObjectPoolSubsystem.h"
@@ -87,6 +88,10 @@ bool UDefenseEventManager::StartDefense()
 		}
 	}
 	UpdateStatusWidget();
+	if (UEmberAudioSubsystem* Audio = GameInstance ? GameInstance->GetSubsystem<UEmberAudioSubsystem>() : nullptr)
+	{
+		Audio->PlaySfx(TEXT("defense-horn"), this);
+	}
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: DefenseStarted"));
 	BeginNextWave();
 	return true;

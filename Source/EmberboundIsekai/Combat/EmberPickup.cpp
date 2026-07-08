@@ -1,6 +1,7 @@
 #include "Combat/EmberPickup.h"
 #include "Combat/EmberPlayerCharacter.h"
 #include "Combat/XPComponent.h"
+#include "Core/EmberAudioSubsystem.h"
 #include "Core/EconomySubsystem.h"
 #include "Core/ObjectPoolSubsystem.h"
 #include "Expedition/ExpeditionGameMode.h"
@@ -45,6 +46,10 @@ void AEmberPickup::Tick(float DeltaSeconds)
 	if (!Player)
 	{
 		return;
+	}
+	if (UEmberAudioSubsystem* Audio = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEmberAudioSubsystem>() : nullptr)
+	{
+		Audio->PlaySfx(TEXT("pickup"), this);
 	}
 	const float Distance = FVector::Dist2D(GetActorLocation(), Player->GetActorLocation());
 	if (Distance <= Player->GetPickupRadius())

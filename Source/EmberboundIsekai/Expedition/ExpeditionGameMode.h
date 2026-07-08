@@ -12,6 +12,7 @@ class AExpeditionPortal;
 class UEmberEnemyData;
 class UEmberHUDWidget;
 class URunResultWidget;
+class UVirtualJoystickWidget;
 
 UENUM()
 enum class EEmberRoomType : uint8
@@ -57,6 +58,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UEmberHUDWidget> HUDWidget;
+
+	UPROPERTY()
+	TObjectPtr<UVirtualJoystickWidget> JoystickWidget;
 
 	UPROPERTY()
 	TObjectPtr<URunResultWidget> ResultWidget;
@@ -113,6 +117,7 @@ private:
 	void AutoDamageBossTick();
 	void BindPlayerDeath();
 	void SpawnAssignedCompanion();
+	void ShowJoystickIfNeeded();
 	UFUNCTION()
 	void HandlePlayerDied(AActor* DeadActor);
 	void HandleBossDefeated(ABossTutorialDragon* Boss);

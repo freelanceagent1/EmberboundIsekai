@@ -5,6 +5,7 @@
 #include "CampGameMode.generated.h"
 
 class UCampHUDWidget;
+class UVirtualJoystickWidget;
 
 UCLASS()
 class EMBERBOUNDISEKAI_API ACampGameMode : public AGameModeBase
@@ -19,5 +20,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<UCampHUDWidget> CampHUD;
 
+	UPROPERTY()
+	TObjectPtr<UVirtualJoystickWidget> JoystickWidget;
+
 	void SpawnCampActors();
+	void ShowJoystickIfNeeded();
 };

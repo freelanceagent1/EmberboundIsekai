@@ -26,6 +26,7 @@ public:
 	float GetPickupRadius() const { return PickupRadius; }
 	void ApplyPickupRadiusMultiplier(float Multiplier);
 	void SetAutoAttackEnabled(bool bEnabled);
+	void ApplyVirtualJoystickVector(const FVector2D& Movement);
 
 	UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 	UXPComponent* GetXPComponent() const { return XPComponent; }

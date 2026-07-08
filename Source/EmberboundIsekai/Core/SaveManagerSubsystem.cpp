@@ -4,6 +4,7 @@
 #include "Core/EmberSaveGame.h"
 #include "Core/MonsterCollectionSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
+#include "Core/TitleSubsystem.h"
 #include "Data/BuildingData.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -54,6 +55,11 @@ bool USaveManagerSubsystem::SpendUpgradeCost(const UBuildingData* Data, int32 Cu
 	return true;
 }
 
+int32 USaveManagerSubsystem::ApplyUpgradeCostDiscount(int32 BaseCost, const UTitleSubsystem* Titles)
+{
+	return Titles ? Titles->ApplyUpgradeCost(BaseCost) : BaseCost;
+}
+
 void USaveManagerSubsystem::SaveNow()
 {
 	if (!CurrentSave)
@@ -101,12 +107,28 @@ bool USaveManagerSubsystem::PurchaseBuilding(UBuildingData* BuildingData)
 	}
 	const int32 CurrentLevel = GetBuildingLevel(BuildingData->Id);
 	const int32 SpendLevel = CurrentLevel <= 0 ? 1 : CurrentLevel;
-	if (CurrentLevel >= BuildingData->MaxLevel || !SpendUpgradeCost(BuildingData, SpendLevel, GetEconomy()))
+	UEconomySubsystem* Economy = GetEconomy();
+	if (CurrentLevel >= BuildingData->MaxLevel || !Economy || !BuildingData->UpgradeCosts.IsValidIndex(SpendLevel - 1))
 	{
 		return false;
 	}
+	for (const TPair<EEmberResource, int32>& Pair : BuildingData->UpgradeCosts[SpendLevel - 1].Amounts)
+	{
+		if (Economy->Get(Pair.Key) < GetAdjustedUpgradeCost(Pair.Key, BuildingData, SpendLevel))
+		{
+			return false;
+		}
+	}
+	for (const TPair<EEmberResource, int32>& Pair : BuildingData->UpgradeCosts[SpendLevel - 1].Amounts)
+	{
+		Economy->Spend(Pair.Key, GetAdjustedUpgradeCost(Pair.Key, BuildingData, SpendLevel));
+	}
 	const int32 NewLevel = CurrentLevel + 1;
 	CurrentSave->BuildingLevels.Add(BuildingData->Id, NewLevel);
+	if (UTitleSubsystem* Titles = GetGameInstance() ? GetGameInstance()->GetSubsystem<UTitleSubsystem>() : nullptr)
+	{
+		Titles->NotifyBuildingUpgraded();
+	}
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: BuildingUpgraded %s lvl=%d"), *BuildingData->Id.ToString(), NewLevel);
 	SaveNow();
 	return true;
@@ -116,6 +138,22 @@ float USaveManagerSubsystem::GetPlayerDamageMultiplier() const
 {
 	const int32 ForgeLevel = GetBuildingLevel(TEXT("grim-forge"));
 	return 1.0f + 0.15f * static_cast<float>(ForgeLevel);
+}
+
+int32 USaveManagerSubsystem::GetAdjustedUpgradeCost(EEmberResource Resource, const UBuildingData* Data, int32 CurrentLevel) const
+{
+	if (!Data || !Data->UpgradeCosts.IsValidIndex(CurrentLevel - 1))
+	{
+		return 0;
+	}
+	const int32 BaseCost = Data->UpgradeCosts[CurrentLevel - 1].Amounts.FindRef(Resource);
+	const UTitleSubsystem* Titles = GetGameInstance() ? GetGameInstance()->GetSubsystem<UTitleSubsystem>() : nullptr;
+	const int32 Adjusted = ApplyUpgradeCostDiscount(BaseCost, Titles);
+	if (Adjusted != BaseCost)
+	{
+		UE_LOG(LogEmberbound, Log, TEXT("EMBER: UpgradeCostAdjusted resource=%d base=%d adjusted=%d"), static_cast<int32>(Resource), BaseCost, Adjusted);
+	}
+	return Adjusted;
 }
 
 bool USaveManagerSubsystem::BankPendingRunResult()
@@ -165,7 +203,8 @@ FString USaveManagerSubsystem::BuildSummary() const
 	const int32 SlimeShards = CurrentSave ? CurrentSave->MonsterShards.FindRef(TEXT("slime")) : 0;
 	const int32 OwnedCount = CurrentSave ? CurrentSave->OwnedMonsters.Num() : 0;
 	const int32 AssignmentCount = CurrentSave ? CurrentSave->Assignments.Num() : 0;
-	return FString::Printf(TEXT("Gold=%d Wood=%d SoulAsh=%d campfire=%d forge=%d slimeShards=%d owned=%d assignments=%d"), Gold, Wood, SoulAsh, Campfire, Forge, SlimeShards, OwnedCount, AssignmentCount);
+	const int32 TitleCount = CurrentSave ? CurrentSave->UnlockedTitles.Num() : 0;
+	return FString::Printf(TEXT("Gold=%d Wood=%d SoulAsh=%d campfire=%d forge=%d slimeShards=%d owned=%d assignments=%d titles=%d volume=%.2f joystick=%d"), Gold, Wood, SoulAsh, Campfire, Forge, SlimeShards, OwnedCount, AssignmentCount, TitleCount, CurrentSave ? CurrentSave->MasterVolume : 1.0f, CurrentSave && CurrentSave->bShowJoystick ? 1 : 0);
 }
 
 UEconomySubsystem* USaveManagerSubsystem::GetEconomy() const
@@ -220,6 +259,7 @@ void USaveManagerSubsystem::RegisterDebugHooks()
 	Console.RegisterConsoleCommand(TEXT("Ember.TravelExpedition"), TEXT("Travel to expedition."), FConsoleCommandWithArgsDelegate::CreateUObject(this, &USaveManagerSubsystem::TravelExpeditionConsole), ECVF_Default);
 	Console.RegisterConsoleCommand(TEXT("Ember.TravelCamp"), TEXT("Travel to camp."), FConsoleCommandWithArgsDelegate::CreateUObject(this, &USaveManagerSubsystem::TravelCampConsole), ECVF_Default);
 	Console.RegisterConsoleCommand(TEXT("Ember.BuyBuilding"), TEXT("Debug buy building by id."), FConsoleCommandWithArgsDelegate::CreateUObject(this, &USaveManagerSubsystem::BuyBuildingConsole), ECVF_Default);
+	Console.RegisterConsoleCommand(TEXT("Ember.SetJoystick"), TEXT("Persist custom joystick visibility. Usage: Ember.SetJoystick 1"), FConsoleCommandWithArgsDelegate::CreateUObject(this, &USaveManagerSubsystem::SetJoystickConsole), ECVF_Default);
 }
 
 void USaveManagerSubsystem::UnregisterDebugHooks()
@@ -230,6 +270,7 @@ void USaveManagerSubsystem::UnregisterDebugHooks()
 	Console.UnregisterConsoleObject(TEXT("Ember.TravelExpedition"), false);
 	Console.UnregisterConsoleObject(TEXT("Ember.TravelCamp"), false);
 	Console.UnregisterConsoleObject(TEXT("Ember.BuyBuilding"), false);
+	Console.UnregisterConsoleObject(TEXT("Ember.SetJoystick"), false);
 }
 
 void USaveManagerSubsystem::GrantResourcesConsole(const TArray<FString>& Args)
@@ -270,6 +311,17 @@ void USaveManagerSubsystem::BuyBuildingConsole(const TArray<FString>& Args)
 		return;
 	}
 	PurchaseBuilding(LoadBuildingData(FName(*Args[0])));
+}
+
+void USaveManagerSubsystem::SetJoystickConsole(const TArray<FString>& Args)
+{
+	if (!CurrentSave)
+	{
+		return;
+	}
+	CurrentSave->bShowJoystick = Args.IsValidIndex(0) ? FCString::Atoi(*Args[0]) != 0 : true;
+	SaveNow();
+	UE_LOG(LogEmberbound, Log, TEXT("EMBER: JoystickSetting %d"), CurrentSave->bShowJoystick ? 1 : 0);
 }
 
 UBuildingData* USaveManagerSubsystem::LoadBuildingData(FName BuildingId) const

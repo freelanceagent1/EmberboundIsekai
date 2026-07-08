@@ -1,6 +1,7 @@
 #include "Combat/EmberProjectile.h"
 #include "Combat/HealthComponent.h"
 #include "Combat/EmberPlayerCharacter.h"
+#include "Core/EmberAudioSubsystem.h"
 #include "Core/ObjectPoolSubsystem.h"
 #include "Enemies/EmberEnemyBase.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
@@ -8,6 +9,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/OverlapResult.h"
+#include "Engine/GameInstance.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
@@ -165,6 +167,10 @@ void AEmberProjectile::ResolveHit(AActor* OtherActor)
 	if (UHealthComponent* Health = OtherActor->FindComponentByClass<UHealthComponent>())
 	{
 		Health->ApplyDamage(Damage);
+		if (UEmberAudioSubsystem* Audio = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEmberAudioSubsystem>() : nullptr)
+		{
+			Audio->PlaySfx(TEXT("hit"), this);
+		}
 		if (StatusPayload.BurnDps > 0.0f)
 		{
 			Health->AddDamageStatus(EEmberStatusEffectType::Burn, StatusPayload.BurnDps, StatusPayload.BurnDuration);

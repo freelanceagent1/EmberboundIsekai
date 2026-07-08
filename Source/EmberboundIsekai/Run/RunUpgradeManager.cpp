@@ -3,7 +3,9 @@
 #include "Combat/EmberPlayerCharacter.h"
 #include "Combat/HealthComponent.h"
 #include "Combat/XPComponent.h"
+#include "Core/EmberAudioSubsystem.h"
 #include "Core/EconomySubsystem.h"
+#include "Core/TitleSubsystem.h"
 #include "Run/EmberBoneShieldOrbiter.h"
 #include "Data/MonsterData.h"
 #include "Run/EmberCompanionActor.h"
@@ -12,7 +14,9 @@
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "AssetRegistry/AssetData.h"
 #include "Engine/AssetManager.h"
+#include "Engine/GameInstance.h"
 #include "Engine/StreamableManager.h"
+#include "Engine/World.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
@@ -204,6 +208,10 @@ void URunUpgradeManager::ApplyUpgrade(URunUpgradeData* Upgrade)
 	TryBindPlayer();
 	const int32 NewStack = GetStack(Upgrade->Id) + 1;
 	Stacks.Add(Upgrade->Id, NewStack);
+	if (UTitleSubsystem* Titles = GetWorld() && GetWorld()->GetGameInstance() ? GetWorld()->GetGameInstance()->GetSubsystem<UTitleSubsystem>() : nullptr)
+	{
+		Titles->NotifyRunUpgradePicked();
+	}
 	UAutoAttackComponent* AutoAttack = Player ? Player->FindComponentByClass<UAutoAttackComponent>() : nullptr;
 	switch (Upgrade->EffectType)
 	{
@@ -257,6 +265,10 @@ void URunUpgradeManager::ApplyUpgrade(URunUpgradeData* Upgrade)
 		break;
 	}
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: UpgradeApplied %s stack=%d"), *Upgrade->Id.ToString(), NewStack);
+	if (UEmberAudioSubsystem* Audio = GetWorld() && GetWorld()->GetGameInstance() ? GetWorld()->GetGameInstance()->GetSubsystem<UEmberAudioSubsystem>() : nullptr)
+	{
+		Audio->PlaySfx(TEXT("upgrade-select"), Player);
+	}
 }
 
 void URunUpgradeManager::NotifyChoiceClosed()

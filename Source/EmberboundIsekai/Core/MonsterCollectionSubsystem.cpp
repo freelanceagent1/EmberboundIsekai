@@ -2,6 +2,7 @@
 #include "Core/EconomySubsystem.h"
 #include "Core/EmberSaveGame.h"
 #include "Core/SaveManagerSubsystem.h"
+#include "Core/TitleSubsystem.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
@@ -220,7 +221,8 @@ FOfflineRewardResult UMonsterCollectionSubsystem::ApplyOfflineIncome()
 				const int32 Amount = FMath::FloorToInt(Output.PerMinute * static_cast<float>(Result.Minutes));
 				if (Amount > 0)
 				{
-					Result.Rewards.FindOrAdd(Output.Resource) += Amount;
+					const UTitleSubsystem* Titles = GetGameInstance() ? GetGameInstance()->GetSubsystem<UTitleSubsystem>() : nullptr;
+					Result.Rewards.FindOrAdd(Output.Resource) += Titles ? Titles->ApplyOfflineProduction(Amount) : Amount;
 				}
 			}
 		}
@@ -230,6 +232,10 @@ FOfflineRewardResult UMonsterCollectionSubsystem::ApplyOfflineIncome()
 		Economy->Add(Pair.Key, Pair.Value);
 	}
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: OfflineReward mins=%d capped=%d gold=%d soulash=%d"), Result.Minutes, Result.bCapped ? 1 : 0, Result.Rewards.FindRef(EEmberResource::Gold), Result.Rewards.FindRef(EEmberResource::SoulAsh));
+	if (UTitleSubsystem* Titles = GetGameInstance() ? GetGameInstance()->GetSubsystem<UTitleSubsystem>() : nullptr)
+	{
+		Titles->NotifyOfflineRewardCollected();
+	}
 	SaveManager->SaveNow();
 	return Result;
 }

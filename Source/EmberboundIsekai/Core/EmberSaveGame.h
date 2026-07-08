@@ -45,6 +45,15 @@ public:
 	TArray<FName> UnlockedTitles;
 
 	UPROPERTY(BlueprintReadWrite, SaveGame)
+	TMap<FName, int32> TitleCounters;
+
+	UPROPERTY(BlueprintReadWrite, SaveGame)
+	float MasterVolume = 1.0f;
+
+	UPROPERTY(BlueprintReadWrite, SaveGame)
+	bool bShowJoystick = false;
+
+	UPROPERTY(BlueprintReadWrite, SaveGame)
 	TMap<FName, bool> UnlockedFlags;
 
 	UPROPERTY(BlueprintReadWrite, SaveGame)

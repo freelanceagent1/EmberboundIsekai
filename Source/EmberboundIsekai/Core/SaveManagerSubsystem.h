@@ -23,6 +23,7 @@ public:
 
 	static bool CanAffordUpgrade(const UBuildingData* Data, int32 CurrentLevel, const UEconomySubsystem* Economy);
 	static bool SpendUpgradeCost(const UBuildingData* Data, int32 CurrentLevel, UEconomySubsystem* Economy);
+	static int32 ApplyUpgradeCostDiscount(int32 BaseCost, const class UTitleSubsystem* Titles);
 
 	UFUNCTION(BlueprintCallable, Category = "Save")
 	void SaveNow();
@@ -42,6 +43,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Buildings")
 	float GetPlayerDamageMultiplier() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Buildings")
+	int32 GetAdjustedUpgradeCost(EEmberResource Resource, const UBuildingData* Data, int32 CurrentLevel) const;
+
 	UFUNCTION(BlueprintCallable, Category = "Save")
 	bool BankPendingRunResult();
 
@@ -57,6 +61,7 @@ private:
 	FDelegateHandle TravelExpeditionCommandHandle;
 	FDelegateHandle TravelCampCommandHandle;
 	FDelegateHandle BuyBuildingCommandHandle;
+	FDelegateHandle SetJoystickCommandHandle;
 
 	UEconomySubsystem* GetEconomy() const;
 	void LoadOrCreate();
@@ -69,5 +74,6 @@ private:
 	void TravelExpeditionConsole(const TArray<FString>& Args);
 	void TravelCampConsole(const TArray<FString>& Args);
 	void BuyBuildingConsole(const TArray<FString>& Args);
+	void SetJoystickConsole(const TArray<FString>& Args);
 	UBuildingData* LoadBuildingData(FName BuildingId) const;
 };

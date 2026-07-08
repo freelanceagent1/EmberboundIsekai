@@ -33,9 +33,25 @@ private:
 	UFUNCTION()
 	void HandleMonsters();
 	UFUNCTION()
+	void HandleTitles();
+	UFUNCTION()
+	void HandleDebug();
+	UFUNCTION()
 	void HandleDefense();
 	UFUNCTION()
 	void HandleSave();
 	UFUNCTION()
 	void HandleReset();
+	UFUNCTION()
+	void HandleDebugGrantResources();
+	UFUNCTION()
+	void HandleDebugGrantShards();
+	UFUNCTION()
+	void HandleDebugOffline();
+	UFUNCTION()
+	void HandleDebugRoom7();
+	UFUNCTION()
+	void HandleDebugReset();
+	UFUNCTION()
+	void HandleDebugJoystick();
 };

@@ -3,21 +3,28 @@
 #include "Core/EconomySubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
+#include "Core/EmberSaveGame.h"
+#include "Core/MonsterCollectionSubsystem.h"
+#include "Core/TitleSubsystem.h"
 #include "Generated/EmberGeneratedArt.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Image.h"
+#include "Components/SafeZone.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Engine/GameInstance.h"
 #include "Engine/Texture2D.h"
+#include "HAL/IConsoleManager.h"
 
 void UCampHUDWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+	USafeZone* SafeRoot = WidgetTree->ConstructWidget<USafeZone>(USafeZone::StaticClass(), TEXT("SafeRoot"));
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
-	WidgetTree->RootWidget = Root;
+	SafeRoot->AddChild(Root);
+	WidgetTree->RootWidget = SafeRoot;
 	UHorizontalBox* Resources = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(), TEXT("Resources"));
 	Root->AddChildToVerticalBox(Resources);
 	for (EEmberResource Resource : { EEmberResource::Gold, EEmberResource::Wood, EEmberResource::SoulAsh, EEmberResource::MonsterEssence, EEmberResource::Embers })
@@ -38,21 +45,29 @@ void UCampHUDWidget::NativeOnInitialized()
 	UButton* Expedition = MakeButton(NSLOCTEXT("Camp", "Expedition", "Expedition"), TEXT("ExpeditionButton"));
 	UButton* Upgrades = MakeButton(NSLOCTEXT("Camp", "Upgrades", "Upgrades"), TEXT("UpgradesButton"));
 	UButton* Monsters = MakeButton(NSLOCTEXT("Camp", "Monsters", "Monsters"), TEXT("MonstersButton"));
+	UButton* Titles = MakeButton(NSLOCTEXT("Camp", "Titles", "Titles"), TEXT("TitlesButton"));
 	UButton* Defense = MakeButton(NSLOCTEXT("Camp", "Defense", "Defense"), TEXT("DefenseButton"));
 	UButton* Save = MakeButton(NSLOCTEXT("Camp", "Save", "Save"), TEXT("SaveButton"));
 	UButton* Reset = MakeButton(NSLOCTEXT("Camp", "Reset", "Reset"), TEXT("ResetButton"));
 	Expedition->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleExpedition);
 	Upgrades->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleUpgrades);
 	Monsters->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleMonsters);
+	Titles->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleTitles);
 	Defense->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleDefense);
 	Save->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleSave);
 	Reset->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleReset);
 	Buttons->AddChildToHorizontalBox(Expedition);
 	Buttons->AddChildToHorizontalBox(Upgrades);
 	Buttons->AddChildToHorizontalBox(Monsters);
+	Buttons->AddChildToHorizontalBox(Titles);
 	Buttons->AddChildToHorizontalBox(Defense);
 	Buttons->AddChildToHorizontalBox(Save);
 	Buttons->AddChildToHorizontalBox(Reset);
+#if !UE_BUILD_SHIPPING
+	UButton* Debug = MakeButton(NSLOCTEXT("Camp", "Debug", "Debug"), TEXT("DebugButton"));
+	Debug->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleDebug);
+	Buttons->AddChildToHorizontalBox(Debug);
+#endif
 	StubText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("StubText"));
 	Root->AddChildToVerticalBox(StubText);
 	RefreshResources();
@@ -95,6 +110,37 @@ void UCampHUDWidget::HandleMonsters()
 	StubText->SetText(NSLOCTEXT("Camp", "MonstersStub", "M6"));
 }
 
+void UCampHUDWidget::HandleTitles()
+{
+	UTitleSubsystem* Titles = GetGameInstance() ? GetGameInstance()->GetSubsystem<UTitleSubsystem>() : nullptr;
+	if (!Titles)
+	{
+		return;
+	}
+	TArray<FString> Lines;
+	Lines.Add(TEXT("Titles"));
+	for (const UTitleData* Title : Titles->GetCatalog())
+	{
+		if (!Title)
+		{
+			continue;
+		}
+		Lines.Add(FString::Printf(TEXT("%s - %s - %.0f%%"),
+			Titles->IsUnlocked(Title->Id) ? TEXT("Unlocked") : TEXT("Locked"),
+			*Title->DisplayName.ToString(),
+			Title->Passive.Magnitude * 100.0f));
+	}
+	StubText->SetText(FText::FromString(FString::Join(Lines, TEXT("\n"))));
+}
+
+void UCampHUDWidget::HandleDebug()
+{
+#if !UE_BUILD_SHIPPING
+	StubText->SetText(NSLOCTEXT("Camp", "DebugPanel", "Debug: GrantResources | GrantShards | Offline120 | StartDefense | StartRoom7 | ResetSave | Joystick"));
+	HandleDebugGrantResources();
+#endif
+}
+
 void UCampHUDWidget::HandleDefense()
 {
 	if (UDefenseEventManager* Defense = GetWorld() ? GetWorld()->GetSubsystem<UDefenseEventManager>() : nullptr)
@@ -120,4 +166,55 @@ void UCampHUDWidget::HandleReset()
 		Save->ResetDebug();
 	}
 	RefreshResources();
+}
+
+void UCampHUDWidget::HandleDebugGrantResources()
+{
+	if (USaveManagerSubsystem* Save = GetGameInstance() ? GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
+	{
+		Save->GrantResources(1000, 1000, 1000, 1000, 0);
+	}
+	RefreshResources();
+}
+
+void UCampHUDWidget::HandleDebugGrantShards()
+{
+	if (UMonsterCollectionSubsystem* Monsters = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMonsterCollectionSubsystem>() : nullptr)
+	{
+		Monsters->GrantShards(TEXT("slime"), 5);
+	}
+}
+
+void UCampHUDWidget::HandleDebugOffline()
+{
+	if (UMonsterCollectionSubsystem* Monsters = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMonsterCollectionSubsystem>() : nullptr)
+	{
+		Monsters->SimulateOffline(120);
+	}
+}
+
+void UCampHUDWidget::HandleDebugRoom7()
+{
+	if (IConsoleVariable* StartRoom = IConsoleManager::Get().FindConsoleVariable(TEXT("Ember.StartRoom")))
+	{
+		StartRoom->Set(7, ECVF_SetByConsole);
+	}
+	HandleExpedition();
+}
+
+void UCampHUDWidget::HandleDebugReset()
+{
+	HandleReset();
+}
+
+void UCampHUDWidget::HandleDebugJoystick()
+{
+	if (USaveManagerSubsystem* Save = GetGameInstance() ? GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
+	{
+		if (UEmberSaveGame* CurrentSave = Save->GetCurrentSave())
+		{
+			CurrentSave->bShowJoystick = !CurrentSave->bShowJoystick;
+			Save->SaveNow();
+		}
+	}
 }

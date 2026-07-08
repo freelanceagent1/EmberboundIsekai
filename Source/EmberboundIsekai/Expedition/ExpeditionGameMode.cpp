@@ -6,6 +6,7 @@
 #include "Core/MonsterCollectionSubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
+#include "Core/TitleSubsystem.h"
 #include "Data/EmberEnemyData.h"
 #include "Enemies/BossTutorialDragon.h"
 #include "Enemies/EmberEnemyBase.h"
@@ -15,6 +16,7 @@
 #include "Run/RunUpgradeManager.h"
 #include "UI/EmberHUDWidget.h"
 #include "UI/RunResultWidget.h"
+#include "UI/VirtualJoystickWidget.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -100,12 +102,32 @@ void AExpeditionGameMode::BeginPlay()
 	RegisterDebugHooks();
 	BindPlayerDeath();
 	SpawnAssignedCompanion();
+	ShowJoystickIfNeeded();
+	FTimerHandle JoystickCheckHandle;
+	GetWorldTimerManager().SetTimer(JoystickCheckHandle, this, &AExpeditionGameMode::ShowJoystickIfNeeded, 0.5f, true);
 	if (USaveManagerSubsystem* Save = GetGameInstance() ? GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
 	{
 		UE_LOG(LogEmberbound, Log, TEXT("EMBER: PlayerDamage %.2f"), 12.0f * Save->GetPlayerDamageMultiplier());
 	}
 	FTimerHandle DelayedStartHandle;
 	GetWorldTimerManager().SetTimer(DelayedStartHandle, this, &AExpeditionGameMode::StartCurrentRoom, 0.25f, false);
+}
+
+void AExpeditionGameMode::ShowJoystickIfNeeded()
+{
+	if (JoystickWidget || !UVirtualJoystickWidget::ShouldShowJoystick(this))
+	{
+		return;
+	}
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+	{
+		JoystickWidget = CreateWidget<UVirtualJoystickWidget>(PC, UVirtualJoystickWidget::StaticClass());
+		if (JoystickWidget)
+		{
+			JoystickWidget->AddToViewport(80);
+			UE_LOG(LogEmberbound, Log, TEXT("EMBER: JoystickShown"));
+		}
+	}
 }
 
 void AExpeditionGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -367,6 +389,10 @@ void AExpeditionGameMode::BankRunResult(bool bVictory)
 	}
 	if (bVictory)
 	{
+		if (UTitleSubsystem* Titles = GetGameInstance() ? GetGameInstance()->GetSubsystem<UTitleSubsystem>() : nullptr)
+		{
+			Titles->NotifyBossDefeated();
+		}
 		Result.BankedResources.FindOrAdd(EEmberResource::Gold) += 25;
 		Result.BankedResources.FindOrAdd(EEmberResource::Wood) += 10;
 		Result.BankedResources.FindOrAdd(EEmberResource::SoulAsh) += 8;

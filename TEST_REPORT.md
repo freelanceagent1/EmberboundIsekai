@@ -16,6 +16,8 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | EmberboundIsekai Win64 Development (M6 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M7 camp defense event) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekai Win64 Development (M7 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M8 mobile polish, titles, audio) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekai Win64 Development (M8 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 
 ## Automated checks
 | Date | Check | Result |
@@ -43,6 +45,12 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | M7 victory save/reload roundtrip | ✅ Reboot loaded `Gold=996 Wood=1003 SoulAsh=1004 ... owned=1 assignments=1` |
 | 2026-07-08 | M7 defeat defense smoke | ✅ Wave-2 defeat path logged `DefenseResult Defeat gold=6 wood=2 soulash=1 essence=1`; `EMBER: Saved` |
 | 2026-07-08 | M7 defeat save/reload roundtrip | ✅ Reboot loaded `Gold=986 Wood=999 SoulAsh=1001 ... owned=1 assignments=1`; camp remained bootable |
+| 2026-07-08 | M8 title automation tests | ✅ `Emberbound.M8.TitlePassiveMath` and `Emberbound.M8.TitleUnlockRules` completed successfully with `EXIT CODE: 0` |
+| 2026-07-08 | M8 SFX generation and import | ✅ `SFX_OK n=11`; 11 generated sound wave assets present under `Content/Emberbound/Generated/SFX` |
+| 2026-07-08 | M8 title asset generation | ✅ 5 title data assets present under `Content/Emberbound/Data/Titles` |
+| 2026-07-08 | M8 titles/effects smoke | ✅ Offline reward plus debug counters unlocked 4 active titles; `TitleEffects offline120=126 cost20=19 xp20=21 damageLow=13.20 damageHigh=12.00` |
+| 2026-07-08 | M8 settings save/reload smoke | ✅ Reboot loaded `titles=4 volume=0.75` with resources and monster assignment intact |
+| 2026-07-08 | M8 joystick desktop smoke | ✅ `Ember.SetJoystick 1` logged `JoystickSetting 1` and `JoystickShown` |
 
 ## Manual PIE checklist
 - [ ] Project opens in UE 5.8 without module rebuild errors
@@ -59,6 +67,9 @@ Compile/run status and manual test checklist. Updated every milestone.
 - [ ] Offline reward popup appears (debug time-skip)
 - [ ] Camp defense event runs and rewards
 - [ ] Generated assets visible in UI and world
+- [ ] Titles panel opens from Camp HUD and shows locked/unlocked effects
+- [ ] Touch joystick appears on touch platforms or via debug toggle
+- [ ] Placeholder SFX play for combat, pickups, upgrades, defense, boss, and run result events
 
 ## Known issues
 - M1 map generation falls back to duplicating an engine template map because UE 5.8 headless map creation/loading APIs crash natively in this environment.
@@ -69,3 +80,6 @@ Compile/run status and manual test checklist. Updated every milestone.
 - M5b spawns generated floor material planes at runtime instead of mutating level assets because UE 5.8 headless level-edit APIs crashed in this environment.
 - M6 companion smoke used a timed editor process started by the verification command and stopped only that PID after required markers were present.
 - M7 defeat smoke used `Ember.DebugAutoDefense 2` to trigger wave-2 campfire damage inside the unattended process; `Ember.DamageCampfire <n>` is implemented for interactive/manual use.
+- M8 commandlet stdout did not echo the plain SFX/title import success markers, but commandlets exited successfully and direct asset checks verified 11 SFX assets and 5 title assets.
+- M8 joystick unattended smoke used persisted `Ember.SetJoystick 1` because `Ember.ShowJoystick 1` did not apply early enough through this UE command-line path before game mode construction.
+- M8 Android packaging remains documented but untested because the local Android SDK setup reports invalid/unavailable.

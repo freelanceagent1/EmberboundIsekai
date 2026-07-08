@@ -1,4 +1,5 @@
 #include "UI/RunResultWidget.h"
+#include "Core/EmberAudioSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
 #include "Generated/EmberGeneratedArt.h"
 #include "Blueprint/WidgetTree.h"
@@ -48,6 +49,10 @@ void URunResultWidget::NativeOnInitialized()
 void URunResultWidget::SetResult(const FEmberRunResult& Result)
 {
 	TitleText->SetText(Result.bVictory ? NSLOCTEXT("RunResult", "Victory", "VICTORY") : NSLOCTEXT("RunResult", "Defeat", "DEFEAT"));
+	if (UEmberAudioSubsystem* Audio = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEmberAudioSubsystem>() : nullptr)
+	{
+		Audio->PlaySfx(Result.bVictory ? TEXT("victory-fanfare") : TEXT("defeat-sting"), this);
+	}
 
 	TArray<FString> Lines;
 	const auto AddResourceLine = [&Lines, &Result](EEmberResource Resource, const TCHAR* Label)

@@ -112,11 +112,7 @@ void AEmberPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 void AEmberPlayerCharacter::Move(const FInputActionValue& Value)
 {
 	const FVector2D Movement = Value.Get<FVector2D>();
-	if (!Movement.IsNearlyZero())
-	{
-		AddMovementInput(FVector::ForwardVector, Movement.Y);
-		AddMovementInput(FVector::RightVector, Movement.X);
-	}
+	ApplyVirtualJoystickVector(Movement);
 }
 
 void AEmberPlayerCharacter::ApplyPickupRadiusMultiplier(float Multiplier)
@@ -129,6 +125,16 @@ void AEmberPlayerCharacter::SetAutoAttackEnabled(bool bEnabled)
 	if (AutoAttackComponent)
 	{
 		AutoAttackComponent->SetAttackingEnabled(bEnabled);
+	}
+}
+
+void AEmberPlayerCharacter::ApplyVirtualJoystickVector(const FVector2D& Movement)
+{
+	if (!Movement.IsNearlyZero())
+	{
+		const FVector2D Clamped = Movement.GetClampedToMaxSize(1.0f);
+		AddMovementInput(FVector::ForwardVector, Clamped.Y);
+		AddMovementInput(FVector::RightVector, Clamped.X);
 	}
 }
 

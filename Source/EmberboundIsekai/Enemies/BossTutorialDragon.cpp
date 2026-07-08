@@ -2,8 +2,11 @@
 #include "Combat/EmberPlayerCharacter.h"
 #include "Combat/EmberProjectile.h"
 #include "Combat/HealthComponent.h"
+#include "Core/EmberAudioSubsystem.h"
 #include "Core/ObjectPoolSubsystem.h"
 #include "Enemies/BossTelegraphActor.h"
+#include "Engine/GameInstance.h"
+#include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "EmberboundIsekai.h"
@@ -17,6 +20,10 @@ void ABossTutorialDragon::BeginPlay()
 {
 	Super::BeginPlay();
 	ConfigureRuntimeStats(450.0f, 20.0f, 165.0f, FVector(1.8f, 1.8f, 1.2f), FLinearColor(0.95f, 0.18f, 0.08f));
+	if (UEmberAudioSubsystem* Audio = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEmberAudioSubsystem>() : nullptr)
+	{
+		Audio->PlaySfx(TEXT("boss-roar"), this);
+	}
 	if (UHealthComponent* Health = GetHealthComponent())
 	{
 		Health->OnDamaged.AddDynamic(this, &ABossTutorialDragon::HandleBossDamaged);

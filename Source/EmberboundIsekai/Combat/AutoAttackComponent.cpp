@@ -2,7 +2,9 @@
 #include "Combat/EmberProjectile.h"
 #include "Combat/HealthComponent.h"
 #include "Core/ObjectPoolSubsystem.h"
+#include "Core/EmberAudioSubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
+#include "Core/TitleSubsystem.h"
 #include "Enemies/EmberEnemyBase.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
 #include "Run/RunUpgradeManager.h"
@@ -147,13 +149,31 @@ void UAutoAttackComponent::SpawnProjectile(const FVector& Direction, float Resol
 		{
 			DamageMultiplier = FMath::Max(0.0f, DamageCVar->GetFloat());
 		}
+		float TitleDamage = ResolvedDamage;
+		if (UTitleSubsystem* Titles = GetWorld()->GetGameInstance() ? GetWorld()->GetGameInstance()->GetSubsystem<UTitleSubsystem>() : nullptr)
+		{
+			float HealthFraction = 1.0f;
+			if (UHealthComponent* OwnerHealth = Owner->FindComponentByClass<UHealthComponent>())
+			{
+				HealthFraction = OwnerHealth->GetMaxHP() > 0.0f ? OwnerHealth->GetCurrentHP() / OwnerHealth->GetMaxHP() : 1.0f;
+			}
+			TitleDamage = Titles->ApplyPlayerDamage(ResolvedDamage, HealthFraction);
+			if (!FMath::IsNearlyEqual(TitleDamage, ResolvedDamage))
+			{
+				UE_LOG(LogEmberbound, Log, TEXT("EMBER: PlayerDamageAdjusted base=%.2f adjusted=%.2f hpfrac=%.2f"), ResolvedDamage, TitleDamage, HealthFraction);
+			}
+		}
 		FEmberProjectileStatusPayload StatusPayload;
 		if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
 		{
 			StatusPayload = UpgradeManager->GetProjectileStatusPayload();
 		}
 		Projectile->SetStatusPayload(StatusPayload);
-		Projectile->Fire(Direction, ResolvedDamage * DamageMultiplier, ProjectileSpeed, PierceCount, RicochetCount, Owner, false);
+		Projectile->Fire(Direction, TitleDamage * DamageMultiplier, ProjectileSpeed, PierceCount, RicochetCount, Owner, false);
+		if (UEmberAudioSubsystem* Audio = GetWorld()->GetGameInstance() ? GetWorld()->GetGameInstance()->GetSubsystem<UEmberAudioSubsystem>() : nullptr)
+		{
+			Audio->PlaySfx(TEXT("arrow-shot"), Owner);
+		}
 		UE_LOG(LogEmberbound, Log, TEXT("EMBER: ProjectileFired"));
 	}
 }

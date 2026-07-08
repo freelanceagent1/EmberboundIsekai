@@ -9,6 +9,7 @@
 #include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "Components/SafeZone.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Engine/GameInstance.h"
@@ -38,8 +39,10 @@ static FString CampPanelResourceLabel(EEmberResource Resource)
 void UCampBuildingPanelWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+	USafeZone* SafeRoot = WidgetTree->ConstructWidget<USafeZone>(USafeZone::StaticClass(), TEXT("SafeRoot"));
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
-	WidgetTree->RootWidget = Root;
+	SafeRoot->AddChild(Root);
+	WidgetTree->RootWidget = SafeRoot;
 	TitleText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("Title"));
 	HeaderIcon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("HeaderIcon"));
 	LevelText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("Level"));
@@ -188,6 +191,7 @@ FString UCampBuildingPanelWidget::CostLinesForLevel(int32 CurrentLevel, bool& bA
 {
 	bAffordable = false;
 	UEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEconomySubsystem>() : nullptr;
+	USaveManagerSubsystem* Save = GetGameInstance() ? GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr;
 	if (!BuildingData || !Economy)
 	{
 		return TEXT("No economy");
@@ -196,15 +200,20 @@ FString UCampBuildingPanelWidget::CostLinesForLevel(int32 CurrentLevel, bool& bA
 	{
 		return TEXT("Max level");
 	}
-	bAffordable = USaveManagerSubsystem::CanAffordUpgrade(BuildingData, CurrentLevel, Economy);
 	if (!BuildingData->UpgradeCosts.IsValidIndex(CurrentLevel - 1))
 	{
 		return TEXT("No cost data");
 	}
+	bAffordable = true;
 	TArray<FString> Lines;
 	for (const TPair<EEmberResource, int32>& Pair : BuildingData->UpgradeCosts[CurrentLevel - 1].Amounts)
 	{
-		Lines.Add(FString::Printf(TEXT("%s: %d/%d%s"), *CampPanelResourceLabel(Pair.Key), Economy->Get(Pair.Key), Pair.Value, Economy->Get(Pair.Key) >= Pair.Value ? TEXT("") : TEXT(" missing")));
+		const int32 AdjustedCost = Save ? Save->GetAdjustedUpgradeCost(Pair.Key, BuildingData, CurrentLevel) : Pair.Value;
+		if (Economy->Get(Pair.Key) < AdjustedCost)
+		{
+			bAffordable = false;
+		}
+		Lines.Add(FString::Printf(TEXT("%s: %d/%d%s"), *CampPanelResourceLabel(Pair.Key), Economy->Get(Pair.Key), AdjustedCost, Economy->Get(Pair.Key) >= AdjustedCost ? TEXT("") : TEXT(" missing")));
 	}
 	return FString::Join(Lines, TEXT("\n"));
 }
