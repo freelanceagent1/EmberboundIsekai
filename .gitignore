@@ -21,3 +21,6 @@ Docs/orchestration/codex_*.log
 __pycache__/
 *.pyc
 .venv/
+
+# validation artifacts (large logs kept out of git history where noisy)
+Docs/validation/*.log

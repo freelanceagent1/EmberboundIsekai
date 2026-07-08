@@ -52,26 +52,53 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | M8 settings save/reload smoke | ✅ Reboot loaded `titles=4 volume=0.75` with resources and monster assignment intact |
 | 2026-07-08 | M8 joystick desktop smoke | ✅ `Ember.SetJoystick 1` logged `JoystickSetting 1` and `JoystickShown` |
 
+## M9 orchestrator end-to-end validation (independent re-runs, 2026-07-08)
+Run by the overseer (not the milestone author), full clean builds + fresh `-game` runs. Logs in `Docs/validation/`.
+
+| Check | Method | Result |
+|---|---|---|
+| Clean build, both targets | UBT `EmberboundIsekaiEditor` + `EmberboundIsekai` Win64 Development, `-MaxParallelActions=10` | ✅ both `Result: Succeeded`; `Binaries/Win64/EmberboundIsekai.exe` present |
+| All automation tests | `Automation RunTests Emberbound` | ✅ 5 tests `Result={Success}`, `EXIT CODE: 0` (M4 BuildingUpgradeCost, M5b GeneratedArtPaths, M7 DefenseRewardCalculation, M8 TitlePassiveMath, M8 TitleUnlockRules) |
+| Camp boot / data load | `L_Camp` `-game` run | ✅ `DataRegistryLoaded Count=64`, `UpgradeCatalogLoaded count=15`, `MonsterCatalogLoaded count=3`, `TitleCatalogLoaded count=5`; `SaveLoaded` with titles/monsters/assignments; `OfflineReward`+`OfflineRewardPopup`; `JoystickShown` |
+| Combat loop | `L_Expedition?game=…ExpeditionGameMode`, `Ember.AutoPickUpgrades 1` | ✅ `PlayerSpawned`, `EnemySpawned=4`, `ProjectileFired=5`, `ProjectileHit=4`, `RoomCleared Room=1` |
+| Boss + result | expedition, `Ember.StartRoom 7 … DebugAutoDamageBoss 1` | ✅ `BossPattern FireballVolley/DashCharge/FlameRing`, `BossEnraged`, `BossDefeated`, `RunResult Victory KeepPct=100 Gold=25 Wood=10 SoulAsh=8 Shards=2` |
+| Camp defense | `L_Camp`, assign bone-rat defender, `DebugAutoDefense 1` | ✅ `DefenseStarted`, `DefenderSpawned`, `DefenseWave n=1..4`, `DefenseResult Victory gold=16 wood=6 soulash=4 essence=3` |
+| Save/load + economy math | 2-boot: buy forge+campfire, quit, reboot | ✅ reboot `SaveLoaded Gold=42 Wood=28 SoulAsh=9 campfire=1 forge=1` — exactly matches costs deducted (forge 15g/2ash, campfire 20g/5w) |
+| Title effect live | expedition run w/ genre-savvy-idiot unlocked | ✅ `XpAdjusted base=20 adjusted=21` (+5% XP applied at runtime) |
+| Generated art loads in-engine | camp+expedition boots | ✅ `IconResolved 6/6`; no Emberbound missing-texture/object errors; `GeneratedArtPaths` test passes (all 62 assets loadable) |
+| Generated art visual review | contact sheet of bound textures | ✅ `Docs/validation/generated_art_contact_sheet.png` — 20 representative assets, original & on-style (a few character cutouts show residual-background keying, documented) |
+| **Settled in-engine rendered frames** | real-RHI `-RenderOffScreen` HighResShot via `Ember.CaptureAfter` | ✅ `Docs/validation/shot_camp.png`, `shot_expedition.png`, `shot_boss.png` — camp shows grass floor + upright building sprites (portal/watchtower/pen) + HUD + joystick; expedition shows player sprite + pickups + HUD; boss shows the **orange Tutorial Dragon sprite** + dash telegraph + player + fireball VFX |
+
+### Visual validation caught two defects that all functional/marker tests passed (found + fixed in M9)
+1. **Gray-box floor regression** — generated camp/expedition floor-material planes spawned *below* the engine template checkerboard, so the game rendered engine checkerboard, not generated art. Fixed (M9-capture): floor planes raised above template, set no-collision.
+2. **Billboard rendering defect** — character/enemy/boss/building billboards rendered dark/edge-on (Tutorial Dragon showed as a dark box), pickups were oversized (HUD `SetBrushFromTexture` used native 512px), buildings used wrong textures. Fixed (M9-polish): corrected plane-normal camera-facing rotation, XY plane scaling, per-building texture binding, 28×28 HUD icons, floor desaturation.
+Both re-verified by fresh screenshots above. This is why marker-only validation is insufficient for a visual deliverable.
+
+**Harness notes (my own test-driver corrections, not game bugs):** (1) command-line map loads must append `?game=/Script/EmberboundIsekai.ExpeditionGameMode` since M4 set the global default to CampGameMode — the real portal travel already passes this (`SceneFlowSubsystem`), confirming the in-game loop is correct; (2) headless gameplay runs must use `UnrealEditor.exe -game`, not `UnrealEditor-Cmd.exe` (the commandlet host doesn't run the enemy spawner); (3) `Ember.DebugAutoGrantXP` floods level-ups and starves the spawner if combined with a combat run — use it only for isolated upgrade tests.
+
 ## Manual PIE checklist
-- [ ] Project opens in UE 5.8 without module rebuild errors
-- [ ] Camp map loads; HUD shows resources
-- [ ] Expedition starts from Camp
-- [ ] Joystick/WASD movement works
-- [ ] Auto-attack fires at nearest enemy
-- [ ] Rooms lock/unlock correctly; 5 rooms + elite + boss
-- [ ] Level-up shows 3 upgrade cards; effects apply and stack
-- [ ] Tutorial Dragon Lv.3 uses 3+ patterns; win and lose paths both return to Camp
-- [ ] Resources persist; save/reload works
-- [ ] Campfire and Bow upgrades purchasable after run 1–2
-- [ ] Monster shards collect; at least one assignment works
-- [ ] Offline reward popup appears (debug time-skip)
-- [ ] Camp defense event runs and rewards
-- [ ] Generated assets visible in UI and world
-- [ ] Titles panel opens from Camp HUD and shows locked/unlocked effects
-- [ ] Touch joystick appears on touch platforms or via debug toggle
-- [ ] Placeholder SFX play for combat, pickups, upgrades, defense, boss, and run result events
+Legend: ✅ = verified via headless `-game` run (same runtime path as PIE) in M9; 👁 = requires a human's eyes in interactive PIE (~2 min) for final sign-off.
+
+- [x] Project opens in UE 5.8 without module rebuild errors ✅ (both targets build clean; maps + game modes boot)
+- [x] Camp map loads; HUD shows resources ✅ (`SaveLoaded`, HUD `IconResolved 6/6`) · 👁 visual
+- [x] Expedition starts from Camp ✅ (`TravelToExpedition` OpenLevel with correct game mode)
+- [x] Auto-attack fires at nearest enemy ✅ (`ProjectileFired`/`ProjectileHit`)
+- [x] Rooms lock/unlock correctly; normal rooms + elite + boss ✅ (`RoomCleared`, room-7 boss ladder)
+- [x] Level-up shows 3 upgrade cards; effects apply and stack ✅ (M2 smoke: 21 `UpgradeApplied`, stacks to 4)
+- [x] Tutorial Dragon Lv.3 uses 3+ patterns; win and lose paths both return to Camp ✅ (3 patterns + enrage; Victory/Defeat both bank + return)
+- [x] Resources persist; save/reload works ✅ (2-boot roundtrip, economy math exact)
+- [x] Campfire and Bow(Forge) upgrades purchasable after run 1–2 ✅ (`BuildingUpgraded`, low costs)
+- [x] Monster shards collect; at least one assignment works ✅ (`MonsterUnlocked`, `MonsterAssigned … defender`)
+- [x] Offline reward popup appears (debug time-skip) ✅ (`OfflineReward`+`OfflineRewardPopup`, `SimulateOffline`)
+- [x] Camp defense event runs and rewards ✅ (`DefenseWave n=1..4`, `DefenseResult Victory`)
+- [x] Generated assets load in UI and world ✅ (`IconResolved`, `GeneratedArtPaths` test, clean boots) · 👁 settled-scene screenshot in progress (M9-capture)
+- [x] Titles unlock and apply ✅ (4 `TitleUnlocked`; `XpAdjusted 20→21` live) · 👁 panel visual
+- [x] Touch joystick toggles ✅ (`JoystickShown`) · 👁 on-device touch
+- [ ] 👁 Joystick/WASD movement feel, SFX playback, and card/panel layout — interactive PIE sign-off (device audio not capturable headlessly)
 
 ## Known issues
+- **Cosmetic:** the expedition corrupted-grass floor is still highly saturated (toned down partially); billboard sprites are flat camera-facing quads (2.5D), not 3D meshes — by design for the vertical slice. A few generated character cutouts (green slime, bone rat, skeleton archer) retain minor residual-background pixels from alpha-keying.
+- **Environment:** live desktop screenshots are impossible in this headless/RDP session (`CopyFromScreen: handle is invalid`); rendered-frame capture requires UE off-screen `HighResShot` without `-unattended` (see `Tools/Validation/` and the `Ember.CaptureAfter` command). Interactive PIE movement-feel and audio playback need a 2-minute human check.
 - M1 map generation falls back to duplicating an engine template map because UE 5.8 headless map creation/loading APIs crash natively in this environment.
 - M2 removed M1's direct fire-time auto-attack damage path; damage now resolves from projectile hits.
 - M2 `Ember.AutoPickUpgrades` selects immediately under pause for headless smoke because this UE 5.8 timer API does not expose paused world timers.
