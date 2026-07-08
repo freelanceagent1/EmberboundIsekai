@@ -7,6 +7,7 @@
 #include "EmberPickup.generated.h"
 
 class USphereComponent;
+class UMaterialInstanceDynamic;
 class UStaticMeshComponent;
 class AEmberPlayerCharacter;
 
@@ -40,6 +41,9 @@ private:
 	TObjectPtr<UStaticMeshComponent> Visual;
 
 	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> VisualMID;
+
+	UPROPERTY()
 	EEmberPickupType PickupType = EEmberPickupType::XP;
 
 	UPROPERTY()
@@ -49,4 +53,5 @@ private:
 	void HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void Collect(AEmberPlayerCharacter* Player);
+	void ConfigureVisual();
 };

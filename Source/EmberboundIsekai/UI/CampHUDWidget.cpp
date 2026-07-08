@@ -2,11 +2,15 @@
 #include "Core/EconomySubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
+#include "Generated/EmberGeneratedArt.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
 #include "Components/HorizontalBox.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
+#include "Engine/GameInstance.h"
+#include "Engine/Texture2D.h"
 
 void UCampHUDWidget::NativeOnInitialized()
 {
@@ -17,6 +21,13 @@ void UCampHUDWidget::NativeOnInitialized()
 	Root->AddChildToVerticalBox(Resources);
 	for (EEmberResource Resource : { EEmberResource::Gold, EEmberResource::Wood, EEmberResource::SoulAsh, EEmberResource::MonsterEssence, EEmberResource::Embers })
 	{
+		const FName IconId = Resource == EEmberResource::Gold ? TEXT("gold") : Resource == EEmberResource::Wood ? TEXT("wood") : Resource == EEmberResource::SoulAsh ? TEXT("soul-ash") : Resource == EEmberResource::MonsterEssence ? TEXT("monster-essence") : TEXT("embers");
+		UImage* Icon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass());
+		if (UTexture2D* Texture = EmberGeneratedArt::LoadTexture(EmberGeneratedArt::HudIconTexturePath(IconId)))
+		{
+			Icon->SetBrushFromTexture(Texture, true);
+		}
+		Resources->AddChildToHorizontalBox(Icon);
 		UTextBlock* Text = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 		ResourceTexts.Add(Resource, Text);
 		Resources->AddChildToHorizontalBox(Text);

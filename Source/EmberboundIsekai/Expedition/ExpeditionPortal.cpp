@@ -3,6 +3,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "UObject/ConstructorHelpers.h"
 
 AExpeditionPortal::AExpeditionPortal()
 {
@@ -16,10 +17,10 @@ AExpeditionPortal::AExpeditionPortal()
 	Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
 	Visual->SetupAttachment(RootComponent);
 	Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
-	if (CylinderMesh.Succeeded())
+	UStaticMesh* CylinderMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	if (CylinderMesh)
 	{
-		Visual->SetStaticMesh(CylinderMesh.Object);
+		Visual->SetStaticMesh(CylinderMesh);
 		Visual->SetRelativeScale3D(FVector(0.7f, 0.7f, 0.08f));
 	}
 }

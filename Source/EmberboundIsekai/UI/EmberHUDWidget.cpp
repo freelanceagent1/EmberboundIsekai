@@ -3,11 +3,17 @@
 #include "Combat/HealthComponent.h"
 #include "Combat/XPComponent.h"
 #include "Core/EconomySubsystem.h"
+#include "Generated/EmberGeneratedArt.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/HorizontalBox.h"
+#include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
+#include "Engine/GameInstance.h"
+#include "Engine/Texture2D.h"
 #include "Kismet/GameplayStatics.h"
+#include "EmberboundIsekai.h"
 
 void UEmberHUDWidget::NativeOnInitialized()
 {
@@ -22,7 +28,23 @@ void UEmberHUDWidget::NativeOnInitialized()
 	LevelText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("LevelText"));
 	RoomText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("RoomText"));
 	ResourceText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("ResourceText"));
+	UHorizontalBox* IconRow = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(), TEXT("ResourceIconRow"));
 
+	int32 ResolvedIcons = 0;
+	const TArray<FName> IconIds = EmberGeneratedArt::HudIconIds();
+	for (FName IconId : IconIds)
+	{
+		UImage* Icon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass());
+		if (UTexture2D* Texture = EmberGeneratedArt::LoadTexture(EmberGeneratedArt::HudIconTexturePath(IconId)))
+		{
+			Icon->SetBrushFromTexture(Texture, true);
+			++ResolvedIcons;
+		}
+		IconRow->AddChildToHorizontalBox(Icon);
+	}
+	UE_LOG(LogEmberbound, Display, TEXT("EMBER: IconResolved %d/%d"), ResolvedIcons, IconIds.Num());
+
+	Root->AddChildToVerticalBox(IconRow);
 	Root->AddChildToVerticalBox(HPBar);
 	Root->AddChildToVerticalBox(XPBar);
 	Root->AddChildToVerticalBox(BossText);

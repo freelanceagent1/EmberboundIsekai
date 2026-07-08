@@ -4,15 +4,19 @@
 #include "Combat/HealthComponent.h"
 #include "Combat/LootDropComponent.h"
 #include "Core/ObjectPoolSubsystem.h"
+#include "Generated/EmberGeneratedArt.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
+#include "Engine/World.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "TimerManager.h"
+#include "UObject/ConstructorHelpers.h"
 #include "EmberboundIsekai.h"
 
 AEmberEnemyBase::AEmberEnemyBase()
@@ -27,11 +31,35 @@ AEmberEnemyBase::AEmberEnemyBase()
 	Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
 	Visual->SetupAttachment(RootComponent);
 	Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-	if (SphereMesh.Succeeded())
+	UStaticMesh* SphereMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+	if (SphereMesh)
 	{
-		Visual->SetStaticMesh(SphereMesh.Object);
+		Visual->SetStaticMesh(SphereMesh);
 		Visual->SetRelativeScale3D(FVector(0.7f));
+		Visual->SetHiddenInGame(true);
+		Visual->SetVisibility(false);
+	}
+
+	BillboardVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BillboardVisual"));
+	BillboardVisual->SetupAttachment(RootComponent);
+	BillboardVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
+	if (PlaneMesh)
+	{
+		BillboardVisual->SetStaticMesh(PlaneMesh);
+		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 55.0f));
+		BillboardVisual->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
+	}
+
+	BlobShadow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlobShadow"));
+	BlobShadow->SetupAttachment(RootComponent);
+	BlobShadow->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (PlaneMesh)
+	{
+		BlobShadow->SetStaticMesh(PlaneMesh);
+		BlobShadow->SetRelativeLocation(FVector(0.0f, 0.0f, -42.0f));
+		BlobShadow->SetRelativeRotation(FRotator::ZeroRotator);
+		BlobShadow->SetRelativeScale3D(FVector(0.75f, 0.75f, 0.75f));
 	}
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
@@ -48,6 +76,7 @@ void AEmberEnemyBase::BeginPlay()
 	{
 		World->GetTimerManager().SetTimer(RepathTimerHandle, this, &AEmberEnemyBase::UpdateDesiredDirection, 0.25f, true, 0.01f);
 	}
+	HealthComponent->OnDamaged.AddDynamic(this, &AEmberEnemyBase::HandleDamaged);
 }
 
 void AEmberEnemyBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -56,6 +85,7 @@ void AEmberEnemyBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		World->GetTimerManager().ClearTimer(RepathTimerHandle);
 		World->GetTimerManager().ClearTimer(RangedTimerHandle);
+		World->GetTimerManager().ClearTimer(BillboardFlashTimerHandle);
 		if (UEnemySpawnerSubsystem* Registry = World->GetSubsystem<UEnemySpawnerSubsystem>())
 		{
 			Registry->UnregisterEnemy(this);
@@ -67,6 +97,7 @@ void AEmberEnemyBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AEmberEnemyBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	EmberGeneratedArt::FaceComponentToPlayerCamera(BillboardVisual, this);
 	if (IsAlive() && !DesiredDirection.IsNearlyZero())
 	{
 		const float Speed = RuntimeMoveSpeed * StatusMoveSpeedScale;
@@ -102,6 +133,7 @@ void AEmberEnemyBase::OnReleased_Implementation()
 	ContactCooldowns.Reset();
 	DesiredDirection = FVector::ZeroVector;
 	StatusMoveSpeedScale = 1.0f;
+	ResetBillboardFlash();
 }
 
 void AEmberEnemyBase::InitFromData(UEmberEnemyData* InEnemyData)
@@ -117,15 +149,7 @@ void AEmberEnemyBase::InitFromData(UEmberEnemyData* InEnemyData)
 	HealthComponent->SetMaxHealth(EnemyData->MaxHP, true);
 	LootDropComponent->SetEnemyData(EnemyData);
 	Visual->SetRelativeScale3D(EnemyData->VisualScale);
-	if (UMaterialInterface* EnemyMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Emberbound/Materials/Stylized/M_Enemy.M_Enemy")))
-	{
-		Visual->SetMaterial(0, EnemyMaterial);
-	}
-	if (UMaterialInstanceDynamic* MID = Visual->CreateAndSetMaterialInstanceDynamic(0))
-	{
-		MID->SetVectorParameterValue(TEXT("Tint"), EnemyData->ColorTint);
-		MID->SetScalarParameterValue(TEXT("Flash"), 0.0f);
-	}
+	ConfigureBillboard(EnemyData->GetFName(), EnemyData->VisualScale, EnemyData->ColorTint);
 	if (EnemyData->AttackType == EEmberEnemyAttackType::Ranged && GetWorld())
 	{
 		GetWorld()->GetTimerManager().SetTimer(RangedTimerHandle, this, &AEmberEnemyBase::FireRangedProjectile, EnemyData->ProjectileInterval, true, 1.0f);
@@ -142,12 +166,9 @@ void AEmberEnemyBase::ApplyRuntimeModifiers(float HealthMultiplier, float Damage
 	RuntimeMoveSpeed = EnemyData->MoveSpeed;
 	Movement->MaxSpeed = RuntimeMoveSpeed;
 	HealthComponent->SetMaxHealth(EnemyData->MaxHP * FMath::Max(0.1f, HealthMultiplier), true);
-	Visual->SetRelativeScale3D(EnemyData->VisualScale * FMath::Max(0.1f, ScaleMultiplier));
-	if (UMaterialInstanceDynamic* MID = Visual->CreateAndSetMaterialInstanceDynamic(0))
-	{
-		MID->SetVectorParameterValue(TEXT("Tint"), TintOverride);
-		MID->SetScalarParameterValue(TEXT("Flash"), 0.0f);
-	}
+	const FVector ScaledVisual = EnemyData->VisualScale * FMath::Max(0.1f, ScaleMultiplier);
+	Visual->SetRelativeScale3D(ScaledVisual);
+	ConfigureBillboard(EnemyData->GetFName(), ScaledVisual, TintOverride);
 }
 
 void AEmberEnemyBase::ConfigureRuntimeStats(float MaxHealth, float ContactDamage, float MoveSpeed, const FVector& VisualScale, const FLinearColor& Tint)
@@ -157,15 +178,7 @@ void AEmberEnemyBase::ConfigureRuntimeStats(float MaxHealth, float ContactDamage
 	Movement->MaxSpeed = RuntimeMoveSpeed;
 	HealthComponent->SetMaxHealth(MaxHealth, true);
 	Visual->SetRelativeScale3D(VisualScale);
-	if (UMaterialInterface* EnemyMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Emberbound/Materials/Stylized/M_Enemy.M_Enemy")))
-	{
-		Visual->SetMaterial(0, EnemyMaterial);
-	}
-	if (UMaterialInstanceDynamic* MID = Visual->CreateAndSetMaterialInstanceDynamic(0))
-	{
-		MID->SetVectorParameterValue(TEXT("Tint"), Tint);
-		MID->SetScalarParameterValue(TEXT("Flash"), 0.0f);
-	}
+	ConfigureBillboard(TEXT("TutorialDragon"), VisualScale, Tint);
 }
 
 bool AEmberEnemyBase::IsAlive() const
@@ -203,6 +216,43 @@ void AEmberEnemyBase::UpdateDesiredDirection()
 	}
 }
 
+void AEmberEnemyBase::ConfigureBillboard(FName TextureId, const FVector& VisualScale, const FLinearColor& Tint)
+{
+	if (BillboardVisual)
+	{
+		const float Width = FMath::Clamp(VisualScale.X * 1.35f, 0.6f, 2.6f);
+		const float Height = FMath::Clamp(VisualScale.Z * 1.7f, 0.55f, 2.7f);
+		BillboardVisual->SetRelativeScale3D(FVector(Width, 1.0f, Height));
+		if (UMaterialInterface* Material = EmberGeneratedArt::LoadBillboardMaterial())
+		{
+			BillboardVisual->SetMaterial(0, Material);
+			BillboardMID = BillboardVisual->CreateAndSetMaterialInstanceDynamic(0);
+			if (BillboardMID)
+			{
+				BillboardMID->SetTextureParameterValue(TEXT("Tex"), EmberGeneratedArt::LoadTexture(EmberGeneratedArt::EnemyTexturePath(TextureId)));
+				BillboardMID->SetVectorParameterValue(TEXT("Tint"), Tint);
+				BillboardMID->SetScalarParameterValue(TEXT("Flash"), 0.0f);
+			}
+		}
+	}
+	if (BlobShadow)
+	{
+		BlobShadow->SetRelativeScale3D(FVector(FMath::Max(0.45f, VisualScale.X), FMath::Max(0.45f, VisualScale.Y), 1.0f));
+		if (UMaterialInterface* ShadowMaterial = EmberGeneratedArt::LoadBlobShadowMaterial())
+		{
+			BlobShadow->SetMaterial(0, ShadowMaterial);
+		}
+	}
+}
+
+void AEmberEnemyBase::ResetBillboardFlash()
+{
+	if (BillboardMID)
+	{
+		BillboardMID->SetScalarParameterValue(TEXT("Flash"), 0.0f);
+	}
+}
+
 void AEmberEnemyBase::FireRangedProjectile()
 {
 	if (!Player || !EnemyData || !GetWorld() || !IsAlive())
@@ -236,6 +286,18 @@ void AEmberEnemyBase::HandleOverlap(UPrimitiveComponent*, AActor* OtherActor, UP
 	if (UHealthComponent* Health = OtherActor->FindComponentByClass<UHealthComponent>())
 	{
 		Health->ApplyDamage(RuntimeContactDamage);
+	}
+}
+
+void AEmberEnemyBase::HandleDamaged(float, float)
+{
+	if (BillboardMID)
+	{
+		BillboardMID->SetScalarParameterValue(TEXT("Flash"), 1.0f);
+	}
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().SetTimer(BillboardFlashTimerHandle, this, &AEmberEnemyBase::ResetBillboardFlash, 0.08f, false);
 	}
 }
 

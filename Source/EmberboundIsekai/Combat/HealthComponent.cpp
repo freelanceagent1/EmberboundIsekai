@@ -1,6 +1,8 @@
 #include "Combat/HealthComponent.h"
 #include "Enemies/EmberEnemyBase.h"
 #include "Components/MeshComponent.h"
+#include "Engine/World.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "TimerManager.h"
 
 UHealthComponent::UHealthComponent()

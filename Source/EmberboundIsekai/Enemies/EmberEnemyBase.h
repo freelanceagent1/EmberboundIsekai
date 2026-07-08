@@ -10,6 +10,7 @@ class AEmberPlayerCharacter;
 class UFloatingPawnMovement;
 class UHealthComponent;
 class ULootDropComponent;
+class UMaterialInstanceDynamic;
 class USphereComponent;
 class UStaticMeshComponent;
 
@@ -42,6 +43,12 @@ protected:
 	TObjectPtr<UStaticMeshComponent> Visual;
 
 	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> BillboardVisual;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> BlobShadow;
+
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UFloatingPawnMovement> Movement;
 
 	UPROPERTY(VisibleAnywhere)
@@ -66,10 +73,20 @@ protected:
 
 	void UpdateDesiredDirection();
 	void FireRangedProjectile();
+	void ConfigureBillboard(FName TextureId, const FVector& VisualScale, const FLinearColor& Tint);
+	void ResetBillboardFlash();
 
 	UFUNCTION()
 	void HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
+	void HandleDamaged(float Damage, float CurrentHP);
+
+	UFUNCTION()
 	void HandleDeath(AActor* DeadActor);
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> BillboardMID;
+
+	FTimerHandle BillboardFlashTimerHandle;
 };

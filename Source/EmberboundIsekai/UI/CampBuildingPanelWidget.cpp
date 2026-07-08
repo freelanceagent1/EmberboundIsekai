@@ -2,10 +2,14 @@
 #include "Core/EconomySubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Data/BuildingData.h"
+#include "Generated/EmberGeneratedArt.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
+#include "Engine/GameInstance.h"
+#include "Engine/Texture2D.h"
 
 static FString ResourceLabel(EEmberResource Resource)
 {
@@ -26,6 +30,7 @@ void UCampBuildingPanelWidget::NativeOnInitialized()
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
 	WidgetTree->RootWidget = Root;
 	TitleText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("Title"));
+	HeaderIcon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("HeaderIcon"));
 	LevelText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("Level"));
 	EffectText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("Effect"));
 	CostText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("Cost"));
@@ -39,6 +44,7 @@ void UCampBuildingPanelWidget::NativeOnInitialized()
 	CloseText->SetText(NSLOCTEXT("Camp", "Close", "Close"));
 	CloseButton->AddChild(CloseText);
 	CloseButton->OnClicked.AddDynamic(this, &UCampBuildingPanelWidget::HandleClose);
+	Root->AddChildToVerticalBox(HeaderIcon);
 	Root->AddChildToVerticalBox(TitleText);
 	Root->AddChildToVerticalBox(LevelText);
 	Root->AddChildToVerticalBox(EffectText);
@@ -64,6 +70,13 @@ void UCampBuildingPanelWidget::Refresh()
 	}
 	const int32 CurrentLevel = Save->GetBuildingLevel(BuildingData->Id);
 	TitleText->SetText(BuildingData->DisplayName);
+	if (HeaderIcon)
+	{
+		if (UTexture2D* Texture = EmberGeneratedArt::LoadTexture(EmberGeneratedArt::BuildingTexturePath(BuildingData->Id)))
+		{
+			HeaderIcon->SetBrushFromTexture(Texture, true);
+		}
+	}
 	LevelText->SetText(FText::FromString(FString::Printf(TEXT("Level %d/%d"), CurrentLevel, BuildingData->MaxLevel)));
 	if (bLocked)
 	{

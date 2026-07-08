@@ -9,6 +9,7 @@
 #include "Run/EmberSoulFlamePatch.h"
 #include "UI/UpgradeChoiceWidget.h"
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "AssetRegistry/AssetData.h"
 #include "Engine/AssetManager.h"
 #include "Engine/StreamableManager.h"
 #include "HAL/IConsoleManager.h"

@@ -6,6 +6,7 @@
 
 class UBuildingData;
 class UButton;
+class UImage;
 class UTextBlock;
 
 UCLASS()
@@ -23,6 +24,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UTextBlock> TitleText;
+
+	UPROPERTY()
+	TObjectPtr<UImage> HeaderIcon;
 
 	UPROPERTY()
 	TObjectPtr<UTextBlock> LevelText;

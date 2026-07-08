@@ -4,6 +4,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/World.h"
+#include "UObject/ConstructorHelpers.h"
 
 AEmberSoulFlamePatch::AEmberSoulFlamePatch()
 {
@@ -18,10 +20,10 @@ AEmberSoulFlamePatch::AEmberSoulFlamePatch()
 	Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
 	Visual->SetupAttachment(RootComponent);
 	Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
-	if (CylinderMesh.Succeeded())
+	UStaticMesh* CylinderMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	if (CylinderMesh)
 	{
-		Visual->SetStaticMesh(CylinderMesh.Object);
+		Visual->SetStaticMesh(CylinderMesh);
 		Visual->SetRelativeScale3D(FVector(0.65f, 0.65f, 0.03f));
 	}
 }

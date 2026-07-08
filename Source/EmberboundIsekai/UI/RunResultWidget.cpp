@@ -1,9 +1,12 @@
 #include "UI/RunResultWidget.h"
 #include "Core/SceneFlowSubsystem.h"
+#include "Generated/EmberGeneratedArt.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
+#include "Engine/Texture2D.h"
 #include "Kismet/GameplayStatics.h"
 
 void URunResultWidget::NativeOnInitialized()
@@ -13,6 +16,7 @@ void URunResultWidget::NativeOnInitialized()
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
 	WidgetTree->RootWidget = Root;
 
+	HeaderImage = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("HeaderImage"));
 	TitleText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("TitleText"));
 	LootText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("LootText"));
 	RunAgainButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("RunAgainButton"));
@@ -29,6 +33,12 @@ void URunResultWidget::NativeOnInitialized()
 	ReturnCampButton->SetIsEnabled(true);
 	ReturnCampButton->OnClicked.AddDynamic(this, &URunResultWidget::HandleReturnCamp);
 
+	if (UTexture2D* HeaderTexture = EmberGeneratedArt::LoadTexture(TEXT("/Game/Emberbound/Generated/Characters/T_RiftArcherPortrait.T_RiftArcherPortrait")))
+	{
+		HeaderImage->SetBrushFromTexture(HeaderTexture, true);
+	}
+
+	Root->AddChildToVerticalBox(HeaderImage);
 	Root->AddChildToVerticalBox(TitleText);
 	Root->AddChildToVerticalBox(LootText);
 	Root->AddChildToVerticalBox(RunAgainButton);

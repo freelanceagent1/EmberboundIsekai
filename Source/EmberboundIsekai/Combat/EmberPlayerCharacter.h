@@ -9,6 +9,7 @@ class UAutoAttackComponent;
 class UCameraComponent;
 class UHealthComponent;
 class USpringArmComponent;
+class UStaticMeshComponent;
 class UXPComponent;
 
 UCLASS()
@@ -44,6 +45,12 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAutoAttackComponent> AutoAttackComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> BillboardVisual;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> BlobShadow;
+
 	UPROPERTY()
 	TObjectPtr<class UInputAction> MoveAction;
 
@@ -55,4 +62,5 @@ private:
 
 	void Move(const FInputActionValue& Value);
 	void BuildRuntimeInput();
+	virtual void Tick(float DeltaSeconds) override;
 };

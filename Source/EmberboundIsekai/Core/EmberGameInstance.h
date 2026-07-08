@@ -39,7 +39,11 @@ class EMBERBOUNDISEKAI_API UEmberGameInstance : public UGameInstance
 
 public:
 	virtual void Init() override;
+	virtual void OnStart() override;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Run")
 	FEmberRunResult LastRunResult;
+
+private:
+	bool bSplashShown = false;
 };

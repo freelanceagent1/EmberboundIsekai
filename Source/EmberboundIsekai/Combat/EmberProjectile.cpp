@@ -4,11 +4,17 @@
 #include "Core/ObjectPoolSubsystem.h"
 #include "Enemies/EmberEnemyBase.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
+#include "Generated/EmberGeneratedArt.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/OverlapResult.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
+#include "Engine/World.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
 #include "TimerManager.h"
+#include "UObject/ConstructorHelpers.h"
 #include "EmberboundIsekai.h"
 
 AEmberProjectile::AEmberProjectile()
@@ -23,17 +29,18 @@ AEmberProjectile::AEmberProjectile()
 	Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
 	Visual->SetupAttachment(RootComponent);
 	Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-	if (SphereMesh.Succeeded())
+	UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
+	if (PlaneMesh)
 	{
-		Visual->SetStaticMesh(SphereMesh.Object);
-		Visual->SetRelativeScale3D(FVector(0.16f));
+		Visual->SetStaticMesh(PlaneMesh);
+		Visual->SetRelativeScale3D(FVector(0.38f, 1.0f, 0.18f));
 	}
 }
 
 void AEmberProjectile::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	EmberGeneratedArt::FaceComponentToPlayerCamera(Visual, this);
 	const FVector Start = GetActorLocation();
 	const FVector End = Start + MoveDirection * Speed * DeltaSeconds;
 	TraceMovement(Start, End);
@@ -81,6 +88,28 @@ void AEmberProjectile::Fire(const FVector& Direction, float InDamage, float InSp
 	PreviousLocation = GetActorLocation();
 	HitActors.Reset();
 	SetActorRotation(MoveDirection.Rotation());
+	ConfigureVisual(bEnemyProjectile);
+}
+
+void AEmberProjectile::ConfigureVisual(bool bForEnemyProjectile)
+{
+	if (!Visual)
+	{
+		return;
+	}
+	const FVector Scale = bForEnemyProjectile ? FVector(0.42f, 1.0f, 0.42f) : FVector(0.5f, 1.0f, 0.2f);
+	Visual->SetRelativeScale3D(Scale);
+	if (UMaterialInterface* Material = EmberGeneratedArt::LoadBillboardMaterial())
+	{
+		Visual->SetMaterial(0, Material);
+		VisualMID = Visual->CreateAndSetMaterialInstanceDynamic(0);
+		if (VisualMID)
+		{
+			VisualMID->SetTextureParameterValue(TEXT("Tex"), EmberGeneratedArt::LoadTexture(EmberGeneratedArt::ProjectileTexturePath(bForEnemyProjectile)));
+			VisualMID->SetVectorParameterValue(TEXT("Tint"), FLinearColor::White);
+			VisualMID->SetScalarParameterValue(TEXT("Flash"), bForEnemyProjectile ? 0.2f : 0.0f);
+		}
+	}
 }
 
 void AEmberProjectile::HandleOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32, bool, const FHitResult&)

@@ -4,6 +4,8 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+class UMaterialInstanceDynamic;
+
 UENUM(BlueprintType)
 enum class EEmberStatusEffectType : uint8
 {

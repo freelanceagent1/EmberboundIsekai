@@ -4,11 +4,18 @@
 #include "Core/EconomySubsystem.h"
 #include "Core/ObjectPoolSubsystem.h"
 #include "Expedition/ExpeditionGameMode.h"
+#include "Generated/EmberGeneratedArt.h"
 #include "Run/RunUpgradeManager.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
+#include "Engine/GameInstance.h"
+#include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
+#include "UObject/ConstructorHelpers.h"
 
 AEmberPickup::AEmberPickup()
 {
@@ -22,17 +29,18 @@ AEmberPickup::AEmberPickup()
 	Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
 	Visual->SetupAttachment(RootComponent);
 	Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-	if (SphereMesh.Succeeded())
+	UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
+	if (PlaneMesh)
 	{
-		Visual->SetStaticMesh(SphereMesh.Object);
-		Visual->SetRelativeScale3D(FVector(0.12f));
+		Visual->SetStaticMesh(PlaneMesh);
+		Visual->SetRelativeScale3D(FVector(0.28f, 1.0f, 0.28f));
 	}
 }
 
 void AEmberPickup::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	EmberGeneratedArt::FaceComponentToPlayerCamera(Visual, this);
 	AEmberPlayerCharacter* Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	if (!Player)
 	{
@@ -55,6 +63,42 @@ void AEmberPickup::Configure(EEmberPickupType InType, int32 InAmount)
 {
 	PickupType = InType;
 	Amount = FMath::Max(1, InAmount);
+	ConfigureVisual();
+}
+
+void AEmberPickup::ConfigureVisual()
+{
+	if (!Visual)
+	{
+		return;
+	}
+	FName TextureId = TEXT("xp");
+	if (PickupType == EEmberPickupType::Gold)
+	{
+		TextureId = TEXT("gold");
+	}
+	else if (PickupType == EEmberPickupType::SoulAsh)
+	{
+		TextureId = TEXT("soul-ash");
+	}
+	else if (PickupType == EEmberPickupType::Wood)
+	{
+		TextureId = TEXT("wood");
+	}
+	if (UMaterialInterface* Material = EmberGeneratedArt::LoadBillboardMaterial())
+	{
+		Visual->SetMaterial(0, Material);
+		VisualMID = Visual->CreateAndSetMaterialInstanceDynamic(0);
+		if (VisualMID)
+		{
+			const FString TexturePath = (PickupType == EEmberPickupType::Gold || PickupType == EEmberPickupType::SoulAsh)
+				? EmberGeneratedArt::PickupTexturePath(TextureId)
+				: EmberGeneratedArt::HudIconTexturePath(TextureId);
+			VisualMID->SetTextureParameterValue(TEXT("Tex"), EmberGeneratedArt::LoadTexture(TexturePath));
+			VisualMID->SetVectorParameterValue(TEXT("Tint"), FLinearColor::White);
+			VisualMID->SetScalarParameterValue(TEXT("Flash"), 0.0f);
+		}
+	}
 }
 
 void AEmberPickup::HandleOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32, bool, const FHitResult&)

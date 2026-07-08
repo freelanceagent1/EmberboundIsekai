@@ -14,10 +14,43 @@
 #include "UI/EmberHUDWidget.h"
 #include "UI/RunResultWidget.h"
 #include "Camera/PlayerCameraManager.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
+#include "Engine/StaticMeshActor.h"
+#include "Engine/World.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInterface.h"
 #include "TimerManager.h"
 #include "EmberboundIsekai.h"
+
+namespace
+{
+	void SpawnExpeditionFloor(UWorld* World)
+	{
+		if (!World)
+		{
+			return;
+		}
+		UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
+		UMaterialInterface* Material = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Emberbound/Materials/Generated/MI_ExpeditionFloor_CorruptedGrass.MI_ExpeditionFloor_CorruptedGrass"));
+		if (!PlaneMesh || !Material)
+		{
+			return;
+		}
+		AStaticMeshActor* Floor = World->SpawnActor<AStaticMeshActor>(FVector(0.0f, 0.0f, -2.0f), FRotator::ZeroRotator);
+		if (Floor && Floor->GetStaticMeshComponent())
+		{
+#if WITH_EDITOR
+			Floor->SetActorLabel(TEXT("M5b_ExpeditionCorruptedGrassFloor"));
+#endif
+			Floor->GetStaticMeshComponent()->SetStaticMesh(PlaneMesh);
+			Floor->GetStaticMeshComponent()->SetMaterial(0, Material);
+			Floor->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			Floor->SetActorScale3D(FVector(28.0f, 28.0f, 1.0f));
+		}
+	}
+}
 
 static TAutoConsoleVariable<int32> CVarEmberStartRoom(
 	TEXT("Ember.StartRoom"),
@@ -52,6 +85,7 @@ AExpeditionGameMode::AExpeditionGameMode()
 void AExpeditionGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	SpawnExpeditionFloor(GetWorld());
 	BuildRoomSequence();
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{

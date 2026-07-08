@@ -2,8 +2,13 @@
 #include "Combat/AutoAttackComponent.h"
 #include "Combat/HealthComponent.h"
 #include "Combat/XPComponent.h"
+#include "Generated/EmberGeneratedArt.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
+#include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -11,11 +16,14 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
+#include "UObject/ConstructorHelpers.h"
 #include "EmberboundIsekai.h"
 
 AEmberPlayerCharacter::AEmberPlayerCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	GetCapsuleComponent()->InitCapsuleSize(42.0f, 96.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 450.0f;
@@ -38,13 +46,54 @@ AEmberPlayerCharacter::AEmberPlayerCharacter()
 	HealthComponent->MaxHP = 100.0f;
 	XPComponent = CreateDefaultSubobject<UXPComponent>(TEXT("XPComponent"));
 	AutoAttackComponent = CreateDefaultSubobject<UAutoAttackComponent>(TEXT("AutoAttackComponent"));
+
+	BillboardVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BillboardVisual"));
+	BillboardVisual->SetupAttachment(RootComponent);
+	BillboardVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
+	if (PlaneMesh)
+	{
+		BillboardVisual->SetStaticMesh(PlaneMesh);
+		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 15.0f));
+		BillboardVisual->SetRelativeScale3D(FVector(1.15f, 1.0f, 1.8f));
+	}
+
+	BlobShadow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlobShadow"));
+	BlobShadow->SetupAttachment(RootComponent);
+	BlobShadow->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (PlaneMesh)
+	{
+		BlobShadow->SetStaticMesh(PlaneMesh);
+		BlobShadow->SetRelativeLocation(FVector(0.0f, 0.0f, -92.0f));
+		BlobShadow->SetRelativeScale3D(FVector(0.8f, 0.8f, 1.0f));
+	}
 }
 
 void AEmberPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	BuildRuntimeInput();
+	if (UMaterialInterface* Material = EmberGeneratedArt::LoadBillboardMaterial())
+	{
+		BillboardVisual->SetMaterial(0, Material);
+		if (UMaterialInstanceDynamic* MID = BillboardVisual->CreateAndSetMaterialInstanceDynamic(0))
+		{
+			MID->SetTextureParameterValue(TEXT("Tex"), EmberGeneratedArt::LoadTexture(TEXT("/Game/Emberbound/Generated/Characters/T_RiftArcherFull.T_RiftArcherFull")));
+			MID->SetVectorParameterValue(TEXT("Tint"), FLinearColor::White);
+			MID->SetScalarParameterValue(TEXT("Flash"), 0.0f);
+		}
+	}
+	if (UMaterialInterface* ShadowMaterial = EmberGeneratedArt::LoadBlobShadowMaterial())
+	{
+		BlobShadow->SetMaterial(0, ShadowMaterial);
+	}
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: PlayerSpawned"));
+}
+
+void AEmberPlayerCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	EmberGeneratedArt::FaceComponentToPlayerCamera(BillboardVisual, this);
 }
 
 void AEmberPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

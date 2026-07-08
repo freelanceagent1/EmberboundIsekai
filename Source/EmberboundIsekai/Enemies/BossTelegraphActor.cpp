@@ -3,6 +3,7 @@
 #include "Engine/StaticMesh.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
+#include "UObject/ConstructorHelpers.h"
 
 ABossTelegraphActor::ABossTelegraphActor()
 {
@@ -11,10 +12,10 @@ ABossTelegraphActor::ABossTelegraphActor()
 	Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
 	SetRootComponent(Visual);
 	Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
-	if (CubeMesh.Succeeded())
+	UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+	if (CubeMesh)
 	{
-		Visual->SetStaticMesh(CubeMesh.Object);
+		Visual->SetStaticMesh(CubeMesh);
 	}
 }
 

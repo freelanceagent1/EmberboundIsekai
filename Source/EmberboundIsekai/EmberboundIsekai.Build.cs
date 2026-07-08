@@ -4,7 +4,7 @@ public class EmberboundIsekai : ModuleRules
 {
 	public EmberboundIsekai(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+		PCHUsage = PCHUsageMode.NoPCHs;
 
 		PublicIncludePaths.AddRange(new string[]
 		{

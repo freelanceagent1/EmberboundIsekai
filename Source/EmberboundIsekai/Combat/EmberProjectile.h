@@ -7,6 +7,7 @@
 #include "EmberProjectile.generated.h"
 
 class USphereComponent;
+class UMaterialInstanceDynamic;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -30,6 +31,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Visual;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> VisualMID;
 
 	UPROPERTY()
 	FVector MoveDirection = FVector::ForwardVector;
@@ -70,4 +74,5 @@ private:
 	void TraceMovement(const FVector& From, const FVector& To);
 	bool TryRicochet(AActor* HitActor);
 	void ReleaseSelf();
+	void ConfigureVisual(bool bForEnemyProjectile);
 };

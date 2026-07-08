@@ -1,14 +1,17 @@
 #include "UI/UpgradeChoiceWidget.h"
 #include "Data/RunUpgradeData.h"
+#include "Generated/EmberGeneratedArt.h"
 #include "Run/RunUpgradeManager.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
+#include "Engine/Texture2D.h"
 #include "Input/Reply.h"
 
 void UUpgradeChoiceWidget::NativeOnInitialized()
@@ -93,6 +96,7 @@ void UUpgradeChoiceWidget::RebuildCards()
 		UTextBlock* Title = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 		UTextBlock* Description = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 		UTextBlock* Rarity = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
+		UImage* Icon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass());
 		Title->SetText(Upgrade ? Upgrade->Title : FText::GetEmpty());
 		Title->SetColorAndOpacity(GetRarityColor(Upgrade));
 		Description->SetText(Upgrade ? Upgrade->Description : FText::GetEmpty());
@@ -100,7 +104,19 @@ void UUpgradeChoiceWidget::RebuildCards()
 		const FString RarityText = Upgrade ? StaticEnum<ERunUpgradeRarity>()->GetNameStringByValue(static_cast<int64>(Upgrade->Rarity)) : FString();
 		Rarity->SetText(FText::FromString(FString::Printf(TEXT("%d  %s"), Index + 1, *RarityText)));
 		Rarity->SetColorAndOpacity(GetRarityColor(Upgrade));
+		if (Upgrade)
+		{
+			if (UTexture2D* Texture = Upgrade->Icon.LoadSynchronous())
+			{
+				Icon->SetBrushFromTexture(Texture, true);
+			}
+			else if (UTexture2D* ConventionTexture = EmberGeneratedArt::LoadTexture(EmberGeneratedArt::UpgradeIconTexturePath(Upgrade->Id)))
+			{
+				Icon->SetBrushFromTexture(ConventionTexture, true);
+			}
+		}
 		Body->AddChildToVerticalBox(Rarity);
+		Body->AddChildToVerticalBox(Icon);
 		Body->AddChildToVerticalBox(Title);
 		Body->AddChildToVerticalBox(Description);
 		Button->AddChild(Body);

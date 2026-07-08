@@ -1,5 +1,6 @@
 #include "Core/EmberDataRegistry.h"
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "AssetRegistry/AssetData.h"
 #include "Engine/DataAsset.h"
 #include "EmberboundIsekai.h"
 

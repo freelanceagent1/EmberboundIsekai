@@ -10,6 +10,8 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-07 | EmberboundIsekaiEditor Win64 Development (M2 run upgrade system) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT) |
 | 2026-07-07 | EmberboundIsekaiEditor Win64 Development (M3 boss and run results) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT) |
 | 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M4 camp/save/buildings) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M5b generated art wiring) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekai Win64 Development (M5b runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 
 ## Automated checks
 | Date | Check | Result |
@@ -25,6 +27,9 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | M4 camp content build + verify | ✅ `CONTENT_OK`; `M4_ASSET_VERIFY_OK`; `L_Camp` and 4 building assets verified |
 | 2026-07-08 | M4 camp/save two-boot smoke | ✅ First boot upgraded `campfire-core lvl=2` and `grim-forge lvl=2`; second boot loaded `Gold=30 Wood=20 SoulAsh=6 campfire=2 forge=2` |
 | 2026-07-08 | M4 full-loop smoke | ✅ Camp → Expedition → boss victory → Return to Camp → `RunBanked Gold=25 Wood=10 SoulAsh=8 Embers=1 Shards=3`; reboot loaded `Gold=55 Wood=30 SoulAsh=14 campfire=2 forge=2`; `PlayerDamage 15.60` verified forge effect |
+| 2026-07-08 | M5b import + content verify | ✅ `IMPORT_OK n=62`; `UPGRADE_ICONS_ASSIGNED n=15`; `M5B_ASSET_VERIFY_OK assets=62 materials=10 upgrade_icons=15` |
+| 2026-07-08 | M5b generated art automation test | ✅ `Emberbound.M5b.GeneratedArtPaths` completed with `Result={Success}` |
+| 2026-07-08 | M5b camp + expedition smoke | ✅ Camp boot clean; Expedition boot logged `EMBER: IconResolved 6/6`; no Emberbound missing-texture/object grep hits |
 
 ## Manual PIE checklist
 - [ ] Project opens in UE 5.8 without module rebuild errors
@@ -48,3 +53,4 @@ Compile/run status and manual test checklist. Updated every milestone.
 - M2 `Ember.AutoPickUpgrades` selects immediately under pause for headless smoke because this UE 5.8 timer API does not expose paused world timers.
 - M3 defeat smoke starts directly at room 7, so there is no pre-boss run tally to retain; log includes `KeepPct=60` and zero banked amounts.
 - M4 adds deterministic headless smoke helpers `Ember.BuyBuilding` and `Ember.DebugAutoReturnCamp`; required M4 exec hooks are also present.
+- M5b spawns generated floor material planes at runtime instead of mutating level assets because UE 5.8 headless level-edit APIs crashed in this environment.

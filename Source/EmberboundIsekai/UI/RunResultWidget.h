@@ -6,6 +6,7 @@
 #include "RunResultWidget.generated.h"
 
 class UButton;
+class UImage;
 class UTextBlock;
 
 UCLASS()
@@ -20,6 +21,9 @@ public:
 private:
 	UPROPERTY()
 	TObjectPtr<UTextBlock> TitleText;
+
+	UPROPERTY()
+	TObjectPtr<UImage> HeaderImage;
 
 	UPROPERTY()
 	TObjectPtr<UTextBlock> LootText;

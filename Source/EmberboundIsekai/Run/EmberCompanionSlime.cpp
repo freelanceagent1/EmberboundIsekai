@@ -7,7 +7,9 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/World.h"
 #include "TimerManager.h"
+#include "UObject/ConstructorHelpers.h"
 
 AEmberCompanionSlime::AEmberCompanionSlime()
 {
@@ -19,10 +21,10 @@ AEmberCompanionSlime::AEmberCompanionSlime()
 	Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
 	Visual->SetupAttachment(RootComponent);
 	Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-	if (SphereMesh.Succeeded())
+	UStaticMesh* SphereMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+	if (SphereMesh)
 	{
-		Visual->SetStaticMesh(SphereMesh.Object);
+		Visual->SetStaticMesh(SphereMesh);
 		Visual->SetRelativeScale3D(FVector(0.45f, 0.45f, 0.3f));
 	}
 }
