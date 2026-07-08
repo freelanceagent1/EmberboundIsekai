@@ -58,6 +58,20 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | M10 defender assignment in autopilot | ✅ Final autopilot log includes `MonsterAssigned bone-rat role=defender slots=1/1 defender=4.0` and `DefenderSpawned bone-rat` |
 | 2026-07-08 | M10 reboot after autopilot | ✅ Fresh Camp boot loaded `Gold=512 Wood=220 SoulAsh=122 campfire=1 forge=1 slimeShards=203 owned=2 assignments=1 titles=2` |
 
+## M12 PACKAGED standalone build — end-to-end validation (orchestrator, 2026-07-08)
+The shipped Development Windows package (`Packaged/Windows/EmberboundIsekai.exe`, ~917 MB, cooked/staged/pak) was driven through the **entire loop by the autopilot, outside the editor**.
+
+| Check | Result |
+|---|---|
+| Package build | ✅ `BUILD SUCCESSFUL` / `AutomationTool ExitCode=0` (RunUAT BuildCookRun Win64 Development) |
+| Cooked-build content load | ✅ `UpgradeCatalogLoaded count=15`, `MonsterCatalogLoaded count=3`, `TitleCatalogLoaded count=5`, `DataRegistryLoaded Count=30` (all gameplay catalogs complete; fallback loads added for empty cooked AssetRegistry query) |
+| Continuous full loop (packaged exe) | ✅ ordered chain `AUTOPILOT CampStart → travel=Expedition → Expedition → roomsCleared → bossKilled → travel=Camp → RunBanked Gold=72 Wood=22 SoulAsh=15 Embers=1 → CampReturn → bought=campfire-core → bought=grim-forge → DefenseResult Victory gold=15 wood=6 soulash=4 essence=3 → defenseDone → offlineDone → saved → AUTOPILOT COMPLETE` |
+| Pooled damage numbers (packaged) | ✅ `DamageText n=1..4` during the run |
+| Rendered frame from cooked build | ✅ `Docs/validation/packaged_autopilot.png` — generated grass floor, resource HUD w/ icons, building sprites (portal/watchtower/pen), player sprite, joystick |
+| Map travel across cooked levels | ✅ Camp↔Expedition `OpenLevel` travel worked in the packaged build (autopilot state persisted across travel) |
+
+**Verdict: the standalone shipped build is fully functional and runs the complete game loop end-to-end.**
+
 ## M9 orchestrator end-to-end validation (independent re-runs, 2026-07-08)
 Run by the overseer (not the milestone author), full clean builds + fresh `-game` runs. Logs in `Docs/validation/`.
 
