@@ -7,6 +7,8 @@
 #include "Enemies/EnemySpawnerSubsystem.h"
 #include "Run/RunUpgradeManager.h"
 #include "EmberboundIsekai.h"
+#include "Engine/GameInstance.h"
+#include "Engine/World.h"
 #include "HAL/IConsoleManager.h"
 #include "TimerManager.h"
 
@@ -18,11 +20,7 @@ UAutoAttackComponent::UAutoAttackComponent()
 void UAutoAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	if (UWorld* World = GetWorld())
-	{
-		World->GetTimerManager().SetTimer(AcquisitionTimerHandle, this, &UAutoAttackComponent::AcquireTarget, 0.15f, true);
-		World->GetTimerManager().SetTimer(FireTimerHandle, this, &UAutoAttackComponent::FireAtTarget, AttackInterval, true, 0.25f);
-	}
+	RefreshTimers();
 	if (USaveManagerSubsystem* Save = GetWorld() && GetWorld()->GetGameInstance() ? GetWorld()->GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
 	{
 		ApplyDamageMultiplier(Save->GetPlayerDamageMultiplier());
@@ -46,10 +44,30 @@ void UAutoAttackComponent::ApplyAttackSpeedMultiplier(float Multiplier)
 		return;
 	}
 	AttackInterval = FMath::Max(0.12f, AttackInterval * Multiplier);
+	RefreshTimers();
+}
+
+void UAutoAttackComponent::SetAttackingEnabled(bool bEnabled)
+{
+	bAttackingEnabled = bEnabled;
+	if (!bAttackingEnabled)
+	{
+		CurrentTarget = nullptr;
+	}
+	RefreshTimers();
+}
+
+void UAutoAttackComponent::RefreshTimers()
+{
 	if (UWorld* World = GetWorld())
 	{
+		World->GetTimerManager().ClearTimer(AcquisitionTimerHandle);
 		World->GetTimerManager().ClearTimer(FireTimerHandle);
-		World->GetTimerManager().SetTimer(FireTimerHandle, this, &UAutoAttackComponent::FireAtTarget, AttackInterval, true, AttackInterval);
+		if (bAttackingEnabled)
+		{
+			World->GetTimerManager().SetTimer(AcquisitionTimerHandle, this, &UAutoAttackComponent::AcquireTarget, 0.15f, true);
+			World->GetTimerManager().SetTimer(FireTimerHandle, this, &UAutoAttackComponent::FireAtTarget, AttackInterval, true, 0.25f);
+		}
 	}
 }
 

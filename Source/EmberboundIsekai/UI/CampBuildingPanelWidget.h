@@ -8,6 +8,7 @@
 
 class UBuildingData;
 class UButton;
+class UDefenseEventManager;
 class UImage;
 class UTextBlock;
 class UVerticalBox;
@@ -60,6 +61,9 @@ private:
 	TObjectPtr<UButton> CloseButton;
 
 	UPROPERTY()
+	TObjectPtr<UButton> StartDefenseButton;
+
+	UPROPERTY()
 	TObjectPtr<UVerticalBox> DetailBox;
 
 	bool bLocked = false;
@@ -75,4 +79,7 @@ private:
 
 	UFUNCTION()
 	void HandleClose();
+
+	UFUNCTION()
+	void HandleStartDefense();
 };

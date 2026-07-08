@@ -134,6 +134,7 @@ void AEmberEnemyBase::OnReleased_Implementation()
 	ContactCooldowns.Reset();
 	DesiredDirection = FVector::ZeroVector;
 	StatusMoveSpeedScale = 1.0f;
+	ForcedTarget = nullptr;
 	ResetBillboardFlash();
 }
 
@@ -187,6 +188,12 @@ bool AEmberEnemyBase::IsAlive() const
 	return HealthComponent && HealthComponent->IsAlive();
 }
 
+void AEmberEnemyBase::SetForcedTarget(AActor* InTarget)
+{
+	ForcedTarget = InTarget;
+	UpdateDesiredDirection();
+}
+
 void AEmberEnemyBase::SetStatusMoveSpeedScale(float InScale)
 {
 	StatusMoveSpeedScale = FMath::Clamp(InScale, 0.1f, 1.0f);
@@ -194,6 +201,13 @@ void AEmberEnemyBase::SetStatusMoveSpeedScale(float InScale)
 
 void AEmberEnemyBase::UpdateDesiredDirection()
 {
+	if (ForcedTarget)
+	{
+		FVector ToTarget = ForcedTarget->GetActorLocation() - GetActorLocation();
+		ToTarget.Z = 0.0f;
+		DesiredDirection = ToTarget.GetSafeNormal();
+		return;
+	}
 	if (!Player)
 	{
 		Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -273,7 +287,7 @@ void AEmberEnemyBase::FireRangedProjectile()
 
 void AEmberEnemyBase::HandleOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
-	if (RuntimeContactDamage <= 0.0f || !OtherActor || !OtherActor->IsA<AEmberPlayerCharacter>())
+	if (RuntimeContactDamage <= 0.0f || !OtherActor || OtherActor == this || OtherActor->IsA<AEmberEnemyBase>())
 	{
 		return;
 	}

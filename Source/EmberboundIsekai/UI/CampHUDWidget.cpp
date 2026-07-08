@@ -1,4 +1,5 @@
 #include "UI/CampHUDWidget.h"
+#include "Camp/DefenseEventManager.h"
 #include "Core/EconomySubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
@@ -96,7 +97,11 @@ void UCampHUDWidget::HandleMonsters()
 
 void UCampHUDWidget::HandleDefense()
 {
-	StubText->SetText(NSLOCTEXT("Camp", "DefenseStub", "Defense event - M7"));
+	if (UDefenseEventManager* Defense = GetWorld() ? GetWorld()->GetSubsystem<UDefenseEventManager>() : nullptr)
+	{
+		Defense->StartDefense();
+	}
+	StubText->SetText(NSLOCTEXT("Camp", "DefenseStarted", "Defense running"));
 }
 
 void UCampHUDWidget::HandleSave()

@@ -76,6 +76,10 @@ void ACampGameMode::BeginPlay()
 		}
 	}
 	SpawnCampActors();
+	if (AEmberPlayerCharacter* Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		Player->SetAutoAttackEnabled(false);
+	}
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
 		CampHUD = CreateWidget<UCampHUDWidget>(PC, UCampHUDWidget::StaticClass());

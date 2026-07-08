@@ -1,4 +1,5 @@
 #include "UI/CampBuildingPanelWidget.h"
+#include "Camp/DefenseEventManager.h"
 #include "Core/EconomySubsystem.h"
 #include "Core/MonsterCollectionSubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
@@ -21,7 +22,7 @@ void UMonsterAssignButton::HandleClicked()
 	}
 }
 
-static FString ResourceLabel(EEmberResource Resource)
+static FString CampPanelResourceLabel(EEmberResource Resource)
 {
 	switch (Resource)
 	{
@@ -171,6 +172,16 @@ void UCampBuildingPanelWidget::RefreshWatchtowerPanel()
 	UTextBlock* DefenderPower = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 	DefenderPower->SetText(FText::FromString(FString::Printf(TEXT("Defender Power: %.1f DPS"), Monsters->GetDefenderPower())));
 	DetailBox->AddChildToVerticalBox(DefenderPower);
+	StartDefenseButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("StartDefenseButton"));
+	UTextBlock* ButtonText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
+	ButtonText->SetText(NSLOCTEXT("Camp", "StartDefense", "Start Defense"));
+	StartDefenseButton->AddChild(ButtonText);
+	StartDefenseButton->OnClicked.AddDynamic(this, &UCampBuildingPanelWidget::HandleStartDefense);
+	if (UDefenseEventManager* Defense = GetWorld() ? GetWorld()->GetSubsystem<UDefenseEventManager>() : nullptr)
+	{
+		StartDefenseButton->SetIsEnabled(!Defense->IsDefenseActive());
+	}
+	DetailBox->AddChildToVerticalBox(StartDefenseButton);
 }
 
 FString UCampBuildingPanelWidget::CostLinesForLevel(int32 CurrentLevel, bool& bAffordable) const
@@ -193,7 +204,7 @@ FString UCampBuildingPanelWidget::CostLinesForLevel(int32 CurrentLevel, bool& bA
 	TArray<FString> Lines;
 	for (const TPair<EEmberResource, int32>& Pair : BuildingData->UpgradeCosts[CurrentLevel - 1].Amounts)
 	{
-		Lines.Add(FString::Printf(TEXT("%s: %d/%d%s"), *ResourceLabel(Pair.Key), Economy->Get(Pair.Key), Pair.Value, Economy->Get(Pair.Key) >= Pair.Value ? TEXT("") : TEXT(" missing")));
+		Lines.Add(FString::Printf(TEXT("%s: %d/%d%s"), *CampPanelResourceLabel(Pair.Key), Economy->Get(Pair.Key), Pair.Value, Economy->Get(Pair.Key) >= Pair.Value ? TEXT("") : TEXT(" missing")));
 	}
 	return FString::Join(Lines, TEXT("\n"));
 }
@@ -210,4 +221,13 @@ void UCampBuildingPanelWidget::HandleUpgrade()
 void UCampBuildingPanelWidget::HandleClose()
 {
 	RemoveFromParent();
+}
+
+void UCampBuildingPanelWidget::HandleStartDefense()
+{
+	if (UDefenseEventManager* Defense = GetWorld() ? GetWorld()->GetSubsystem<UDefenseEventManager>() : nullptr)
+	{
+		Defense->StartDefense();
+	}
+	Refresh();
 }

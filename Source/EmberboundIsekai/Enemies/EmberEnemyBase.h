@@ -31,6 +31,7 @@ public:
 	void InitFromData(UEmberEnemyData* InEnemyData);
 	void ApplyRuntimeModifiers(float HealthMultiplier, float DamageMultiplier, float ScaleMultiplier, const FLinearColor& TintOverride);
 	void ConfigureRuntimeStats(float MaxHealth, float ContactDamage, float MoveSpeed, const FVector& VisualScale, const FLinearColor& Tint);
+	void SetForcedTarget(AActor* InTarget);
 	bool IsAlive() const;
 	void SetStatusMoveSpeedScale(float InScale);
 	UHealthComponent* GetHealthComponent() const { return HealthComponent; }
@@ -62,6 +63,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AEmberPlayerCharacter> Player;
+
+	UPROPERTY()
+	TObjectPtr<AActor> ForcedTarget;
 
 	FTimerHandle RepathTimerHandle;
 	FTimerHandle RangedTimerHandle;

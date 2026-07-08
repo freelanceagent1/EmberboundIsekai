@@ -16,6 +16,7 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	void SetAttackingEnabled(bool bEnabled);
 	void ApplyAttackSpeedMultiplier(float Multiplier);
 	void ApplyDamageMultiplier(float Multiplier);
 
@@ -53,6 +54,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<AEmberEnemyBase> CurrentTarget;
 
+	bool bAttackingEnabled = true;
+
+	void RefreshTimers();
 	void AcquireTarget();
 	void FireAtTarget();
 	void SpawnProjectile(const FVector& Direction, float ResolvedDamage);

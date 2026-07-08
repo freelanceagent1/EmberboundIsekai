@@ -25,6 +25,7 @@ public:
 
 	float GetPickupRadius() const { return PickupRadius; }
 	void ApplyPickupRadiusMultiplier(float Multiplier);
+	void SetAutoAttackEnabled(bool bEnabled);
 
 	UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 	UXPComponent* GetXPComponent() const { return XPComponent; }

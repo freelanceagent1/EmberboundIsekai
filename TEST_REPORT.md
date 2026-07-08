@@ -14,6 +14,8 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | EmberboundIsekai Win64 Development (M5b runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M6 monsters/offline income) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekai Win64 Development (M6 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M7 camp defense event) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekai Win64 Development (M7 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 
 ## Automated checks
 | Date | Check | Result |
@@ -36,6 +38,11 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | M6 unlock/worker/offline smoke | ✅ `MonsterUnlocked slime`; `MonsterAssigned slime role=worker`; `OfflineReward mins=120 capped=0 gold=240 soulash=0`; `OfflineReward mins=240 capped=1 gold=480 soulash=0`; popup logged |
 | 2026-07-08 | M6 companion expedition smoke | ✅ Assigned slime companion spawned; `CompanionAttack slime damage=6.0`; companion projectile `ProjectileHit ... damage=6.0` |
 | 2026-07-08 | M6 save/reload roundtrip | ✅ Reboot loaded `Gold=720 Wood=0 SoulAsh=0 campfire=0 forge=0 slimeShards=5 owned=1 assignments=1` |
+| 2026-07-08 | M7 defense reward automation test | ✅ `Emberbound.M7.DefenseRewardCalculation` completed with `Result={Success}` and `EXIT CODE: 0` |
+| 2026-07-08 | M7 victory defense smoke | ✅ Bone-rat defender spawned; `DefenseWave n=1..4`; `DefenseResult Victory gold=16 wood=6 soulash=4 essence=3`; `EMBER: Saved` |
+| 2026-07-08 | M7 victory save/reload roundtrip | ✅ Reboot loaded `Gold=996 Wood=1003 SoulAsh=1004 ... owned=1 assignments=1` |
+| 2026-07-08 | M7 defeat defense smoke | ✅ Wave-2 defeat path logged `DefenseResult Defeat gold=6 wood=2 soulash=1 essence=1`; `EMBER: Saved` |
+| 2026-07-08 | M7 defeat save/reload roundtrip | ✅ Reboot loaded `Gold=986 Wood=999 SoulAsh=1001 ... owned=1 assignments=1`; camp remained bootable |
 
 ## Manual PIE checklist
 - [ ] Project opens in UE 5.8 without module rebuild errors
@@ -61,3 +68,4 @@ Compile/run status and manual test checklist. Updated every milestone.
 - M4 adds deterministic headless smoke helpers `Ember.BuyBuilding` and `Ember.DebugAutoReturnCamp`; required M4 exec hooks are also present.
 - M5b spawns generated floor material planes at runtime instead of mutating level assets because UE 5.8 headless level-edit APIs crashed in this environment.
 - M6 companion smoke used a timed editor process started by the verification command and stopped only that PID after required markers were present.
+- M7 defeat smoke used `Ember.DebugAutoDefense 2` to trigger wave-2 campfire damage inside the unattended process; `Ember.DamageCampfire <n>` is implemented for interactive/manual use.

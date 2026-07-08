@@ -124,6 +124,14 @@ void AEmberPlayerCharacter::ApplyPickupRadiusMultiplier(float Multiplier)
 	PickupRadius *= FMath::Max(1.0f, Multiplier);
 }
 
+void AEmberPlayerCharacter::SetAutoAttackEnabled(bool bEnabled)
+{
+	if (AutoAttackComponent)
+	{
+		AutoAttackComponent->SetAttackingEnabled(bEnabled);
+	}
+}
+
 void AEmberPlayerCharacter::BuildRuntimeInput()
 {
 	if (!MoveAction)
