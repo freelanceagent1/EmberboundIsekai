@@ -49,11 +49,11 @@ ACampBuildingActor::ACampBuildingActor()
 	if (PlaneMesh)
 	{
 		BillboardVisual->SetStaticMesh(PlaneMesh);
-		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 40.0f));
-		BillboardVisual->SetRelativeScale3D(FVector(1.8f, 1.0f, 1.35f));
+		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 82.0f));
+		BillboardVisual->SetRelativeScale3D(FVector(1.8f, 1.45f, 1.0f));
 		FlameVisual->SetStaticMesh(PlaneMesh);
 		FlameVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 120.0f));
-		FlameVisual->SetRelativeScale3D(FVector(0.7f, 1.0f, 0.7f));
+		FlameVisual->SetRelativeScale3D(FVector(0.48f, 0.62f, 1.0f));
 	}
 }
 

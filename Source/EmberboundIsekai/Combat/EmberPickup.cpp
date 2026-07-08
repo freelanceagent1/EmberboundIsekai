@@ -34,7 +34,8 @@ AEmberPickup::AEmberPickup()
 	if (PlaneMesh)
 	{
 		Visual->SetStaticMesh(PlaneMesh);
-		Visual->SetRelativeScale3D(FVector(0.28f, 1.0f, 0.28f));
+		Visual->SetRelativeLocation(FVector(0.0f, 0.0f, 26.0f));
+		Visual->SetRelativeScale3D(FVector(0.36f, 0.36f, 1.0f));
 	}
 }
 

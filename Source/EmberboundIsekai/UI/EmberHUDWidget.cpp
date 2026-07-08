@@ -40,7 +40,8 @@ void UEmberHUDWidget::NativeOnInitialized()
 		UImage* Icon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass());
 		if (UTexture2D* Texture = EmberGeneratedArt::LoadTexture(EmberGeneratedArt::HudIconTexturePath(IconId)))
 		{
-			Icon->SetBrushFromTexture(Texture, true);
+			Icon->SetBrushFromTexture(Texture, false);
+			Icon->SetDesiredSizeOverride(FVector2D(28.0f, 28.0f));
 			++ResolvedIcons;
 		}
 		IconRow->AddChildToHorizontalBox(Icon);

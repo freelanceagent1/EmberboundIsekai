@@ -25,6 +25,7 @@
 #include "Engine/World.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/CommandLine.h"
 #include "TimerManager.h"
@@ -51,7 +52,11 @@ namespace
 			Floor->SetActorLabel(TEXT("M5b_ExpeditionCorruptedGrassFloor"));
 #endif
 			Floor->GetStaticMeshComponent()->SetStaticMesh(PlaneMesh);
-			Floor->GetStaticMeshComponent()->SetMaterial(0, Material);
+			UMaterialInstanceDynamic* FloorMID = Floor->GetStaticMeshComponent()->CreateAndSetMaterialInstanceDynamicFromMaterial(0, Material);
+			if (FloorMID)
+			{
+				FloorMID->SetVectorParameterValue(TEXT("Tint"), FLinearColor(0.80f, 0.70f, 0.82f, 1.0f));
+			}
 			Floor->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			Floor->SetActorScale3D(FVector(28.0f, 28.0f, 1.0f));
 		}

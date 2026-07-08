@@ -54,8 +54,8 @@ AEmberPlayerCharacter::AEmberPlayerCharacter()
 	if (PlaneMesh)
 	{
 		BillboardVisual->SetStaticMesh(PlaneMesh);
-		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 15.0f));
-		BillboardVisual->SetRelativeScale3D(FVector(1.15f, 1.0f, 1.8f));
+		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 88.0f));
+		BillboardVisual->SetRelativeScale3D(FVector(1.2f, 1.75f, 1.0f));
 	}
 
 	BlobShadow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlobShadow"));

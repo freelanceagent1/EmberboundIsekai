@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInterface.h"
+#include "Math/RotationMatrix.h"
 
 namespace
 {
@@ -62,8 +63,20 @@ namespace EmberGeneratedArt
 
 	FString BuildingTexturePath(FName BuildingId)
 	{
-		const FString TextureName = FString::Printf(TEXT("T_%s"), *PascalFromKebab(BuildingId.ToString()));
-		return TexturePath(TEXT("Buildings"), TextureName);
+		const TMap<FName, FString> Paths = {
+			{ TEXT("campfire-core"), TEXT("T_CampfireCore") },
+			{ TEXT("grim-forge"), TEXT("T_GrimForge") },
+			{ TEXT("monster-pen"), TEXT("T_MonsterPen") },
+			{ TEXT("watchtower"), TEXT("T_Watchtower") },
+			{ TEXT("expedition-portal"), TEXT("T_ExpeditionPortal") }
+		};
+		const FString* TextureName = Paths.Find(BuildingId);
+		if (TextureName)
+		{
+			return TexturePath(TEXT("Buildings"), *TextureName);
+		}
+		const FString FallbackTextureName = FString::Printf(TEXT("T_%s"), *PascalFromKebab(BuildingId.ToString()));
+		return TexturePath(TEXT("Buildings"), FallbackTextureName);
 	}
 
 	FString PickupTexturePath(FName PickupId)
@@ -149,7 +162,12 @@ namespace EmberGeneratedArt
 		const APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
 		if (PC && PC->PlayerCameraManager)
 		{
-			Component->SetWorldRotation(PC->PlayerCameraManager->GetCameraRotation());
+			const FVector ToCamera = (PC->PlayerCameraManager->GetCameraLocation() - Component->GetComponentLocation()).GetSafeNormal();
+			if (!ToCamera.IsNearlyZero())
+			{
+				const FVector CameraRight = FRotationMatrix(PC->PlayerCameraManager->GetCameraRotation()).GetUnitAxis(EAxis::Y);
+				Component->SetWorldRotation(FRotationMatrix::MakeFromXZ(CameraRight, ToCamera).Rotator());
+			}
 		}
 	}
 }

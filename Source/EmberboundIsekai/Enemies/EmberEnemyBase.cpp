@@ -48,7 +48,7 @@ AEmberEnemyBase::AEmberEnemyBase()
 	if (PlaneMesh)
 	{
 		BillboardVisual->SetStaticMesh(PlaneMesh);
-		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 55.0f));
+		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
 		BillboardVisual->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
 	}
 
@@ -235,9 +235,10 @@ void AEmberEnemyBase::ConfigureBillboard(FName TextureId, const FVector& VisualS
 {
 	if (BillboardVisual)
 	{
-		const float Width = FMath::Clamp(VisualScale.X * 1.35f, 0.6f, 2.6f);
-		const float Height = FMath::Clamp(VisualScale.Z * 1.7f, 0.55f, 2.7f);
-		BillboardVisual->SetRelativeScale3D(FVector(Width, 1.0f, Height));
+		const float Width = FMath::Clamp(VisualScale.X * 1.25f, 0.75f, 3.0f);
+		const float Height = FMath::Clamp(FMath::Max(VisualScale.Z * 1.8f, VisualScale.X * 1.35f), 0.95f, 3.2f);
+		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, Height * 50.0f));
+		BillboardVisual->SetRelativeScale3D(FVector(Width, Height, 1.0f));
 		if (UMaterialInterface* Material = EmberGeneratedArt::LoadBillboardMaterial())
 		{
 			BillboardVisual->SetMaterial(0, Material);
