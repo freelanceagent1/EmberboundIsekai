@@ -2,6 +2,7 @@
 #include "Core/EconomySubsystem.h"
 #include "Core/EmberGameInstance.h"
 #include "Core/EmberSaveGame.h"
+#include "Core/MonsterCollectionSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
 #include "Data/BuildingData.h"
 #include "HAL/IConsoleManager.h"
@@ -133,7 +134,14 @@ bool USaveManagerSubsystem::BankPendingRunResult()
 	{
 		for (const TPair<FName, int32>& Pair : EmberGI->LastRunResult.MonsterShards)
 		{
-			CurrentSave->MonsterShards.FindOrAdd(Pair.Key) += Pair.Value;
+			if (UMonsterCollectionSubsystem* Monsters = GetGameInstance()->GetSubsystem<UMonsterCollectionSubsystem>())
+			{
+				Monsters->GrantShards(Pair.Key, Pair.Value);
+			}
+			else
+			{
+				CurrentSave->MonsterShards.FindOrAdd(Pair.Key) += Pair.Value;
+			}
 		}
 	}
 	EmberGI->LastRunResult.bBankedToSave = true;
@@ -154,7 +162,10 @@ FString USaveManagerSubsystem::BuildSummary() const
 	const int32 SoulAsh = CurrentSave ? CurrentSave->Resources.FindRef(EEmberResource::SoulAsh) : 0;
 	const int32 Campfire = GetBuildingLevel(TEXT("campfire-core"));
 	const int32 Forge = GetBuildingLevel(TEXT("grim-forge"));
-	return FString::Printf(TEXT("Gold=%d Wood=%d SoulAsh=%d campfire=%d forge=%d"), Gold, Wood, SoulAsh, Campfire, Forge);
+	const int32 SlimeShards = CurrentSave ? CurrentSave->MonsterShards.FindRef(TEXT("slime")) : 0;
+	const int32 OwnedCount = CurrentSave ? CurrentSave->OwnedMonsters.Num() : 0;
+	const int32 AssignmentCount = CurrentSave ? CurrentSave->Assignments.Num() : 0;
+	return FString::Printf(TEXT("Gold=%d Wood=%d SoulAsh=%d campfire=%d forge=%d slimeShards=%d owned=%d assignments=%d"), Gold, Wood, SoulAsh, Campfire, Forge, SlimeShards, OwnedCount, AssignmentCount);
 }
 
 UEconomySubsystem* USaveManagerSubsystem::GetEconomy() const

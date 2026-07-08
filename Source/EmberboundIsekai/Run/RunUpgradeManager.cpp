@@ -5,7 +5,8 @@
 #include "Combat/XPComponent.h"
 #include "Core/EconomySubsystem.h"
 #include "Run/EmberBoneShieldOrbiter.h"
-#include "Run/EmberCompanionSlime.h"
+#include "Data/MonsterData.h"
+#include "Run/EmberCompanionActor.h"
 #include "Run/EmberSoulFlamePatch.h"
 #include "UI/UpgradeChoiceWidget.h"
 #include "AssetRegistry/AssetRegistryModule.h"
@@ -419,6 +420,10 @@ void URunUpgradeManager::SpawnCompanionSlime()
 	{
 		return;
 	}
-	CompanionSlime = GetWorld()->SpawnActor<AEmberCompanionSlime>(AEmberCompanionSlime::StaticClass(), Player->GetActorLocation() + FVector(120.0f, 0.0f, 0.0f), FRotator::ZeroRotator);
-	CompanionSlime->SetPlayer(Player);
+	UMonsterData* SlimeData = LoadObject<UMonsterData>(nullptr, TEXT("/Game/Emberbound/Data/Monsters/DA_Slime.DA_Slime"));
+	CompanionSlime = GetWorld()->SpawnActor<AEmberCompanionActor>(AEmberCompanionActor::StaticClass(), Player->GetActorLocation() + FVector(120.0f, 0.0f, 0.0f), FRotator::ZeroRotator);
+	if (CompanionSlime)
+	{
+		CompanionSlime->InitCompanion(SlimeData, Player);
+	}
 }

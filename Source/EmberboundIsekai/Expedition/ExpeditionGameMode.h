@@ -7,6 +7,7 @@
 
 class AEmberEnemyBase;
 class ABossTutorialDragon;
+class AEmberCompanionActor;
 class AExpeditionPortal;
 class UEmberEnemyData;
 class UEmberHUDWidget;
@@ -66,6 +67,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<ABossTutorialDragon> ActiveBoss;
 
+	UPROPERTY()
+	TObjectPtr<AEmberCompanionActor> AssignedCompanion;
+
 	int32 CurrentRoomIndex = 0;
 	int32 SpawnedThisRoom = 0;
 	int32 KilledThisRoom = 0;
@@ -79,11 +83,13 @@ private:
 	FTimerHandle DebugKeepAliveTimerHandle;
 	FTimerHandle SpawnTimerHandle;
 	FTimerHandle RoomCheckTimerHandle;
+	TMap<FName, int32> RunMonsterShardTally;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	void AddRunResource(EEmberResource Resource, int32 Amount);
+	void AddRunMonsterShard(FName MonsterId, int32 Amount);
 
 private:
 	void BuildRoomSequence();
@@ -106,6 +112,7 @@ private:
 	void DamageBossConsole(const TArray<FString>& Args);
 	void AutoDamageBossTick();
 	void BindPlayerDeath();
+	void SpawnAssignedCompanion();
 	UFUNCTION()
 	void HandlePlayerDied(AActor* DeadActor);
 	void HandleBossDefeated(ABossTutorialDragon* Boss);

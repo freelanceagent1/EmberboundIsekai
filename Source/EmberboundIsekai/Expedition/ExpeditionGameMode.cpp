@@ -3,6 +3,7 @@
 #include "Combat/HealthComponent.h"
 #include "Core/EconomySubsystem.h"
 #include "Core/EmberGameInstance.h"
+#include "Core/MonsterCollectionSubsystem.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
 #include "Data/EmberEnemyData.h"
@@ -10,6 +11,7 @@
 #include "Enemies/EmberEnemyBase.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
 #include "Expedition/ExpeditionPortal.h"
+#include "Run/EmberCompanionActor.h"
 #include "Run/RunUpgradeManager.h"
 #include "UI/EmberHUDWidget.h"
 #include "UI/RunResultWidget.h"
@@ -97,6 +99,7 @@ void AExpeditionGameMode::BeginPlay()
 	}
 	RegisterDebugHooks();
 	BindPlayerDeath();
+	SpawnAssignedCompanion();
 	if (USaveManagerSubsystem* Save = GetGameInstance() ? GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
 	{
 		UE_LOG(LogEmberbound, Log, TEXT("EMBER: PlayerDamage %.2f"), 12.0f * Save->GetPlayerDamageMultiplier());
@@ -302,6 +305,16 @@ void AExpeditionGameMode::AddRunResource(EEmberResource Resource, int32 Amount)
 	RunResourceTally.FindOrAdd(Resource) += Amount;
 }
 
+void AExpeditionGameMode::AddRunMonsterShard(FName MonsterId, int32 Amount)
+{
+	if (Amount <= 0 || bRunEnded)
+	{
+		return;
+	}
+	RunMonsterShardTally.FindOrAdd(MonsterId) += Amount;
+	UE_LOG(LogEmberbound, Log, TEXT("EMBER: ShardDrop %s amount=%d total=%d"), *MonsterId.ToString(), Amount, RunMonsterShardTally.FindRef(MonsterId));
+}
+
 void AExpeditionGameMode::EndRun(bool bVictory)
 {
 	if (bRunEnded)
@@ -317,6 +330,11 @@ void AExpeditionGameMode::EndRun(bool bVictory)
 	{
 		ActiveBoss->Destroy();
 		ActiveBoss = nullptr;
+	}
+	if (AssignedCompanion)
+	{
+		AssignedCompanion->Destroy();
+		AssignedCompanion = nullptr;
 	}
 	BankRunResult(bVictory);
 	if (URunUpgradeManager* UpgradeManager = GetWorld()->GetSubsystem<URunUpgradeManager>())
@@ -356,9 +374,19 @@ void AExpeditionGameMode::BankRunResult(bool bVictory)
 		{
 			Result.BankedResources.FindOrAdd(EEmberResource::Embers) += 1;
 		}
-		Result.MonsterShards.Add(TEXT("TutorialDragon"), FMath::RandRange(2, 3));
+		static const TArray<FName> BossShardIds = { TEXT("slime"), TEXT("bone-rat"), TEXT("skeleton-archer") };
+		Result.MonsterShards.FindOrAdd(BossShardIds[FMath::RandRange(0, BossShardIds.Num() - 1)]) += FMath::RandRange(2, 3);
+	}
+	for (const TPair<FName, int32>& Pair : RunMonsterShardTally)
+	{
+		Result.MonsterShards.FindOrAdd(Pair.Key) += Pair.Value;
 	}
 	EmberGI->LastRunResult = Result;
+	int32 TotalShards = 0;
+	for (const TPair<FName, int32>& Pair : Result.MonsterShards)
+	{
+		TotalShards += Pair.Value;
+	}
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: RunResult %s KeepPct=%d Gold=%d Wood=%d SoulAsh=%d Embers=%d Shards=%d"),
 		bVictory ? TEXT("Victory") : TEXT("Defeat"),
 		bVictory ? 100 : 60,
@@ -366,7 +394,7 @@ void AExpeditionGameMode::BankRunResult(bool bVictory)
 		Result.BankedResources.FindRef(EEmberResource::Wood),
 		Result.BankedResources.FindRef(EEmberResource::SoulAsh),
 		Result.BankedResources.FindRef(EEmberResource::Embers),
-		Result.MonsterShards.FindRef(TEXT("TutorialDragon")));
+		TotalShards);
 }
 
 void AExpeditionGameMode::ShowRunResult()
@@ -483,6 +511,27 @@ void AExpeditionGameMode::BindPlayerDeath()
 		{
 			Health->OnDied.AddDynamic(this, &AExpeditionGameMode::HandlePlayerDied);
 		}
+	}
+}
+
+void AExpeditionGameMode::SpawnAssignedCompanion()
+{
+	UMonsterCollectionSubsystem* Monsters = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMonsterCollectionSubsystem>() : nullptr;
+	AEmberPlayerCharacter* Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (!Monsters || !Player || !GetWorld())
+	{
+		return;
+	}
+	const FName MonsterId = Monsters->GetAssignedMonster(EMonsterAssignmentRole::Companion);
+	UMonsterData* MonsterData = Monsters->FindMonster(MonsterId);
+	if (!MonsterData)
+	{
+		return;
+	}
+	AssignedCompanion = GetWorld()->SpawnActor<AEmberCompanionActor>(AEmberCompanionActor::StaticClass(), Player->GetActorLocation() + FVector(120.0f, 0.0f, 0.0f), FRotator::ZeroRotator);
+	if (AssignedCompanion)
+	{
+		AssignedCompanion->InitCompanion(MonsterData, Player);
 	}
 }
 

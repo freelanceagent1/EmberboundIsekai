@@ -2,7 +2,9 @@
 #include "Camp/CampBuildingActor.h"
 #include "Combat/EmberPlayerCharacter.h"
 #include "Core/SaveManagerSubsystem.h"
+#include "Core/MonsterCollectionSubsystem.h"
 #include "UI/CampHUDWidget.h"
+#include "UI/OfflineRewardWidget.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/GameInstance.h"
 #include "Engine/StaticMesh.h"
@@ -51,8 +53,27 @@ void ACampGameMode::BeginPlay()
 	SpawnCampFloor(GetWorld(), TEXT("M5b_CampDirtPatch"), FVector(0.0f, 0.0f, -1.0f), FVector(7.0f, 7.0f, 1.0f), TEXT("/Game/Emberbound/Materials/Generated/MI_CampDirt.MI_CampDirt"));
 	if (USaveManagerSubsystem* Save = GetGameInstance() ? GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
 	{
-		Save->BankPendingRunResult();
-		Save->SaveNow();
+		const bool bBankedRun = Save->BankPendingRunResult();
+		if (!bBankedRun)
+		{
+			if (UMonsterCollectionSubsystem* Monsters = GetGameInstance()->GetSubsystem<UMonsterCollectionSubsystem>())
+			{
+				const FOfflineRewardResult Reward = Monsters->ApplyOfflineIncome();
+				if (Reward.Minutes > 0 && Reward.Rewards.Num() > 0)
+				{
+					if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+					{
+						UOfflineRewardWidget* RewardWidget = CreateWidget<UOfflineRewardWidget>(PC, UOfflineRewardWidget::StaticClass());
+						if (RewardWidget)
+						{
+							RewardWidget->SetReward(Reward);
+							RewardWidget->AddToViewport(160);
+						}
+					}
+				}
+			}
+			Save->SaveNow();
+		}
 	}
 	SpawnCampActors();
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))

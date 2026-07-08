@@ -12,6 +12,8 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M4 camp/save/buildings) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M5b generated art wiring) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekai Win64 Development (M5b runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M6 monsters/offline income) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekai Win64 Development (M6 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 
 ## Automated checks
 | Date | Check | Result |
@@ -30,6 +32,10 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | M5b import + content verify | ✅ `IMPORT_OK n=62`; `UPGRADE_ICONS_ASSIGNED n=15`; `M5B_ASSET_VERIFY_OK assets=62 materials=10 upgrade_icons=15` |
 | 2026-07-08 | M5b generated art automation test | ✅ `Emberbound.M5b.GeneratedArtPaths` completed with `Result={Success}` |
 | 2026-07-08 | M5b camp + expedition smoke | ✅ Camp boot clean; Expedition boot logged `EMBER: IconResolved 6/6`; no Emberbound missing-texture/object grep hits |
+| 2026-07-08 | M6 monster content build + verify | ✅ `M6_MONSTER_CONTENT_OK assets=3`; `M6_ASSET_VERIFY_OK monsters=3` |
+| 2026-07-08 | M6 unlock/worker/offline smoke | ✅ `MonsterUnlocked slime`; `MonsterAssigned slime role=worker`; `OfflineReward mins=120 capped=0 gold=240 soulash=0`; `OfflineReward mins=240 capped=1 gold=480 soulash=0`; popup logged |
+| 2026-07-08 | M6 companion expedition smoke | ✅ Assigned slime companion spawned; `CompanionAttack slime damage=6.0`; companion projectile `ProjectileHit ... damage=6.0` |
+| 2026-07-08 | M6 save/reload roundtrip | ✅ Reboot loaded `Gold=720 Wood=0 SoulAsh=0 campfire=0 forge=0 slimeShards=5 owned=1 assignments=1` |
 
 ## Manual PIE checklist
 - [ ] Project opens in UE 5.8 without module rebuild errors
@@ -54,3 +60,4 @@ Compile/run status and manual test checklist. Updated every milestone.
 - M3 defeat smoke starts directly at room 7, so there is no pre-boss run tally to retain; log includes `KeepPct=60` and zero banked amounts.
 - M4 adds deterministic headless smoke helpers `Ember.BuyBuilding` and `Ember.DebugAutoReturnCamp`; required M4 exec hooks are also present.
 - M5b spawns generated floor material planes at runtime instead of mutating level assets because UE 5.8 headless level-edit APIs crashed in this environment.
+- M6 companion smoke used a timed editor process started by the verification command and stopped only that PID after required markers were present.

@@ -6,6 +6,7 @@
 #include "Core/ObjectPoolSubsystem.h"
 #include "Generated/EmberGeneratedArt.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
+#include "Expedition/ExpeditionGameMode.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -303,6 +304,13 @@ void AEmberEnemyBase::HandleDamaged(float, float)
 
 void AEmberEnemyBase::HandleDeath(AActor* DeadActor)
 {
+	if (EnemyData && EnemyData->GetFName() == TEXT("BoneRat") && FMath::FRand() <= 0.10f)
+	{
+		if (AExpeditionGameMode* Expedition = GetWorld() ? GetWorld()->GetAuthGameMode<AExpeditionGameMode>() : nullptr)
+		{
+			Expedition->AddRunMonsterShard(TEXT("bone-rat"), 1);
+		}
+	}
 	if (LootDropComponent)
 	{
 		LootDropComponent->HandleOwnerDied(DeadActor);

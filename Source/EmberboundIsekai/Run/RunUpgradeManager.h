@@ -6,7 +6,7 @@
 #include "RunUpgradeManager.generated.h"
 
 class AEmberBoneShieldOrbiter;
-class AEmberCompanionSlime;
+class AEmberCompanionActor;
 class AEmberPlayerCharacter;
 class AEmberSoulFlamePatch;
 class UUpgradeChoiceWidget;
@@ -68,7 +68,7 @@ private:
 	TArray<TObjectPtr<AEmberBoneShieldOrbiter>> BoneShields;
 
 	UPROPERTY()
-	TObjectPtr<AEmberCompanionSlime> CompanionSlime;
+	TObjectPtr<AEmberCompanionActor> CompanionSlime;
 
 	UPROPERTY()
 	TArray<TObjectPtr<AEmberSoulFlamePatch>> SoulFlamePatches;

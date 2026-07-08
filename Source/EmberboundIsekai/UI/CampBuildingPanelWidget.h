@@ -2,12 +2,28 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
+#include "Data/MonsterData.h"
 #include "CampBuildingPanelWidget.generated.h"
 
 class UBuildingData;
 class UButton;
 class UImage;
 class UTextBlock;
+class UVerticalBox;
+
+UCLASS()
+class EMBERBOUNDISEKAI_API UMonsterAssignButton : public UButton
+{
+	GENERATED_BODY()
+
+public:
+	FName MonsterId;
+	EMonsterAssignmentRole Role = EMonsterAssignmentRole::None;
+
+	UFUNCTION()
+	void HandleClicked();
+};
 
 UCLASS()
 class EMBERBOUNDISEKAI_API UCampBuildingPanelWidget : public UUserWidget
@@ -43,10 +59,15 @@ private:
 	UPROPERTY()
 	TObjectPtr<UButton> CloseButton;
 
+	UPROPERTY()
+	TObjectPtr<UVerticalBox> DetailBox;
+
 	bool bLocked = false;
 	FText LockReason;
 
 	void Refresh();
+	void RefreshMonsterPanel();
+	void RefreshWatchtowerPanel();
 	FString CostLinesForLevel(int32 CurrentLevel, bool& bAffordable) const;
 
 	UFUNCTION()
