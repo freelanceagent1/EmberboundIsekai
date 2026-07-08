@@ -17,6 +17,7 @@
 #include "Engine/GameInstance.h"
 #include "Engine/Texture2D.h"
 #include "HAL/IConsoleManager.h"
+#include "EmberboundIsekai.h"
 
 void UCampHUDWidget::NativeOnInitialized()
 {
@@ -27,20 +28,25 @@ void UCampHUDWidget::NativeOnInitialized()
 	WidgetTree->RootWidget = SafeRoot;
 	UHorizontalBox* Resources = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(), TEXT("Resources"));
 	Root->AddChildToVerticalBox(Resources);
+	int32 ResolvedIcons = 0;
+	int32 ExpectedIcons = 0;
 	for (EEmberResource Resource : { EEmberResource::Gold, EEmberResource::Wood, EEmberResource::SoulAsh, EEmberResource::MonsterEssence, EEmberResource::Embers })
 	{
+		++ExpectedIcons;
 		const FName IconId = Resource == EEmberResource::Gold ? TEXT("gold") : Resource == EEmberResource::Wood ? TEXT("wood") : Resource == EEmberResource::SoulAsh ? TEXT("soul-ash") : Resource == EEmberResource::MonsterEssence ? TEXT("monster-essence") : TEXT("embers");
 		UImage* Icon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass());
 		if (UTexture2D* Texture = EmberGeneratedArt::LoadTexture(EmberGeneratedArt::HudIconTexturePath(IconId)))
 		{
 			Icon->SetBrushFromTexture(Texture, false);
 			Icon->SetDesiredSizeOverride(FVector2D(28.0f, 28.0f));
+			++ResolvedIcons;
 		}
 		Resources->AddChildToHorizontalBox(Icon);
 		UTextBlock* Text = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 		ResourceTexts.Add(Resource, Text);
 		Resources->AddChildToHorizontalBox(Text);
 	}
+	UE_LOG(LogEmberbound, Display, TEXT("EMBER: IconResolved %d/%d"), ResolvedIcons, ExpectedIcons);
 	UHorizontalBox* Buttons = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(), TEXT("Buttons"));
 	Root->AddChildToVerticalBox(Buttons);
 	UButton* Expedition = MakeButton(NSLOCTEXT("Camp", "Expedition", "Expedition"), TEXT("ExpeditionButton"));

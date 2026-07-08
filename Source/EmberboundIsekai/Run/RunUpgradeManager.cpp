@@ -32,6 +32,37 @@ static TAutoConsoleVariable<int32> CVarEmberDebugAutoGrantXP(
 	0,
 	TEXT("Development smoke hook: grant XP periodically during a run."));
 
+namespace
+{
+	void LoadKnownRunUpgrades(TArray<TObjectPtr<URunUpgradeData>>& OutCatalog)
+	{
+		const TArray<const TCHAR*> UpgradePaths = {
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_BoneShield.DA_BoneShield"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_CompanionSlime.DA_CompanionSlime"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_CritFocus.DA_CritFocus"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_FireArrow.DA_FireArrow"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_FrostArrow.DA_FrostArrow"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_GoldRush.DA_GoldRush"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_HealingWisp.DA_HealingWisp"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_HeavyArrow.DA_HeavyArrow"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_PickupMagnet.DA_PickupMagnet"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_PiercingShot.DA_PiercingShot"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_PoisonArrow.DA_PoisonArrow"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_RapidFire.DA_RapidFire"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_RicochetShot.DA_RicochetShot"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_SoulFlameTrail.DA_SoulFlameTrail"),
+			TEXT("/Game/Emberbound/Data/Upgrades/DA_SplitShot.DA_SplitShot")
+		};
+		for (const TCHAR* Path : UpgradePaths)
+		{
+			if (URunUpgradeData* Data = LoadObject<URunUpgradeData>(nullptr, Path))
+			{
+				OutCatalog.Add(Data);
+			}
+		}
+	}
+}
+
 void URunUpgradeManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -70,6 +101,10 @@ void URunUpgradeManager::LoadCatalog()
 				UpgradeCatalog.Add(Data);
 			}
 		}
+	}
+	if (UpgradeCatalog.Num() == 0)
+	{
+		LoadKnownRunUpgrades(UpgradeCatalog);
 	}
 	if (UpgradeCatalog.Num() == 0)
 	{

@@ -15,6 +15,16 @@ A failed summoned hero wakes beside a magical campfire, clears roguelite dungeon
 2. If prompted to rebuild modules, accept (or prebuild: `Engine\Build\BatchFiles\Build.bat EmberboundIsekaiEditor Win64 Development -Project=<path>\EmberboundIsekai.uproject`).
 3. Open map `Content/Emberbound/Maps/Camp/L_Camp` and press **Play (PIE)**.
 
+## Play the packaged build
+
+Run the Development Windows package from:
+
+```text
+Packaged\Windows\EmberboundIsekai.exe
+```
+
+The package boots to `L_Camp` by default. Development builds keep the `Ember.*` console commands enabled for validation and debugging.
+
 ## Controls
 
 | Input | Action |

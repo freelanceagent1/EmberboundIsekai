@@ -27,5 +27,6 @@ private:
 	UPROPERTY()
 	TMap<FName, UPrimaryDataAsset*> AssetsByTypeAndName;
 
+	void RegisterAsset(UPrimaryDataAsset* Asset);
 	static FName MakeKey(FName Type, FName Name);
 };
