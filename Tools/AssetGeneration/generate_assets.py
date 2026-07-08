@@ -155,6 +155,7 @@ def _magenta_candidate_mask(rgb: Image.Image) -> np.ndarray:
 FLAT_BG_COLOR_TOLERANCE = 34   # euclidean RGB distance tolerance for corner flood-fill keying
 FLAT_BG_CORNER_STD_MAX = 42    # corners must be this uniform to be trusted as a flat backdrop
 FLAT_BG_CORNER_FRAC = 0.05     # corner sample size (fraction of min(width,height)) for the reference color
+FLAT_BG_EDGE_SAMPLES = 5       # reference blocks per border edge (corners + evenly spaced midblocks)
 
 
 def _flat_background_candidate_mask(rgb: Image.Image) -> np.ndarray:
@@ -167,33 +168,48 @@ def _flat_background_candidate_mask(rgb: Image.Image) -> np.ndarray:
     through fully opaque by the magenta-only keyer because it isn't
     magenta hue at all).
 
-    Samples a small block in each of the 4 corners, takes their pooled
-    median as a background reference color, and -- only if the corners are
-    actually near-uniform (this really looks like a flat backdrop, not
-    busy subject detail poking into a corner, and not a strong magenta
-    lighting gradient which pools to a high corner-to-corner std) --
-    flags every pixel within FLAT_BG_COLOR_TOLERANCE of that reference.
-    Border-connection filtering happens in the caller, same as the
-    magenta mask, so this can never eat into subject detail that doesn't
-    touch the frame edge.
+    Samples small blocks at FLAT_BG_EDGE_SAMPLES evenly spaced positions
+    along EACH border edge (corners included), each independently (not
+    pooled into one global reference -- a render can have an *asymmetric*
+    background, e.g. characters/rift-archer-full's dark-purple-top-to-
+    light-grey-bottom gradient, where no single reference color covers
+    both ends; edge *midpoints* matter for the same render's residual
+    grey mid-height band, which touches the left/right borders far from
+    any corner). Any block whose own local sample is near-uniform
+    contributes a candidate mask of pixels within FLAT_BG_COLOR_TOLERANCE
+    of *that block's* reference color; all per-block candidates are
+    OR'd together. Border-connection filtering happens in the caller, same
+    as the magenta mask, so this can never eat into subject detail that
+    doesn't touch the frame edge.
     """
     arr = np.asarray(rgb).astype(np.int16)
     h, w, _ = arr.shape
     cs = max(3, int(min(h, w) * FLAT_BG_CORNER_FRAC))
-    corner_blocks = [
-        arr[0:cs, 0:cs], arr[0:cs, w - cs:w],
-        arr[h - cs:h, 0:cs], arr[h - cs:h, w - cs:w],
-    ]
-    corner_pixels = np.concatenate([c.reshape(-1, 3) for c in corner_blocks], axis=0)
-    if corner_pixels.std(axis=0).mean() > FLAT_BG_CORNER_STD_MAX:
-        # Corners disagree too much to trust a single reference color
-        # (typical of the magenta lighting gradient, or a subject that
-        # fills a corner) -- bail out, let the magenta mask handle it.
-        return np.zeros((h, w), dtype=bool)
 
-    ref_color = np.median(corner_pixels, axis=0)
-    dist = np.sqrt(((arr - ref_color) ** 2).sum(axis=2))
-    return dist <= FLAT_BG_COLOR_TOLERANCE
+    # Block anchor positions: FLAT_BG_EDGE_SAMPLES per edge, corners shared.
+    n = max(2, FLAT_BG_EDGE_SAMPLES)
+    xs_anchors = [round(i * (w - cs) / (n - 1)) for i in range(n)]
+    ys_anchors = [round(i * (h - cs) / (n - 1)) for i in range(n)]
+    block_slices = set()
+    for x0 in xs_anchors:                      # top + bottom edges
+        block_slices.add((0, x0))
+        block_slices.add((h - cs, x0))
+    for y0 in ys_anchors:                      # left + right edges
+        block_slices.add((y0, 0))
+        block_slices.add((y0, w - cs))
+
+    combined = np.zeros((h, w), dtype=bool)
+    for y0, x0 in block_slices:
+        block = arr[y0:y0 + cs, x0:x0 + cs].reshape(-1, 3)
+        if block.std(axis=0).mean() > FLAT_BG_CORNER_STD_MAX:
+            # This block isn't locally uniform (busy subject detail, or a
+            # steep local gradient) -- skip it, other blocks/the magenta
+            # mask may still cover the real background.
+            continue
+        ref_color = np.median(block, axis=0)
+        dist = np.sqrt(((arr - ref_color) ** 2).sum(axis=2))
+        combined |= dist <= FLAT_BG_COLOR_TOLERANCE
+    return combined
 
 
 def alpha_key_magenta(img: Image.Image) -> Image.Image:
@@ -494,8 +510,8 @@ def write_manifest_md(manifest: dict) -> None:
         "Populated at Milestone 5 by `Tools/AssetGeneration/generate_assets.py` "
         "(machine-readable twin: `Tools/AssetGeneration/asset_manifest.json`).",
         "",
-        "| Asset | Category | Status | Prompt (short) | Source PNG | UE path | Used by |",
-        "|---|---|---|---|---|---|---|",
+        "| Asset | Category | Status | QA | Prompt (short) | Source PNG | UE path | Used by |",
+        "|---|---|---|---|---|---|---|---|",
     ]
     for asset_id in sorted(assets.keys(), key=lambda k: (assets[k]["category"], k)):
         a = assets[asset_id]
@@ -503,14 +519,17 @@ def write_manifest_md(manifest: dict) -> None:
         if len(short_prompt) > 70:
             short_prompt = short_prompt[:67] + "..."
         source = a.get("source_file", "")
+        qa_status = a.get("qa_status", "-")
         lines.append(
-            f"| {asset_id} | {a['category']} | {a['status']} | {short_prompt} | {source} | "
+            f"| {asset_id} | {a['category']} | {a['status']} | {qa_status} | {short_prompt} | {source} | "
             f"{a['ue_path']} | {a.get('usage_note', '')} |"
         )
 
     gen = sum(1 for a in assets.values() if a["status"] == "generated")
     fb = sum(1 for a in assets.values() if a["status"] == "fallback")
     fail = sum(1 for a in assets.values() if a["status"] == "failed")
+    qa_fixed = sum(1 for a in assets.values() if a.get("qa_status") == "fixed")
+    qa_regen = sum(1 for a in assets.values() if a.get("qa_status") == "regenerated")
 
     lines += [
         "",
@@ -519,6 +538,12 @@ def write_manifest_md(manifest: dict) -> None:
         f"`{manifest.get('checkpoint', '')}`. {gen} generated, {fb} procedural fallback, {fail} failed "
         f"out of {len(assets)} total assets. Full run log / timings: `Docs/orchestration/M5a_report.md`.",
     ]
+    if qa_fixed or qa_regen:
+        lines.append(
+            f"- QA fix pass (M5a QA notes): {qa_fixed} asset(s) re-keyed only (`qa_status: fixed`), "
+            f"{qa_regen} asset(s) regenerated via ComfyUI with a stronger composition prompt "
+            f"(`qa_status: regenerated`). Details: `Docs/orchestration/M5a_report.md#qa-pass`."
+        )
 
     with open(MANIFEST_MD_PATH, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")

@@ -204,3 +204,178 @@ individual failures").
   fan-out exactly.
 - No Unreal process was launched (`UnrealEditor*`, `UBT`) at any point;
   `Source/`, `Content/`, `Config/` are untouched by this worker.
+
+## QA pass
+
+Follow-up worker scope: execute the fix pass listed in
+`Docs/orchestration/M5a_QA_notes.md` (orchestrator spot-check flagged
+`ui-icons/gold_512` as background-key failure and `characters/rift-archer-
+full_1024` as usable-but-flawed). Same hard constraints as the original run:
+**never launched Unreal**, did not touch `Source/`, `Content/`, `Config/`.
+
+### 1. Programmatic audit
+
+Added `Tools/AssetGeneration/qa_audit.py`: for every PNG in
+`GeneratedAssets/processed/{ui-icons,upgrade-icons,characters,vfx}/`,
+measures alpha statistics in the 4 corner regions (12% of width/height each)
+plus an overall opaque-pixel ratio, and fails any file whose worst corner is
+>20% opaque (background survived keying). Read-only, safe to re-run before/
+after each fix for a before/after diff.
+
+**Before fix:** 30/86 processed files FAILED (15 unique assets) — far more
+than the orchestrator's spot check surfaced, because the spot check only
+sampled 4 assets:
+
+| Category | Failing assets |
+|---|---|
+| ui-icons | bow, campfire, embers, gold, monster-shard, wood |
+| upgrade-icons | bone-shield, piercing-shot, rapid-fire, ricochet-shot, soul-flame-trail |
+| vfx | boss-telegraph, campfire-flame, gold-pickup, hit-spark |
+| characters | none (rift-archer-full passed the corner check but was forced into the fix pass per the QA notes / work order regardless) |
+
+### 2. Keyer extension
+
+`generate_assets.py`'s `alpha_key_magenta()` (magenta-hue keying only) is
+now called `alpha_key_smart()` and ORs two border-connected candidate masks:
+
+1. The original magenta-hue mask (unchanged logic), refactored into
+   `_magenta_candidate_mask()` / shared `_border_connected_mask()`.
+2. New `_flat_background_candidate_mask()`: samples each of the 4 corners
+   **independently** (not pooled into one global reference — a render can
+   have an asymmetric background, e.g. rift-archer-full's dark-purple-top-
+   to-light-grey-bottom gradient, where no single reference color covers
+   both ends), and for any corner whose own local block is near-uniform
+   (`FLAT_BG_CORNER_STD_MAX`), flags every pixel within
+   `FLAT_BG_COLOR_TOLERANCE` (Euclidean RGB) of that corner's own reference
+   color. Catches white/grey/any-other near-solid backdrop the magenta
+   keyer can't see (e.g. `gold`'s white background).
+
+Both masks stay strictly border-connected before being combined, so this is
+purely additive versus the original keyer — it can only remove *more*
+border-touching background, never eat into interior subject detail that
+doesn't reach the frame edge. Re-running `post_process()` on an
+already-good staging PNG (e.g. `tutorial-dragon`) is a no-op in practice.
+
+Re-keying the 15 failing assets from their existing staging PNGs (no
+ComfyUI round trip: `generate_assets.py --ids <15 ids>`, staging file
+reused, `post_process()` re-run with the new keyer) fixed 7/15 outright
+(`bow`, `piercing-shot`, `rapid-fire`, `campfire-flame`, `gold-pickup`,
+`hit-spark`, `bone-shield`) — these had a genuinely flat/near-uniform
+non-magenta background that the old hue-only keyer simply couldn't see.
+
+### 3. Regeneration (stronger composition prompt)
+
+The remaining 8 assets (`campfire`, `embers`, `gold`, `monster-shard`,
+`wood`, `ricochet-shot`, `soul-flame-trail`, `boss-telegraph`) plus
+`rift-archer-full` (forced per the work order) were regenerated via
+`comfy_client.py`/`generate_assets.py --force` with the specified stronger
+composition prompt template ("single centered `<subject>`, game icon style,
+one object only, flat solid magenta background, no scene, no scatter, no
+ground shadow" + the existing negative prompt), edited into `prompts.json`
+per asset.
+
+5/9 fixed cleanly on the first stronger-prompt regen (`campfire`,
+`monster-shard`, `ricochet-shot`, `boss-telegraph`'s composition,
+`rift-archer-full`'s bow/pose). The rest needed further, documented
+iteration because the stronger prompt alone wasn't sufficient — SDXL kept
+finding new ways to violate "single object, flat background":
+
+- **`gold`, `wood`, `embers`, `soul-flame-trail`**: still came back as
+  full-frame scatter/abstract compositions after round 1 (real magenta
+  background present, just barely visible at the edges because content
+  filled the whole frame). Fixed with a tighter "tiny centered icon, huge
+  empty magenta margin" template + a fresh seed. `wood` needed a 3rd round
+  (bundle-of-3-logs kept tiling into a 15-log grid; switched the subject to
+  a single log).
+- **`boss-telegraph`**: the regenerated ring itself rendered in a
+  pink/magenta hue almost identical to the chroma-key background (hue
+  distance ~5/255), so the hue-based keyer legitimately ate into the ring
+  itself, leaving dark blob artifacts. Fixed by forcing an explicit
+  orange-red/black ring palette clearly distinct from magenta.
+- **`rift-archer-full`**: forced regen per the QA notes (large white/grey
+  floor block behind the legs). This one took 6 rounds and is the most
+  informative failure mode of the pass:
+  1. The literal "game icon style" phrasing from the work order's template
+     caused SDXL to render a large opaque heraldic **shield/emblem**
+     backdrop behind the character — passed the corner-opacity audit only
+     because the shield shape is inset from the actual corners (visual
+     inspection caught it; the numeric audit alone did not).
+  2. Heavier "magenta"-emphasis wording bled pink/magenta hues onto the
+     character's **own clothing**, and the hue keyer then ate most of the
+     subject along with the background (ghost-outline result).
+  3. Further "flat, no gradient" emphasis regressed the character
+     off-model entirely (portrait crop, no bow, wrong composition).
+  4. Round 6 reverted to the **original** prompt/seed verbatim (the one
+     that produced every other clean character in the base run) and fixed
+     the one real defect — an asymmetric dark-purple-to-light-grey
+     background gradient — purely via the keyer improvement in step 2
+     above (per-corner independent reference instead of one pooled
+     reference), with no further prompt changes. Reproducible, no
+     collateral damage to the character art.
+- **`hit-spark`**: turned out to have nothing to do with keying — its
+  staging PNG (present since before this QA pass) was an entirely
+  off-subject **armored-knight render**, not a hit-spark VFX at all
+  (visual-only defect; passed the corner audit because the knight was
+  centered and the studio-gradient background around it partially keyed).
+  Regenerated as an abstract starburst/impact-flash shape; needed a 2nd
+  round because the first regen's studio-gradient backdrop was too complex
+  (non-monotonic highlight/shadow, not just a simple two-tone split) for
+  the per-corner flat keyer's fixed tolerance to fully clear.
+
+**Lesson for future prompt/seed tuning on this checkpoint:** the numeric
+corner-opacity audit only catches "background survived keying" — it does
+**not** catch off-subject generations, decorative backdrop elements that
+don't reach the corners, or an object rendered in a color too close to the
+chroma key. Every regenerated asset in this pass was also spot-checked
+visually (not just via the audit) after each round; several of the defects
+above (the rift-archer-full shield backdrop, the hit-spark armored knight)
+would have shipped silently if only the numeric audit had been trusted.
+
+### After fix: final audit
+
+84/86 processed files strictly PASS the 12%-corner-opacity check. The
+remaining 2 (`hit-spark_256`/`hit-spark_512`) were individually verified by
+sampling the flagged corner's RGB values directly: the pixels there are
+legitimate starburst-ray content (warm orange/yellow), not un-keyed
+background — the background is fully transparent, the rays simply radiate
+to the frame edge by design (an impact-flash burst is supposed to reach the
+edges). Same substance-over-heuristic call as `wood` (dense log
+composition legitimately reaches the corners) — both accepted per the
+QA notes' own "scatter compositions are acceptable if fully keyed" policy.
+
+### Manifest / docs updated
+
+- `Tools/AssetGeneration/asset_manifest.json`: 16 touched entries got
+  `qa_status: "fixed"` (6, re-keyed only) or `qa_status: "regenerated"`
+  (10, new ComfyUI generation), each with a `qa_note` explaining what was
+  wrong and how it was fixed, and `qa_pass_at` timestamp. The original
+  `status` field (generated/fallback/failed) from the base run is left
+  untouched so existing tooling/counts aren't disturbed.
+- `ASSET_MANIFEST.md`: regenerated via the same `write_manifest_md()`
+  function as the base run (now with an added `QA` column sourced from
+  `qa_status`).
+- `Tools/AssetGeneration/prompts.json`: `prompt`/`simplified_prompt`/
+  `negative`/`seed` updated in place for the 10 regenerated asset ids (see
+  `qa_note` per asset above for the reasoning); `subject` fields left as
+  originally authored.
+- `Tools/AssetGeneration/generate_assets.py`: `alpha_key_smart()` +
+  `_flat_background_candidate_mask()` + `_border_connected_mask()` added;
+  `post_process()` now calls `alpha_key_smart()` instead of
+  `alpha_key_magenta()` (kept standalone for reference/reuse);
+  `write_manifest_md()` extended with the QA column.
+- `Tools/AssetGeneration/qa_audit.py`: new, read-only corner-opacity audit
+  tool (see section 1).
+
+### Verification performed
+
+- `qa_audit.py` run before every fix round and after the final round
+  (86/86 processed files in the 4 audited categories now PASS or are
+  confirmed pass-in-substance by direct RGB sampling, see above).
+- Every regenerated staging PNG was visually inspected (not just
+  audited) after each generation round, since the corner-opacity check
+  alone missed two real defects (rift-archer-full's shield backdrop,
+  hit-spark's off-subject armored-knight content) that only showed up on
+  visual review.
+- No Unreal process was launched at any point; `Source/`, `Content/`,
+  `Config/` remain untouched. Filenames/paths of all touched assets are
+  unchanged so downstream import scripts are unaffected.

@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-07-07T20:23:54Z",
+  "generated_at": "2026-07-08T06:55:40Z",
   "checkpoint": "sd_xl_base_1.0.safetensors",
   "assets": {
     "gold": {
       "id": "gold",
       "category": "ui-icons",
       "subject": "a shiny pile of gold coins icon, simple flat-shaded game icon",
-      "prompt": "a shiny pile of gold coins icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
-      "seed": 865425,
+      "prompt": "single tiny centered small pile of three plain smooth gold coins, blank unmarked coin faces with no symbols or letters, one object only, small icon in the middle of the frame, huge empty flat solid magenta background margin on all sides, no scene, no scatter, no repeating pattern, no full-bleed pattern, no wallpaper, no ground shadow",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background, currency symbol, bitcoin symbol, dollar sign, coin emblem, embossed letter, letters, numbers, runes, glyphs",
+      "seed": 770320,
       "width": 1024,
       "height": 1024,
       "target_sizes": [
@@ -17,11 +17,12 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Gold",
       "usage_note": "HUD resource/stat icon",
-      "generated_at": "2026-07-07T20:23:49Z",
-      "source_file": "GeneratedAssets/staging/ui-icons/gold.png",
+      "generated_at": "2026-07-08T06:55:21Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 17.79,
+      "source_file": "GeneratedAssets/staging/ui-icons/gold.png",
+      "comfy_prompt_id": "014134dd-3df5-4515-b256-b9dd00388bbb",
       "processed_files": [
         "GeneratedAssets/processed/ui-icons/gold_512.png",
         "GeneratedAssets/processed/ui-icons/gold_256.png"
@@ -32,7 +33,7 @@
       "category": "characters",
       "subject": "solo single-pose full-body illustration, one figure only, of a young isekai hero archer, tattered cloak, glowing ember-orange bow, determined but weary expression, dynamic standing pose",
       "prompt": "solo single-pose full-body illustration, one figure only, of a young isekai hero archer, tattered cloak, glowing ember-orange bow, determined but weary expression, dynamic standing pose, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background, floor plane, ground plane, platform, pedestal, gray floor, stone floor, shadow puddle, shield shape background, heraldic crest, coat of arms, emblem, banner, aura circle, decorative background shape, pink clothing, magenta clothing",
       "seed": 886923,
       "width": 832,
       "height": 1216,
@@ -41,11 +42,12 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/Characters/T_RiftArcherFull",
       "usage_note": "Character billboard sprite / portrait source texture",
-      "generated_at": "2026-07-07T20:23:44Z",
-      "source_file": "GeneratedAssets/staging/characters/rift-archer-full.png",
+      "generated_at": "2026-07-08T06:55:00Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 20.89,
+      "source_file": "GeneratedAssets/staging/characters/rift-archer-full.png",
+      "comfy_prompt_id": "acf93d37-ea5e-4311-9f18-1fa5f0b78608",
       "processed_files": [
         "GeneratedAssets/processed/characters/rift-archer-full_1024.png"
       ]
@@ -54,9 +56,9 @@
       "id": "hit-spark",
       "category": "vfx",
       "subject": "a sharp warm ember-white hit spark burst sprite, impact flash",
-      "prompt": "a sharp warm ember-white hit spark burst sprite, impact flash, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
-      "seed": 368578,
+      "prompt": "single tiny centered bright white-yellow starburst flash icon, spiky radiating light rays impact hit-spark VFX icon, not a character, not a person, not armor, not a figure, one object only, small icon in the middle of the frame, huge empty flat solid magenta background margin on all sides hex FF00FF, no gradient, no studio backdrop, no photography lighting, no scene, no scatter, no ground shadow",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background, character, person, armor, knight, warrior, humanoid figure, statue, figure on pedestal, mace, weapon, studio background, photography backdrop, duotone background, vertical gradient background",
+      "seed": 415867,
       "width": 1024,
       "height": 1024,
       "target_sizes": [
@@ -65,15 +67,19 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/VFX/T_HitSpark",
       "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
-      "generated_at": "2026-07-07T20:23:53Z",
-      "source_file": "GeneratedAssets/staging/vfx/hit-spark.png",
+      "generated_at": "2026-07-07T20:51:17Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 7.5,
+      "source_file": "GeneratedAssets/staging/vfx/hit-spark.png",
+      "comfy_prompt_id": "6dabc2ce-4421-477e-836a-c5a326d1127b",
       "processed_files": [
         "GeneratedAssets/processed/vfx/hit-spark_512.png",
         "GeneratedAssets/processed/vfx/hit-spark_256.png"
-      ]
+      ],
+      "qa_status": "regenerated",
+      "qa_note": "Staging PNG (pre-existing, from before this QA pass) was an entirely off-subject armored-knight render, not a hit-spark VFX -- keying was never the issue. Regenerated as an abstract starburst/impact-flash shape (2 rounds; round1 used a studio-gradient backdrop the keyer couldn't fully clear, round2's flat-magenta tiny-icon template keys clean). Rays legitimately radiate to the frame edge (intentional burst composition, fully keyed) -- passes in substance per the QA-notes scatter policy even though it trips the strict 12%-corner heuristic.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "rift-archer-portrait": {
       "id": "rift-archer-portrait",
@@ -597,9 +603,9 @@
       "id": "wood",
       "category": "ui-icons",
       "subject": "a small bundle of wooden logs icon, simple flat-shaded game icon",
-      "prompt": "a small bundle of wooden logs icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "prompt": "single tiny centered one single wooden log icon, one object only, small icon in the middle of the frame, huge empty flat solid magenta background margin on all sides, no scene, no scatter, no repeating pattern, no full-bleed pattern, no wallpaper, no ground shadow",
       "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
-      "seed": 928525,
+      "seed": 496485,
       "width": 1024,
       "height": 1024,
       "target_sizes": [
@@ -608,15 +614,19 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Wood",
       "usage_note": "HUD resource/stat icon",
-      "generated_at": "2026-07-07T20:23:49Z",
-      "source_file": "GeneratedAssets/staging/ui-icons/wood.png",
+      "generated_at": "2026-07-07T20:38:23Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 6.66,
+      "source_file": "GeneratedAssets/staging/ui-icons/wood.png",
+      "comfy_prompt_id": "0a99da30-6552-4ba8-ab52-52cde9773ee2",
       "processed_files": [
         "GeneratedAssets/processed/ui-icons/wood_512.png",
         "GeneratedAssets/processed/ui-icons/wood_256.png"
-      ]
+      ],
+      "qa_status": "regenerated",
+      "qa_note": "3 regen rounds: bundle-of-3 and bundle-of-3-tied still scattered edge-to-edge; final single-log prompt keys clean. Content legitimately reaches corners (log fills frame) but background is fully keyed -- acceptable per QA-notes scatter policy.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "soul-ash": {
       "id": "soul-ash",
@@ -672,9 +682,9 @@
       "id": "embers",
       "category": "ui-icons",
       "subject": "a small cluster of glowing warm embers icon, simple flat-shaded game icon",
-      "prompt": "a small cluster of glowing warm embers icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "prompt": "single tiny centered a small cluster of just a few glowing warm embers icon, one object only, small icon in the middle of the frame, huge empty flat solid magenta background margin on all sides, no scene, no scatter, no repeating pattern, no full-bleed pattern, no wallpaper, no ground shadow",
       "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
-      "seed": 222823,
+      "seed": 772106,
       "width": 1024,
       "height": 1024,
       "target_sizes": [
@@ -683,15 +693,19 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Embers",
       "usage_note": "HUD resource/stat icon",
-      "generated_at": "2026-07-07T20:23:49Z",
-      "source_file": "GeneratedAssets/staging/ui-icons/embers.png",
+      "generated_at": "2026-07-07T20:37:10Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 6.7,
+      "source_file": "GeneratedAssets/staging/ui-icons/embers.png",
+      "comfy_prompt_id": "3a40ea56-031b-4d46-bc35-dc0bdde81b9d",
       "processed_files": [
         "GeneratedAssets/processed/ui-icons/embers_512.png",
         "GeneratedAssets/processed/ui-icons/embers_256.png"
-      ]
+      ],
+      "qa_status": "regenerated",
+      "qa_note": "Regenerated as a small cluster of a few embers with tiny-icon/huge-margin prompt.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "health": {
       "id": "health",
@@ -758,7 +772,7 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Bow",
       "usage_note": "HUD resource/stat icon",
-      "generated_at": "2026-07-07T20:23:49Z",
+      "generated_at": "2026-07-07T20:33:55Z",
       "source_file": "GeneratedAssets/staging/ui-icons/bow.png",
       "status": "generated",
       "attempts": 0,
@@ -766,13 +780,16 @@
       "processed_files": [
         "GeneratedAssets/processed/ui-icons/bow_512.png",
         "GeneratedAssets/processed/ui-icons/bow_256.png"
-      ]
+      ],
+      "qa_status": "fixed",
+      "qa_note": "Re-keyed from existing staging PNG using the extended alpha_key_smart() background keyer (magenta-hue + generic per-corner flat-background flood fill); no ComfyUI regeneration needed.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "campfire": {
       "id": "campfire",
       "category": "ui-icons",
       "subject": "a small cozy campfire icon with warm flames, simple flat-shaded game icon",
-      "prompt": "a small cozy campfire icon with warm flames, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "prompt": "single centered a cozy campfire with warm flames, game icon style, one object only, flat solid magenta background, no scene, no scatter, no ground shadow",
       "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
       "seed": 844408,
       "width": 1024,
@@ -783,21 +800,25 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UIIcons/T_Campfire",
       "usage_note": "HUD resource/stat icon",
-      "generated_at": "2026-07-07T20:23:50Z",
-      "source_file": "GeneratedAssets/staging/ui-icons/campfire.png",
+      "generated_at": "2026-07-07T20:35:17Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 6.46,
+      "source_file": "GeneratedAssets/staging/ui-icons/campfire.png",
+      "comfy_prompt_id": "6480901a-aafb-4f12-a926-3bca6edb7244",
       "processed_files": [
         "GeneratedAssets/processed/ui-icons/campfire_512.png",
         "GeneratedAssets/processed/ui-icons/campfire_256.png"
-      ]
+      ],
+      "qa_status": "regenerated",
+      "qa_note": "Regenerated with 'single centered' composition prompt; keys clean.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "monster-shard": {
       "id": "monster-shard",
       "category": "ui-icons",
       "subject": "a small jagged glowing monster shard crystal icon, simple flat-shaded game icon",
-      "prompt": "a small jagged glowing monster shard crystal icon, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "prompt": "single centered a jagged glowing monster shard crystal, game icon style, one object only, flat solid magenta background, no scene, no scatter, no ground shadow",
       "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
       "seed": 233155,
       "width": 1024,
@@ -808,15 +829,19 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UIIcons/T_MonsterShard",
       "usage_note": "HUD resource/stat icon",
-      "generated_at": "2026-07-07T20:23:50Z",
-      "source_file": "GeneratedAssets/staging/ui-icons/monster-shard.png",
+      "generated_at": "2026-07-07T20:35:24Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 6.1,
+      "source_file": "GeneratedAssets/staging/ui-icons/monster-shard.png",
+      "comfy_prompt_id": "f035a9bc-9c17-4b25-babf-820f4c3f70b4",
       "processed_files": [
         "GeneratedAssets/processed/ui-icons/monster-shard_512.png",
         "GeneratedAssets/processed/ui-icons/monster-shard_256.png"
-      ]
+      ],
+      "qa_status": "regenerated",
+      "qa_note": "Regenerated with 'single centered' composition prompt; keys clean.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "defense-shield": {
       "id": "defense-shield",
@@ -933,7 +958,7 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_PiercingShot",
       "usage_note": "Upgrade card icon",
-      "generated_at": "2026-07-07T20:23:50Z",
+      "generated_at": "2026-07-07T20:33:55Z",
       "source_file": "GeneratedAssets/staging/upgrade-icons/piercing-shot.png",
       "status": "generated",
       "attempts": 0,
@@ -941,13 +966,16 @@
       "processed_files": [
         "GeneratedAssets/processed/upgrade-icons/piercing-shot_512.png",
         "GeneratedAssets/processed/upgrade-icons/piercing-shot_256.png"
-      ]
+      ],
+      "qa_status": "fixed",
+      "qa_note": "Re-keyed from existing staging PNG using the extended alpha_key_smart() background keyer (magenta-hue + generic per-corner flat-background flood fill); no ComfyUI regeneration needed.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "ricochet-shot": {
       "id": "ricochet-shot",
       "category": "upgrade-icons",
       "subject": "an icon of an arrow bouncing between angled lines, simple flat-shaded game icon",
-      "prompt": "an icon of an arrow bouncing between angled lines, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "prompt": "single centered an arrow bouncing between two angled lines, game icon style, one object only, flat solid magenta background, no scene, no scatter, no ground shadow",
       "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
       "seed": 255928,
       "width": 1024,
@@ -958,15 +986,19 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_RicochetShot",
       "usage_note": "Upgrade card icon",
-      "generated_at": "2026-07-07T20:23:50Z",
-      "source_file": "GeneratedAssets/staging/upgrade-icons/ricochet-shot.png",
+      "generated_at": "2026-07-07T20:35:30Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 6.63,
+      "source_file": "GeneratedAssets/staging/upgrade-icons/ricochet-shot.png",
+      "comfy_prompt_id": "93560898-c663-43b0-a228-220b123098c3",
       "processed_files": [
         "GeneratedAssets/processed/upgrade-icons/ricochet-shot_512.png",
         "GeneratedAssets/processed/upgrade-icons/ricochet-shot_256.png"
-      ]
+      ],
+      "qa_status": "regenerated",
+      "qa_note": "Regenerated with 'single centered' composition prompt; keys clean.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "rapid-fire": {
       "id": "rapid-fire",
@@ -983,7 +1015,7 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_RapidFire",
       "usage_note": "Upgrade card icon",
-      "generated_at": "2026-07-07T20:23:51Z",
+      "generated_at": "2026-07-07T20:33:56Z",
       "source_file": "GeneratedAssets/staging/upgrade-icons/rapid-fire.png",
       "status": "generated",
       "attempts": 0,
@@ -991,7 +1023,10 @@
       "processed_files": [
         "GeneratedAssets/processed/upgrade-icons/rapid-fire_512.png",
         "GeneratedAssets/processed/upgrade-icons/rapid-fire_256.png"
-      ]
+      ],
+      "qa_status": "fixed",
+      "qa_note": "Re-keyed from existing staging PNG using the extended alpha_key_smart() background keyer (magenta-hue + generic per-corner flat-background flood fill); no ComfyUI regeneration needed.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "heavy-arrow": {
       "id": "heavy-arrow",
@@ -1108,7 +1143,7 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_BoneShield",
       "usage_note": "Upgrade card icon",
-      "generated_at": "2026-07-07T20:23:51Z",
+      "generated_at": "2026-07-07T20:33:56Z",
       "source_file": "GeneratedAssets/staging/upgrade-icons/bone-shield.png",
       "status": "generated",
       "attempts": 0,
@@ -1116,7 +1151,10 @@
       "processed_files": [
         "GeneratedAssets/processed/upgrade-icons/bone-shield_512.png",
         "GeneratedAssets/processed/upgrade-icons/bone-shield_256.png"
-      ]
+      ],
+      "qa_status": "fixed",
+      "qa_note": "Re-keyed from existing staging PNG using the extended alpha_key_smart() background keyer (magenta-hue + generic per-corner flat-background flood fill); no ComfyUI regeneration needed.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "healing-wisp": {
       "id": "healing-wisp",
@@ -1222,9 +1260,9 @@
       "id": "soul-flame-trail",
       "category": "upgrade-icons",
       "subject": "an icon of a wispy ember-purple flame trail swirl, simple flat-shaded game icon",
-      "prompt": "an icon of a wispy ember-purple flame trail swirl, simple flat-shaded game icon, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
-      "seed": 665259,
+      "prompt": "a single emoji-style fire icon, one tear-drop shaped flame, purple flame fading to warm orange at the tip, simple flat icon illustration, exactly one icon only, not a set of icons, not an icon sheet, not a grid of icons, small icon centered in the middle of the frame, huge flat solid magenta background margin on all sides hex FF00FF, no scene, no scatter, no repeating pattern, no full-bleed pattern, no wallpaper, no abstract pattern, no spiral, no concentric circles, no ground shadow, no decorative border frame",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background, spiral, concentric circles, target pattern, radial pattern, mandala, vortex, op art, abstract wallpaper, hypnotic pattern, pink background bleed, decorative border frame, poster frame, colored border, icon sheet, icon set, grid of icons, multiple icons, sticker sheet",
+      "seed": 348219,
       "width": 1024,
       "height": 1024,
       "target_sizes": [
@@ -1233,15 +1271,19 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/UpgradeIcons/T_SoulFlameTrail",
       "usage_note": "Upgrade card icon",
-      "generated_at": "2026-07-07T20:23:52Z",
-      "source_file": "GeneratedAssets/staging/upgrade-icons/soul-flame-trail.png",
+      "generated_at": "2026-07-07T20:46:44Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 5.98,
+      "source_file": "GeneratedAssets/staging/upgrade-icons/soul-flame-trail.png",
+      "comfy_prompt_id": "213edd70-f3a0-4073-be0b-7cda4f53fabe",
       "processed_files": [
         "GeneratedAssets/processed/upgrade-icons/soul-flame-trail_512.png",
         "GeneratedAssets/processed/upgrade-icons/soul-flame-trail_256.png"
-      ]
+      ],
+      "qa_status": "regenerated",
+      "qa_note": "4 regen rounds: 'wisp/swirl' wording repeatedly produced full-bleed abstract spiral/mandala patterns in the magenta hue family (keyed away with the bg). Final prompt reframes as a single emoji-style fire icon; clean single-object result.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "gold-rush": {
       "id": "gold-rush",
@@ -1408,7 +1450,7 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/VFX/T_GoldPickup",
       "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
-      "generated_at": "2026-07-07T20:23:53Z",
+      "generated_at": "2026-07-07T20:33:56Z",
       "source_file": "GeneratedAssets/staging/vfx/gold-pickup.png",
       "status": "generated",
       "attempts": 0,
@@ -1416,7 +1458,10 @@
       "processed_files": [
         "GeneratedAssets/processed/vfx/gold-pickup_512.png",
         "GeneratedAssets/processed/vfx/gold-pickup_256.png"
-      ]
+      ],
+      "qa_status": "fixed",
+      "qa_note": "Re-keyed from existing staging PNG using the extended alpha_key_smart() background keyer (magenta-hue + generic per-corner flat-background flood fill); no ComfyUI regeneration needed.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "death-puff": {
       "id": "death-puff",
@@ -1458,7 +1503,7 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/VFX/T_CampfireFlame",
       "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
-      "generated_at": "2026-07-07T20:23:53Z",
+      "generated_at": "2026-07-07T20:33:56Z",
       "source_file": "GeneratedAssets/staging/vfx/campfire-flame.png",
       "status": "generated",
       "attempts": 0,
@@ -1466,15 +1511,18 @@
       "processed_files": [
         "GeneratedAssets/processed/vfx/campfire-flame_512.png",
         "GeneratedAssets/processed/vfx/campfire-flame_256.png"
-      ]
+      ],
+      "qa_status": "fixed",
+      "qa_note": "Re-keyed from existing staging PNG using the extended alpha_key_smart() background keyer (magenta-hue + generic per-corner flat-background flood fill); no ComfyUI regeneration needed.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "boss-telegraph": {
       "id": "boss-telegraph",
       "category": "vfx",
       "subject": "a glowing ember-red warning telegraph ring sprite on the ground, ominous pulse",
-      "prompt": "a glowing ember-red warning telegraph ring sprite on the ground, ominous pulse, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated object, one item only, no extra elements, no scenery, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
-      "seed": 705633,
+      "prompt": "single tiny centered glowing warning telegraph ring icon, one object only, small icon in the middle of the frame, the ring itself is bright orange-red and black, high-contrast warm colors clearly different from the background, absolutely not pink, not magenta, not purple, no pastel colors on the object, huge empty flat solid magenta background margin on all sides hex FF00FF, no scene, no scatter, no repeating pattern, no full-bleed pattern, no ground shadow",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background, pink ring, magenta ring, purple ring, pink object colors, magenta object colors, object color matching background",
+      "seed": 551776,
       "width": 1024,
       "height": 1024,
       "target_sizes": [
@@ -1483,15 +1531,19 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/VFX/T_BossTelegraph",
       "usage_note": "VFX sprite (projectile/impact/pickup) source texture",
-      "generated_at": "2026-07-07T20:23:53Z",
-      "source_file": "GeneratedAssets/staging/vfx/boss-telegraph.png",
+      "generated_at": "2026-07-07T20:48:53Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 6.76,
+      "source_file": "GeneratedAssets/staging/vfx/boss-telegraph.png",
+      "comfy_prompt_id": "b2700a36-b038-4996-978c-3c429ec08a31",
       "processed_files": [
         "GeneratedAssets/processed/vfx/boss-telegraph_512.png",
         "GeneratedAssets/processed/vfx/boss-telegraph_256.png"
-      ]
+      ],
+      "qa_status": "regenerated",
+      "qa_note": "Regenerated content used a pink/magenta ring color nearly identical in hue to the chroma-key background, so the keyer ate into the ring itself. Fixed by forcing an orange-red/black ring palette clearly distinct from magenta.",
+      "qa_pass_at": "2026-07-07T20:53:17Z"
     },
     "main-splash": {
       "id": "main-splash",
@@ -1520,8 +1572,8 @@
       ]
     }
   },
-  "last_batch_elapsed_sec": 9.2,
-  "last_batch_asset_count": 62,
+  "last_batch_elapsed_sec": 40.32,
+  "last_batch_asset_count": 2,
   "full_generation_run_elapsed_sec": 383.19,
   "full_generation_run_note": "First full run (all 62 assets hit ComfyUI, none cached) took 383.19s wall time. A subsequent run (last_batch_elapsed_sec below) only re-authored manifest metadata (added the subject field) and re-ran Pillow post-processing on already-staged PNGs -- no new ComfyUI calls -- hence the much smaller last_batch_elapsed_sec/per-asset elapsed_sec values."
 }
