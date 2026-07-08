@@ -24,6 +24,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Economy")
 	int32 Get(EEmberResource Resource) const;
 
+	UFUNCTION(BlueprintCallable, Category = "Economy")
+	void Set(EEmberResource Resource, int32 Amount);
+
+	const TMap<EEmberResource, int32>& GetWallet() const { return Wallet; }
+
 	UPROPERTY(BlueprintAssignable, Category = "Economy")
 	FOnEmberResourceChanged OnResourceChanged;
 

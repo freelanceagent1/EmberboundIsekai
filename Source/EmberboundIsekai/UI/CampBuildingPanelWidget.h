@@ -1,0 +1,53 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "CampBuildingPanelWidget.generated.h"
+
+class UBuildingData;
+class UButton;
+class UTextBlock;
+
+UCLASS()
+class EMBERBOUNDISEKAI_API UCampBuildingPanelWidget : public UUserWidget
+{
+	GENERATED_BODY()
+
+public:
+	virtual void NativeOnInitialized() override;
+	void SetBuilding(UBuildingData* InBuildingData, bool bInLocked, FText InLockReason);
+
+private:
+	UPROPERTY()
+	TObjectPtr<UBuildingData> BuildingData;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> TitleText;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> LevelText;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> EffectText;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> CostText;
+
+	UPROPERTY()
+	TObjectPtr<UButton> UpgradeButton;
+
+	UPROPERTY()
+	TObjectPtr<UButton> CloseButton;
+
+	bool bLocked = false;
+	FText LockReason;
+
+	void Refresh();
+	FString CostLinesForLevel(int32 CurrentLevel, bool& bAffordable) const;
+
+	UFUNCTION()
+	void HandleUpgrade();
+
+	UFUNCTION()
+	void HandleClose();
+};

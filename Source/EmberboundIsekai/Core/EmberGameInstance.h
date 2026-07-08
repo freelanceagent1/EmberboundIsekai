@@ -27,6 +27,9 @@ struct EMBERBOUNDISEKAI_API FEmberRunResult
 
 	UPROPERTY(BlueprintReadWrite, Category = "Run")
 	TMap<FName, int32> MonsterShards;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Run")
+	bool bBankedToSave = false;
 };
 
 UCLASS()

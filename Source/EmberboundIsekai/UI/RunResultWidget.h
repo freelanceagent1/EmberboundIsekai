@@ -32,4 +32,7 @@ private:
 
 	UFUNCTION()
 	void HandleRunAgain();
+
+	UFUNCTION()
+	void HandleReturnCamp();
 };

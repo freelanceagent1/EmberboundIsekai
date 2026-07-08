@@ -1,4 +1,5 @@
 #include "UI/RunResultWidget.h"
+#include "Core/SceneFlowSubsystem.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
@@ -25,7 +26,8 @@ void URunResultWidget::NativeOnInitialized()
 	UTextBlock* ReturnText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("ReturnCampText"));
 	ReturnText->SetText(NSLOCTEXT("RunResult", "ReturnCamp", "Return to Camp"));
 	ReturnCampButton->AddChild(ReturnText);
-	ReturnCampButton->SetIsEnabled(false);
+	ReturnCampButton->SetIsEnabled(true);
+	ReturnCampButton->OnClicked.AddDynamic(this, &URunResultWidget::HandleReturnCamp);
 
 	Root->AddChildToVerticalBox(TitleText);
 	Root->AddChildToVerticalBox(LootText);
@@ -65,5 +67,13 @@ void URunResultWidget::SetResult(const FEmberRunResult& Result)
 
 void URunResultWidget::HandleRunAgain()
 {
-	UGameplayStatics::OpenLevel(this, TEXT("/Game/Emberbound/Maps/Expedition/L_Expedition"));
+	UGameplayStatics::OpenLevel(this, TEXT("/Game/Emberbound/Maps/Expedition/L_Expedition"), true, TEXT("game=/Script/EmberboundIsekai.ExpeditionGameMode"));
+}
+
+void URunResultWidget::HandleReturnCamp()
+{
+	if (USceneFlowSubsystem* Flow = GetGameInstance() ? GetGameInstance()->GetSubsystem<USceneFlowSubsystem>() : nullptr)
+	{
+		Flow->TravelToCamp();
+	}
 }

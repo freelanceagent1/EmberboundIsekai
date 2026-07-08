@@ -9,6 +9,7 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-07 | EmberboundIsekaiEditor Win64 Development (M1 core combat loop) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT) |
 | 2026-07-07 | EmberboundIsekaiEditor Win64 Development (M2 run upgrade system) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT) |
 | 2026-07-07 | EmberboundIsekaiEditor Win64 Development (M3 boss and run results) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT) |
+| 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M4 camp/save/buildings) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 
 ## Automated checks
 | Date | Check | Result |
@@ -20,6 +21,10 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-07 | M2 65s headless smoke | ✅ 9 `LevelUp`, 9 `UpgradeApplied`, stacked upgrades, 39 `ProjectileHit`, continued `ProjectileFired`; no `Fatal`/`Error: [C++]` grep hits |
 | 2026-07-07 | M3 room 7 victory smoke | ✅ `BossPattern FireballVolley`, `DashCharge`, `FlameRing`, `BossEnraged`, `BossDefeated`, `RunResult Victory KeepPct=100 Gold=25 Wood=10 SoulAsh=8 Embers=0 Shards=3`; no `Fatal`/`Error: [C++]` grep hits |
 | 2026-07-07 | M3 room 7 defeat smoke | ✅ `RunResult Defeat KeepPct=60 Gold=0 Wood=0 SoulAsh=0 Embers=0 Shards=0`; no `Fatal`/`Error: [C++]` grep hits |
+| 2026-07-08 | M4 building/save automation test | ✅ `Emberbound.M4.BuildingUpgradeCost` completed with `Result={Success}` |
+| 2026-07-08 | M4 camp content build + verify | ✅ `CONTENT_OK`; `M4_ASSET_VERIFY_OK`; `L_Camp` and 4 building assets verified |
+| 2026-07-08 | M4 camp/save two-boot smoke | ✅ First boot upgraded `campfire-core lvl=2` and `grim-forge lvl=2`; second boot loaded `Gold=30 Wood=20 SoulAsh=6 campfire=2 forge=2` |
+| 2026-07-08 | M4 full-loop smoke | ✅ Camp → Expedition → boss victory → Return to Camp → `RunBanked Gold=25 Wood=10 SoulAsh=8 Embers=1 Shards=3`; reboot loaded `Gold=55 Wood=30 SoulAsh=14 campfire=2 forge=2`; `PlayerDamage 15.60` verified forge effect |
 
 ## Manual PIE checklist
 - [ ] Project opens in UE 5.8 without module rebuild errors
@@ -42,3 +47,4 @@ Compile/run status and manual test checklist. Updated every milestone.
 - M2 removed M1's direct fire-time auto-attack damage path; damage now resolves from projectile hits.
 - M2 `Ember.AutoPickUpgrades` selects immediately under pause for headless smoke because this UE 5.8 timer API does not expose paused world timers.
 - M3 defeat smoke starts directly at room 7, so there is no pre-boss run tally to retain; log includes `KeepPct=60` and zero banked amounts.
+- M4 adds deterministic headless smoke helpers `Ember.BuyBuilding` and `Ember.DebugAutoReturnCamp`; required M4 exec hooks are also present.

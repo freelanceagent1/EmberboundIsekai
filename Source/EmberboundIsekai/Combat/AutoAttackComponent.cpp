@@ -2,6 +2,7 @@
 #include "Combat/EmberProjectile.h"
 #include "Combat/HealthComponent.h"
 #include "Core/ObjectPoolSubsystem.h"
+#include "Core/SaveManagerSubsystem.h"
 #include "Enemies/EmberEnemyBase.h"
 #include "Enemies/EnemySpawnerSubsystem.h"
 #include "Run/RunUpgradeManager.h"
@@ -21,6 +22,10 @@ void UAutoAttackComponent::BeginPlay()
 	{
 		World->GetTimerManager().SetTimer(AcquisitionTimerHandle, this, &UAutoAttackComponent::AcquireTarget, 0.15f, true);
 		World->GetTimerManager().SetTimer(FireTimerHandle, this, &UAutoAttackComponent::FireAtTarget, AttackInterval, true, 0.25f);
+	}
+	if (USaveManagerSubsystem* Save = GetWorld() && GetWorld()->GetGameInstance() ? GetWorld()->GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
+	{
+		ApplyDamageMultiplier(Save->GetPlayerDamageMultiplier());
 	}
 }
 

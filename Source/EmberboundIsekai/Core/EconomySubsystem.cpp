@@ -44,3 +44,10 @@ int32 UEconomySubsystem::Get(EEmberResource Resource) const
 	}
 	return 0;
 }
+
+void UEconomySubsystem::Set(EEmberResource Resource, int32 Amount)
+{
+	const int32 NewAmount = FMath::Max(0, Amount);
+	Wallet.Add(Resource, NewAmount);
+	OnResourceChanged.Broadcast(Resource, NewAmount);
+}

@@ -3,6 +3,8 @@
 #include "Combat/HealthComponent.h"
 #include "Core/EconomySubsystem.h"
 #include "Core/EmberGameInstance.h"
+#include "Core/SaveManagerSubsystem.h"
+#include "Core/SceneFlowSubsystem.h"
 #include "Data/EmberEnemyData.h"
 #include "Enemies/BossTutorialDragon.h"
 #include "Enemies/EmberEnemyBase.h"
@@ -37,6 +39,11 @@ static TAutoConsoleVariable<float> CVarEmberDebugKillPlayerAfter(
 	0.0f,
 	TEXT("Development smoke hook: kill the player after N seconds if N > 0."));
 
+static TAutoConsoleVariable<int32> CVarEmberDebugAutoReturnCamp(
+	TEXT("Ember.DebugAutoReturnCamp"),
+	0,
+	TEXT("Development smoke hook: return to camp after the run result appears."));
+
 AExpeditionGameMode::AExpeditionGameMode()
 {
 	DefaultPawnClass = AEmberPlayerCharacter::StaticClass();
@@ -56,6 +63,10 @@ void AExpeditionGameMode::BeginPlay()
 	}
 	RegisterDebugHooks();
 	BindPlayerDeath();
+	if (USaveManagerSubsystem* Save = GetGameInstance() ? GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
+	{
+		UE_LOG(LogEmberbound, Log, TEXT("EMBER: PlayerDamage %.2f"), 12.0f * Save->GetPlayerDamageMultiplier());
+	}
 	FTimerHandle DelayedStartHandle;
 	GetWorldTimerManager().SetTimer(DelayedStartHandle, this, &AExpeditionGameMode::StartCurrentRoom, 0.25f, false);
 }
@@ -284,7 +295,6 @@ void AExpeditionGameMode::EndRun(bool bVictory)
 void AExpeditionGameMode::BankRunResult(bool bVictory)
 {
 	UEmberGameInstance* EmberGI = Cast<UEmberGameInstance>(GetGameInstance());
-	UEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEconomySubsystem>() : nullptr;
 	if (!EmberGI)
 	{
 		return;
@@ -314,13 +324,6 @@ void AExpeditionGameMode::BankRunResult(bool bVictory)
 		}
 		Result.MonsterShards.Add(TEXT("TutorialDragon"), FMath::RandRange(2, 3));
 	}
-	for (const TPair<EEmberResource, int32>& Pair : Result.BankedResources)
-	{
-		if (Economy)
-		{
-			Economy->Add(Pair.Key, Pair.Value);
-		}
-	}
 	EmberGI->LastRunResult = Result;
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: RunResult %s KeepPct=%d Gold=%d Wood=%d SoulAsh=%d Embers=%d Shards=%d"),
 		bVictory ? TEXT("Victory") : TEXT("Defeat"),
@@ -347,6 +350,17 @@ void AExpeditionGameMode::ShowRunResult()
 		ResultWidget->AddToViewport(200);
 		PC->SetShowMouseCursor(true);
 		PC->SetInputMode(FInputModeGameAndUI());
+	}
+	if (CVarEmberDebugAutoReturnCamp.GetValueOnGameThread() != 0)
+	{
+		FTimerHandle ReturnCampHandle;
+		GetWorldTimerManager().SetTimer(ReturnCampHandle, [this]()
+		{
+			if (USceneFlowSubsystem* Flow = GetGameInstance() ? GetGameInstance()->GetSubsystem<USceneFlowSubsystem>() : nullptr)
+			{
+				Flow->TravelToCamp();
+			}
+		}, 1.0f, false);
 	}
 }
 
