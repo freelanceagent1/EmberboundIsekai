@@ -91,12 +91,12 @@
    "id": "goblin-stabber",
    "category": "characters",
    "subject": "solo single-pose full-body illustration, one figure only, of a scrappy green goblin monster wielding a rusty dagger, hunched aggressive stance, torn leather scraps",
-   "prompt": "solo single-pose full-body illustration, one figure only, of a scrappy green goblin monster wielding a rusty dagger, hunched aggressive stance, torn leather scraps, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+   "prompt": "a single stocky green-skinned goblin warrior holding a crude dagger, low-poly stylized mobile game sprite, full body, one figure centered, front view, plain solid pure white background, clean white studio backdrop, seamless white, no scenery, no shadow, huge empty white margin",
    "simplified_prompt": "solo single-pose full-body illustration, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
    "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
    "width": 832,
    "height": 1216,
-   "seed": 599182,
+   "seed": 35791,
    "alpha_key": true,
    "target_sizes": [
     1024
@@ -121,12 +121,12 @@
    "id": "red-slime",
    "category": "characters",
    "subject": "solo, one creature only, a small round red jelly slime creature with a mischievous grin, glossy glowing texture",
-   "prompt": "solo, one creature only, a small round red jelly slime creature with a mischievous grin, glossy glowing texture, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-   "simplified_prompt": "solo, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-   "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+   "prompt": "a single cute chubby round slime creature, bright saturated crimson red opaque glossy jelly body, simple face, stylized low-poly mobile game sprite, one creature centered, plain solid pure white background, clean white studio backdrop, seamless white, no scenery, no shadow, huge empty white margin",
+   "simplified_prompt": "a single bright red round slime creature, opaque glossy body, centered, solid flat magenta background, huge magenta margin, no gems",
+   "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background, magenta creature, pink creature, purple creature, white creature, translucent, see-through, crystal, gem, bokeh, background lights",
    "width": 832,
    "height": 1216,
-   "seed": 447114,
+   "seed": 24680,
    "alpha_key": true,
    "target_sizes": [
     1024
@@ -135,13 +135,13 @@
   {
    "id": "green-slime",
    "category": "characters",
-   "subject": "solo, one creature only, a small round green jelly slime creature with a curious expression, glossy glowing texture",
-   "prompt": "solo, one creature only, a small round green jelly slime creature with a curious expression, glossy glowing texture, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-   "simplified_prompt": "solo, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-   "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
+   "subject": "a single cute chubby round slime creature, bright emerald grass-green opaque glossy jelly body, simple smiling face",
+   "prompt": "a single cute chubby round slime creature, bright emerald grass-green opaque glossy jelly body, simple smiling face, stylized low-poly mobile game sprite, cute grim cozy mood, original design, clean readable silhouette, one creature only, centered, isolated on a solid flat vivid magenta chroma-key background color hex FF00FF, huge empty flat magenta margin on all sides, no crystals, no gems, no bokeh, no background lights, no floating shapes",
+   "simplified_prompt": "a single bright green round slime creature, opaque glossy body, centered, solid flat magenta background, huge magenta margin, no gems, no bokeh",
+   "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background, magenta creature, pink creature, purple creature, magenta body, magenta subject, crystal, faceted gem, jewel, bokeh, glowing orbs, background lights, floating shapes, dark background",
    "width": 832,
    "height": 1216,
-   "seed": 318848,
+   "seed": 90210,
    "alpha_key": true,
    "target_sizes": [
     1024

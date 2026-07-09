@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-08T06:55:40Z",
+  "generated_at": "2026-07-09T00:58:49Z",
   "checkpoint": "sd_xl_base_1.0.safetensors",
   "assets": {
     "gold": {
@@ -164,7 +164,7 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/Characters/T_SkeletonArcher",
       "usage_note": "Character billboard sprite / portrait source texture",
-      "generated_at": "2026-07-07T20:23:45Z",
+      "generated_at": "2026-07-09T00:49:41Z",
       "source_file": "GeneratedAssets/staging/characters/skeleton-archer.png",
       "status": "generated",
       "attempts": 0,
@@ -177,9 +177,9 @@
       "id": "goblin-stabber",
       "category": "characters",
       "subject": "solo single-pose full-body illustration, one figure only, of a scrappy green goblin monster wielding a rusty dagger, hunched aggressive stance, torn leather scraps",
-      "prompt": "solo single-pose full-body illustration, one figure only, of a scrappy green goblin monster wielding a rusty dagger, hunched aggressive stance, torn leather scraps, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
+      "prompt": "a single stocky green-skinned goblin warrior holding a crude dagger, low-poly stylized mobile game sprite, full body, one figure centered, front view, plain solid pure white background, clean white studio backdrop, seamless white, no scenery, no shadow, huge empty white margin",
       "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
-      "seed": 599182,
+      "seed": 35791,
       "width": 832,
       "height": 1216,
       "target_sizes": [
@@ -187,11 +187,12 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/Characters/T_GoblinStabber",
       "usage_note": "Character billboard sprite / portrait source texture",
-      "generated_at": "2026-07-07T20:23:45Z",
-      "source_file": "GeneratedAssets/staging/characters/goblin-stabber.png",
+      "generated_at": "2026-07-09T00:58:11Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 20.6,
+      "source_file": "GeneratedAssets/staging/characters/goblin-stabber.png",
+      "comfy_prompt_id": "167fe6fa-176d-42f1-8d96-940335715502",
       "processed_files": [
         "GeneratedAssets/processed/characters/goblin-stabber_1024.png"
       ]
@@ -223,9 +224,9 @@
       "id": "red-slime",
       "category": "characters",
       "subject": "solo, one creature only, a small round red jelly slime creature with a mischievous grin, glossy glowing texture",
-      "prompt": "solo, one creature only, a small round red jelly slime creature with a mischievous grin, glossy glowing texture, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
-      "seed": 447114,
+      "prompt": "a single cute chubby round slime creature, bright saturated crimson red opaque glossy jelly body, simple face, stylized low-poly mobile game sprite, one creature centered, plain solid pure white background, clean white studio backdrop, seamless white, no scenery, no shadow, huge empty white margin",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background, magenta creature, pink creature, purple creature, white creature, translucent, see-through, crystal, gem, bokeh, background lights",
+      "seed": 24680,
       "width": 832,
       "height": 1216,
       "target_sizes": [
@@ -233,11 +234,12 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/Characters/T_RedSlime",
       "usage_note": "Character billboard sprite / portrait source texture",
-      "generated_at": "2026-07-07T20:23:46Z",
-      "source_file": "GeneratedAssets/staging/characters/red-slime.png",
+      "generated_at": "2026-07-09T00:58:35Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 12.33,
+      "source_file": "GeneratedAssets/staging/characters/red-slime.png",
+      "comfy_prompt_id": "a7f61148-bc2f-4558-9cf8-9c4fb7ac935a",
       "processed_files": [
         "GeneratedAssets/processed/characters/red-slime_1024.png"
       ]
@@ -245,10 +247,10 @@
     "green-slime": {
       "id": "green-slime",
       "category": "characters",
-      "subject": "solo, one creature only, a small round green jelly slime creature with a curious expression, glossy glowing texture",
-      "prompt": "solo, one creature only, a small round green jelly slime creature with a curious expression, glossy glowing texture, stylized low-poly mobile game asset, dark-comedy isekai fantasy, readable silhouette, warm ember lighting, cute grim cozy survival mood, original design, no copyrighted characters, clean shape language, game-ready, single isolated subject, one figure only, single pose, front view only, solid vivid magenta chroma-key background color hex FF00FF, flat unshaded magenta backdrop, no shadow on background, no vignette, no gradient background, green-screen style seamless magenta backdrop, large empty magenta margin surrounding the subject, subject occupies the center third of the frame, studio product icon shot",
-      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background",
-      "seed": 318848,
+      "subject": "a single cute chubby round slime creature, bright emerald grass-green opaque glossy jelly body, simple smiling face",
+      "prompt": "a single cute chubby round slime creature, bright emerald grass-green opaque glossy jelly body, simple smiling face, stylized low-poly mobile game sprite, cute grim cozy mood, original design, clean readable silhouette, one creature only, centered, isolated on a solid flat vivid magenta chroma-key background color hex FF00FF, huge empty flat magenta margin on all sides, no crystals, no gems, no bokeh, no background lights, no floating shapes",
+      "negative": "photorealistic, copyrighted character, logo, text, watermark, cluttered, realistic gore, horror gore, extra limbs, deformed hands, unreadable silhouette, muddy colors, overly detailed background, multiple objects, repeating pattern, tiled full-bleed pattern, second item, turnaround, character sheet, multiple views, two figures, side by side, back view, gray background, gradient background, vignette, shadow on background, neutral background, desaturated background, magenta creature, pink creature, purple creature, magenta body, magenta subject, crystal, faceted gem, jewel, bokeh, glowing orbs, background lights, floating shapes, dark background",
+      "seed": 90210,
       "width": 832,
       "height": 1216,
       "target_sizes": [
@@ -256,11 +258,12 @@
       ],
       "ue_path": "/Game/Emberbound/Generated/Characters/T_GreenSlime",
       "usage_note": "Character billboard sprite / portrait source texture",
-      "generated_at": "2026-07-07T20:23:46Z",
-      "source_file": "GeneratedAssets/staging/characters/green-slime.png",
+      "generated_at": "2026-07-09T00:49:45Z",
       "status": "generated",
-      "attempts": 0,
-      "elapsed_sec": 0.0,
+      "attempts": 1,
+      "elapsed_sec": 22.34,
+      "source_file": "GeneratedAssets/staging/characters/green-slime.png",
+      "comfy_prompt_id": "772dfdf7-1f9e-42d6-8393-d686361baa4e",
       "processed_files": [
         "GeneratedAssets/processed/characters/green-slime_1024.png"
       ]
@@ -1572,7 +1575,7 @@
       ]
     }
   },
-  "last_batch_elapsed_sec": 40.32,
+  "last_batch_elapsed_sec": 37.61,
   "last_batch_asset_count": 2,
   "full_generation_run_elapsed_sec": 383.19,
   "full_generation_run_note": "First full run (all 62 assets hit ComfyUI, none cached) took 383.19s wall time. A subsequent run (last_batch_elapsed_sec below) only re-authored manifest metadata (added the subject field) and re-ran Pillow post-processing on already-staged PNGs -- no new ComfyUI calls -- hence the much smaller last_batch_elapsed_sec/per-asset elapsed_sec values."

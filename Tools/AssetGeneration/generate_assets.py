@@ -257,6 +257,13 @@ def alpha_key_smart(img: Image.Image) -> Image.Image:
     detail that doesn't reach the frame edge.
     """
     rgb = img.convert("RGB")
+    # NOTE: unioning the magenta + flat candidate masks BEFORE the border flood
+    # fills split backdrops better, but is too aggressive for DARK/low-saturation
+    # subjects (it walks the flood through a black silhouette and erases it, e.g.
+    # skeleton-archer). Keep the safe separate-mask OR: each candidate is
+    # border-connected independently, so this is strictly additive and never
+    # eats interior subject detail. Assets with a stubborn split/off-colour
+    # backdrop get a targeted per-asset key instead.
     magenta_mask = _border_connected_mask(_magenta_candidate_mask(rgb))
     flat_mask = _border_connected_mask(_flat_background_candidate_mask(rgb))
     bg_mask = magenta_mask | flat_mask
