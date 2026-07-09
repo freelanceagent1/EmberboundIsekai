@@ -13,6 +13,8 @@
 #include "Components/VerticalBoxSlot.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "EmberboundIsekai.h"
 
 void UOnboardingHintWidget::NativeOnInitialized()
@@ -53,6 +55,10 @@ void UOnboardingHintWidget::NativeOnInitialized()
 
 void UOnboardingHintWidget::ShowCards(const UObject* WorldContextObject, bool bExpeditionCards)
 {
+	if (FParse::Param(FCommandLine::Get(), TEXT("EmberSkipOnboarding")))
+	{
+		return;
+	}
 	APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
 	USaveManagerSubsystem* Save = PC && PC->GetGameInstance() ? PC->GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr;
 	const UEmberSaveGame* CurrentSave = Save ? Save->GetCurrentSave() : nullptr;

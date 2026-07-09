@@ -85,6 +85,7 @@ void ACampGameMode::BeginPlay()
 	{
 		Player->SetAutoAttackEnabled(false);
 		Player->SetCameraOrthoWidth(980.0f);
+		Player->SetActorLocation(FVector(-150.0f, 0.0f, Player->GetActorLocation().Z));
 	}
 	const UEmberGameInstance* EmberGI = GetGameInstance() ? Cast<UEmberGameInstance>(GetGameInstance()) : nullptr;
 	const bool bMainMenuActive = EmberGI && (EmberGI->IsMainMenuActive() || EmberGI->WillShowInitialMainMenu());
@@ -133,11 +134,29 @@ void ACampGameMode::SpawnCampActors()
 	{
 		return;
 	}
-	World->SpawnActor<ACampfireCoreActor>(FVector(0.0f, -20.0f, 70.0f), FRotator::ZeroRotator);
-	World->SpawnActor<AGrimForgeActor>(FVector(180.0f, 80.0f, 70.0f), FRotator::ZeroRotator);
-	World->SpawnActor<AMonsterPenActor>(FVector(-180.0f, 80.0f, 70.0f), FRotator::ZeroRotator);
-	World->SpawnActor<AWatchtowerActor>(FVector(185.0f, -150.0f, 70.0f), FRotator::ZeroRotator);
-	World->SpawnActor<AExpeditionPortalActor>(FVector(-185.0f, -150.0f, 70.0f), FRotator::ZeroRotator);
+	for (const FCampBuildingLayoutSpec& Spec : ACampBuildingActor::CampLayoutSpecs())
+	{
+		if (Spec.BuildingId == TEXT("campfire-core"))
+		{
+			World->SpawnActor<ACampfireCoreActor>(Spec.Location, FRotator::ZeroRotator);
+		}
+		else if (Spec.BuildingId == TEXT("grim-forge"))
+		{
+			World->SpawnActor<AGrimForgeActor>(Spec.Location, FRotator::ZeroRotator);
+		}
+		else if (Spec.BuildingId == TEXT("monster-pen"))
+		{
+			World->SpawnActor<AMonsterPenActor>(Spec.Location, FRotator::ZeroRotator);
+		}
+		else if (Spec.BuildingId == TEXT("watchtower"))
+		{
+			World->SpawnActor<AWatchtowerActor>(Spec.Location, FRotator::ZeroRotator);
+		}
+		else if (Spec.BuildingId == TEXT("expedition-portal"))
+		{
+			World->SpawnActor<AExpeditionPortalActor>(Spec.Location, FRotator::ZeroRotator);
+		}
+	}
 }
 
 void ACampGameMode::ShowJoystickIfNeeded()

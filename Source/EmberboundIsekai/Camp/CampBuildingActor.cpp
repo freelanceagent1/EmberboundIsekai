@@ -4,11 +4,8 @@
 #include "Data/BuildingData.h"
 #include "Generated/EmberGeneratedArt.h"
 #include "UI/CampBuildingPanelWidget.h"
-#include "Blueprint/UserWidget.h"
-#include "Blueprint/WidgetTree.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/TextBlock.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/GameInstance.h"
@@ -51,8 +48,8 @@ ACampBuildingActor::ACampBuildingActor()
 	NameplateText->SetHorizontalAlignment(EHTA_Center);
 	NameplateText->SetVerticalAlignment(EVRTA_TextCenter);
 	NameplateText->SetTextRenderColor(FColor(72, 43, 24));
-	NameplateText->SetWorldSize(52.0f);
-	NameplateText->SetRelativeLocation(FVector(0.0f, 0.0f, 212.0f));
+	NameplateText->SetWorldSize(38.0f);
+	NameplateText->SetRelativeLocation(FVector(82.0f, 0.0f, 126.0f));
 	NameplateText->SetRelativeRotation(FRotator(90.0f, 180.0f, 0.0f));
 
 	NameplateWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("NameplateWidget"));
@@ -114,31 +111,23 @@ void ACampBuildingActor::ConfigureVisual()
 	{
 		ConfigureBillboardMaterial(BillboardVisual, EmberGeneratedArt::BuildingTexturePath(BuildingId));
 	}
+	ConfigureNameplate();
+}
+
+void ACampBuildingActor::ConfigureNameplate()
+{
+	const FText DisplayName = GetDisplayName();
 	if (NameplateText)
 	{
-		NameplateText->SetText(GetDisplayName());
+		NameplateText->SetText(DisplayName);
+		NameplateText->SetTextRenderColor(FColor(255, 245, 190));
+		NameplateText->SetVisibility(true);
+		NameplateText->SetHiddenInGame(false);
 	}
-	if (NameplateWidget && GetWorld())
+	if (NameplateWidget)
 	{
-		UUserWidget* LabelWidget = CreateWidget<UUserWidget>(GetWorld(), UUserWidget::StaticClass());
-		if (LabelWidget && LabelWidget->WidgetTree)
-		{
-			UTextBlock* LabelText = LabelWidget->WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("BuildingNameplateText"));
-			if (LabelText)
-			{
-				LabelText->SetText(GetDisplayName());
-				LabelText->SetJustification(ETextJustify::Center);
-				LabelText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.82f, 0.42f, 1.0f)));
-				LabelText->SetShadowOffset(FVector2D(1.5f, 1.5f));
-				LabelText->SetShadowColorAndOpacity(FLinearColor(0.12f, 0.055f, 0.02f, 0.95f));
-				FSlateFontInfo FontInfo = LabelText->GetFont();
-				FontInfo.Size = 20;
-				FontInfo.TypefaceFontName = TEXT("Bold");
-				LabelText->SetFont(FontInfo);
-				LabelWidget->WidgetTree->RootWidget = LabelText;
-				NameplateWidget->SetWidget(LabelWidget);
-			}
-		}
+		NameplateWidget->SetVisibility(false);
+		NameplateWidget->SetHiddenInGame(true);
 	}
 }
 
@@ -207,11 +196,43 @@ FText ACampBuildingActor::GetDisplayName() const
 	{
 		return BuildingData->DisplayName;
 	}
-	if (BuildingId == TEXT("expedition-portal"))
+	return DisplayNameForBuildingId(BuildingId);
+}
+
+FText ACampBuildingActor::DisplayNameForBuildingId(FName InBuildingId)
+{
+	if (InBuildingId == TEXT("campfire-core"))
 	{
-		return NSLOCTEXT("Camp", "ExpeditionPortalName", "Expedition");
+		return NSLOCTEXT("Camp", "CampfireCoreNameFallback", "Campfire Core");
 	}
-	return FText::FromName(BuildingId);
+	if (InBuildingId == TEXT("grim-forge"))
+	{
+		return NSLOCTEXT("Camp", "GrimForgeNameFallback", "Grim Forge");
+	}
+	if (InBuildingId == TEXT("monster-pen"))
+	{
+		return NSLOCTEXT("Camp", "MonsterPenNameFallback", "Monster Pen");
+	}
+	if (InBuildingId == TEXT("watchtower"))
+	{
+		return NSLOCTEXT("Camp", "WatchtowerNameFallback", "Watchtower");
+	}
+	if (InBuildingId == TEXT("expedition-portal"))
+	{
+		return NSLOCTEXT("Camp", "ExpeditionPortalName", "Expedition Portal");
+	}
+	return FText::FromName(InBuildingId);
+}
+
+TArray<FCampBuildingLayoutSpec> ACampBuildingActor::CampLayoutSpecs()
+{
+	return {
+		{ TEXT("campfire-core"), FVector(80.0f, 0.0f, 70.0f) },
+		{ TEXT("grim-forge"), FVector(230.0f, 330.0f, 70.0f) },
+		{ TEXT("monster-pen"), FVector(-180.0f, 330.0f, 70.0f) },
+		{ TEXT("watchtower"), FVector(100.0f, -330.0f, 70.0f) },
+		{ TEXT("expedition-portal"), FVector(-235.0f, -250.0f, 70.0f) }
+	};
 }
 
 void ACampBuildingActor::HandleBeginOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32, bool, const FHitResult&)
@@ -242,6 +263,7 @@ void ACampfireCoreActor::ConfigureVisual()
 		const float RadiusScale = 1.0f + 0.35f * static_cast<float>(Save->GetBuildingLevel(BuildingId));
 		InteractionSphere->SetSphereRadius(180.0f * RadiusScale);
 	}
+	ConfigureNameplate();
 }
 
 AGrimForgeActor::AGrimForgeActor()

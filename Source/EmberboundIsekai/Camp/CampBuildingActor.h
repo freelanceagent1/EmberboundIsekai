@@ -13,6 +13,18 @@ class USphereComponent;
 class UTextRenderComponent;
 class UWidgetComponent;
 
+USTRUCT()
+struct FCampBuildingLayoutSpec
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FName BuildingId;
+
+	UPROPERTY()
+	FVector Location = FVector::ZeroVector;
+};
+
 UCLASS()
 class EMBERBOUNDISEKAI_API ACampBuildingActor : public AActor
 {
@@ -23,6 +35,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
+	static FText DisplayNameForBuildingId(FName InBuildingId);
+	static TArray<FCampBuildingLayoutSpec> CampLayoutSpecs();
 
 	UPROPERTY(EditAnywhere, Category = "Building")
 	FName BuildingId;
@@ -56,6 +70,7 @@ protected:
 	virtual void ConfigureVisual();
 	virtual void OpenPanel();
 	UBuildingData* LoadBuildingData() const;
+	void ConfigureNameplate();
 	void ConfigureBillboardMaterial(UStaticMeshComponent* Component, const FString& TexturePath, UMaterialInterface* OverrideMaterial = nullptr);
 	FText GetDisplayName() const;
 

@@ -26,7 +26,8 @@ void UCampHUDWidget::NativeOnInitialized()
 	Super::NativeOnInitialized();
 	USafeZone* SafeRoot = WidgetTree->ConstructWidget<USafeZone>(USafeZone::StaticClass(), TEXT("SafeRoot"));
 	UBorder* Panel = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("CampHudPanel"));
-	EmberUIStyle::ApplyPanel(Panel, FLinearColor(0.86f, 0.72f, 0.49f, 0.0f));
+	EmberUIStyle::ApplyPanel(Panel, FLinearColor(0.055f, 0.030f, 0.012f, 0.62f));
+	Panel->SetPadding(FMargin(12.0f, 8.0f, 12.0f, 8.0f));
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
 	Panel->SetContent(Root);
 	SafeRoot->AddChild(Panel);
@@ -34,7 +35,7 @@ void UCampHUDWidget::NativeOnInitialized()
 	UTextBlock* GoalText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("CampGoal"));
 	GoalText->SetText(NSLOCTEXT("Camp", "CampGoal", "Camp Goal: upgrade buildings, assign monsters, then run Expedition to beat Room 7."));
 	GoalText->SetAutoWrapText(true);
-	EmberUIStyle::ApplyText(GoalText, 17.0f);
+	EmberUIStyle::ApplyText(GoalText, 17.0f, EmberUIStyle::Bone(), true);
 	Root->AddChildToVerticalBox(GoalText);
 	UHorizontalBox* Resources = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(), TEXT("Resources"));
 	Root->AddChildToVerticalBox(Resources);
@@ -58,7 +59,7 @@ void UCampHUDWidget::NativeOnInitialized()
 			Resource == EEmberResource::SoulAsh ? NSLOCTEXT("Camp", "SoulAshTip", "Soul Ash: magic fuel for stronger camp upgrades.") :
 			Resource == EEmberResource::MonsterEssence ? NSLOCTEXT("Camp", "EssenceTip", "Monster Essence: monster and defense growth resource.") :
 			NSLOCTEXT("Camp", "EmbersTip", "Embers: rare premium sparks from boss victories."));
-		EmberUIStyle::ApplyText(Text, 16.0f);
+		EmberUIStyle::ApplyText(Text, 16.0f, EmberUIStyle::Bone(), true);
 		ResourceTexts.Add(Resource, Text);
 		Resources->AddChildToHorizontalBox(Text);
 	}
@@ -100,7 +101,7 @@ void UCampHUDWidget::NativeOnInitialized()
 #endif
 	StubText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("StubText"));
 	StubText->SetAutoWrapText(true);
-	EmberUIStyle::ApplyText(StubText, 16.0f);
+	EmberUIStyle::ApplyText(StubText, 16.0f, EmberUIStyle::Bone(), true);
 	Root->AddChildToVerticalBox(StubText);
 	StubText->SetText(NSLOCTEXT("Camp", "HelpDefault", "(?) Tap buildings for details: Campfire grows storage, Forge raises bow damage, Pen assigns monsters, Watchtower starts defense."));
 	RefreshResources();

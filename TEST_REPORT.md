@@ -24,6 +24,8 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | EmberboundIsekai Win64 Development (M13 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M15 menu/onboarding/UI/composition) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekai Win64 Development (M15 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-09 | EmberboundIsekaiEditor Win64 Development (M16 camp layout/readability) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-09 | EmberboundIsekai Win64 Development (M16 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 
 ## Automated checks
 | Date | Check | Result |
@@ -70,6 +72,11 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | M15 final visual captures | ✅ `shot_menu.png`, `shot_camp.png`, `shot_expedition.png`, and `shot_boss.png` recaptured and inspected; menu/onboarding/objectives/tooltips/theme/camp composition visibly present |
 | 2026-07-08 | M15 final autopilot | ✅ Bounded run `M15_autopilot_final2` returned `until_hit=True` for `AUTOPILOT COMPLETE` |
 | 2026-07-08 | M15 Windows package | ✅ RunUAT BuildCookRun Win64 Development `BUILD SUCCESSFUL` with `-ubtargs=-MaxParallelActions=10`; output present under `Packaged/Windows` |
+| 2026-07-09 | M16 generated art re-import | ✅ `Docs/validation/M16_reimport.log` ended with `IMPORT_OK n=62`; re-toned meadow grass imported |
+| 2026-07-09 | M16 camp presentation automation | ✅ `Emberbound.M16.CampPresentationDefaults` completed with `Result={Success}` and exit code 0 |
+| 2026-07-09 | M16 final visual captures | ✅ `shot_camp.png`, `shot_menu.png`, `shot_expedition.png`, and `shot_boss.png` recaptured and inspected; camp buildings separated, all five nameplates correct, no `Text` placeholder, HUD readable |
+| 2026-07-09 | M16 final autopilot | ✅ `Docs/validation/M16_autopilot.log` logged ordered full-loop markers through `AUTOPILOT COMPLETE`; no `Fatal`/`Error: [C++]` grep hits |
+| 2026-07-09 | M16 Windows package + packaged smoke | ✅ RunUAT BuildCookRun Win64 Development `BUILD SUCCESSFUL` with `-ubtargs=-MaxParallelActions=10`; packaged log reached `AUTOPILOT COMPLETE`; `Docs/validation/packaged_camp.png` captured from top-level packaged exe |
 
 ## M12 PACKAGED standalone build — end-to-end validation (orchestrator, 2026-07-08)
 The shipped Development Windows package (`Packaged/Windows/EmberboundIsekai.exe`, ~917 MB, cooked/staged/pak) was driven through the **entire loop by the autopilot, outside the editor**.
