@@ -50,16 +50,16 @@ namespace
 		if (Floor && Floor->GetStaticMeshComponent())
 		{
 #if WITH_EDITOR
-			Floor->SetActorLabel(TEXT("M5b_ExpeditionCorruptedGrassFloor"));
+			Floor->SetActorLabel(TEXT("M13_ExpeditionCorruptedGrassFloor_Fullscreen2D"));
 #endif
 			Floor->GetStaticMeshComponent()->SetStaticMesh(PlaneMesh);
 			UMaterialInstanceDynamic* FloorMID = Floor->GetStaticMeshComponent()->CreateAndSetMaterialInstanceDynamicFromMaterial(0, Material);
 			if (FloorMID)
 			{
-				FloorMID->SetVectorParameterValue(TEXT("Tint"), FLinearColor(0.80f, 0.70f, 0.82f, 1.0f));
+				FloorMID->SetVectorParameterValue(TEXT("Tint"), FLinearColor(0.58f, 0.54f, 0.62f, 1.0f));
 			}
 			Floor->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			Floor->SetActorScale3D(FVector(28.0f, 28.0f, 1.0f));
+			Floor->SetActorScale3D(FVector(120.0f, 120.0f, 1.0f));
 		}
 	}
 

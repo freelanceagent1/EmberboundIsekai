@@ -8,7 +8,6 @@
 class UAutoAttackComponent;
 class UCameraComponent;
 class UHealthComponent;
-class USpringArmComponent;
 class UStaticMeshComponent;
 class UXPComponent;
 
@@ -32,9 +31,6 @@ public:
 	UXPComponent* GetXPComponent() const { return XPComponent; }
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USpringArmComponent> SpringArm;
-
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> Camera;
 

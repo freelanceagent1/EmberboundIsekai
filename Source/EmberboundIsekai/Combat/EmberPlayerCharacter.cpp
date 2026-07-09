@@ -12,7 +12,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
@@ -30,17 +29,13 @@ AEmberPlayerCharacter::AEmberPlayerCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
 
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 1400.0f;
-	SpringArm->SetRelativeRotation(FRotator(-55.0f, 0.0f, 0.0f));
-	SpringArm->bUsePawnControlRotation = false;
-	SpringArm->bEnableCameraRotationLag = false;
-	SpringArm->bEnableCameraLag = false;
-
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(SpringArm);
+	Camera->SetupAttachment(RootComponent);
 	Camera->bUsePawnControlRotation = false;
+	Camera->SetProjectionMode(ECameraProjectionMode::Orthographic);
+	Camera->SetOrthoWidth(1900.0f);
+	Camera->SetRelativeLocation(FVector(0.0f, 0.0f, 2200.0f));
+	Camera->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	HealthComponent->MaxHP = 100.0f;
@@ -55,7 +50,7 @@ AEmberPlayerCharacter::AEmberPlayerCharacter()
 	{
 		BillboardVisual->SetStaticMesh(PlaneMesh);
 		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 88.0f));
-		BillboardVisual->SetRelativeScale3D(FVector(1.2f, 1.75f, 1.0f));
+		BillboardVisual->SetRelativeScale3D(FVector(2.05f, 2.75f, 1.0f));
 	}
 
 	BlobShadow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlobShadow"));

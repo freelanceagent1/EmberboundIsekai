@@ -20,6 +20,8 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | EmberboundIsekai Win64 Development (M8 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M10 damage text + autopilot) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 | 2026-07-08 | EmberboundIsekai Win64 Development (M10 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekaiEditor Win64 Development (M13 2D orthographic presentation) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
+| 2026-07-08 | EmberboundIsekai Win64 Development (M13 runtime build) | ✅ Succeeded (`Result: Succeeded`, UE 5.8 UBT, `-MaxParallelActions=10`) |
 
 ## Automated checks
 | Date | Check | Result |
@@ -57,6 +59,11 @@ Compile/run status and manual test checklist. Updated every milestone.
 | 2026-07-08 | M10 pooled damage text smoke | ✅ Final autopilot log includes repeated pooled damage markers, including `DamageText n=1` and `DamageText n=5` |
 | 2026-07-08 | M10 defender assignment in autopilot | ✅ Final autopilot log includes `MonsterAssigned bone-rat role=defender slots=1/1 defender=4.0` and `DefenderSpawned bone-rat` |
 | 2026-07-08 | M10 reboot after autopilot | ✅ Fresh Camp boot loaded `Gold=512 Wood=220 SoulAsh=122 campfire=1 forge=1 slimeShards=203 owned=2 assignments=1 titles=2` |
+| 2026-07-08 | M13 presentation automation test | ✅ `Emberbound.M13.PhonePresentationDefaults` completed with `Result={Success}` after an expected red run against the old perspective camera |
+| 2026-07-08 | M13 generated art re-import | ✅ `IMPORT_OK n=62`; `UPGRADE_ICONS_ASSIGNED n=15`; cleaned character/floor PNGs refreshed into `/Game/Emberbound/Generated`; generated floor material rebuilt unlit |
+| 2026-07-08 | M13 editor visual captures | ✅ `shot_camp.png`, `shot_expedition.png`, and `shot_boss.png` recaptured via real-RHI `Ember.CaptureAfter`; visually confirmed orthographic top-down, full generated ground, no checkerboard/edges, flat readable sprites |
+| 2026-07-08 | M13 final autopilot | ✅ `Docs/validation/M13_autopilot_final.log` logged `AUTOPILOT COMPLETE` after the final sprite-scale pass |
+| 2026-07-08 | M13 Windows package + packaged boot capture | ✅ RunUAT BuildCookRun Win64 Development `BUILD SUCCESSFUL` with `-ubtargs=-MaxParallelActions=10`; `Docs/validation/packaged_camp.png` captured and visually confirmed as flat 2D |
 
 ## M12 PACKAGED standalone build — end-to-end validation (orchestrator, 2026-07-08)
 The shipped Development Windows package (`Packaged/Windows/EmberboundIsekai.exe`, ~917 MB, cooked/staged/pak) was driven through the **entire loop by the autopilot, outside the editor**.

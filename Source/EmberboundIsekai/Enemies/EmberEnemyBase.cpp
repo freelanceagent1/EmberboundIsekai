@@ -235,8 +235,8 @@ void AEmberEnemyBase::ConfigureBillboard(FName TextureId, const FVector& VisualS
 {
 	if (BillboardVisual)
 	{
-		const float Width = FMath::Clamp(VisualScale.X * 1.25f, 0.75f, 3.0f);
-		const float Height = FMath::Clamp(FMath::Max(VisualScale.Z * 1.8f, VisualScale.X * 1.35f), 0.95f, 3.2f);
+		const float Width = FMath::Clamp(VisualScale.X * 2.0f, 1.35f, 4.2f);
+		const float Height = FMath::Clamp(FMath::Max(VisualScale.Z * 2.6f, VisualScale.X * 2.2f), 1.55f, 4.6f);
 		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, Height * 50.0f));
 		BillboardVisual->SetRelativeScale3D(FVector(Width, Height, 1.0f));
 		if (UMaterialInterface* Material = EmberGeneratedArt::LoadBillboardMaterial())

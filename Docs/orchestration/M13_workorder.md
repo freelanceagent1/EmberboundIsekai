@@ -1,0 +1,25 @@
+# WORK ORDER M13 — Convert presentation to a genuine 2D phone game
+
+Context (IMPORTANT — user correction): the build currently renders as perspective-3D (angled perspective camera, visible 3D floor plane with engine checkerboard around the edges, depth distortion). The user says it **must be 2D — it's a phone game**. Gameplay already runs on the XY plane and the generated art is already flat sprites, so this is a **presentation-layer conversion, NOT a gameplay rewrite**. Do not change combat/upgrades/camp/save/defense/monsters/titles logic. See `Docs/validation/shot_camp.png` / `shot_expedition.png` / `shot_boss.png` for the current (wrong, 3D-looking) result.
+
+Same hard rules (UBT green `-MaxParallelActions=10`, one editor process at a time, never kill foreign processes — only your own PIDs, original content, reuse existing generated art).
+
+## Hard requirement (acceptance)
+The rendered result — in Camp, Expedition, and Defense — must read as a **flat 2D top-down phone game**:
+1. **Orthographic camera** (no perspective distortion: parallel edges stay parallel, sprite size is constant regardless of screen position). Replace the perspective `UCameraComponent`/SpringArm setup on `AEmberPlayerCharacter` (currently perspective, SpringArm pitch −55°, arm 1400) and the camp camera with an orthographic projection (`Camera->SetProjectionMode(ECameraProjectionMode::Orthographic)`, tune `OrthoWidth` to frame the play area for a landscape phone, e.g. ~1600–2200). Choose a top-down framing (straight-down, or a steep fixed angle) that makes the existing standing-pose sprites read correctly and upright — prioritize the flat 2D look. Fixed camera, no rotation/lag.
+2. **Full-screen 2D ground** — the generated ground material (meadow-grass for camp, corrupted-grass for expedition) must fill the ENTIRE view with NO visible plane edges and NO engine checkerboard anywhere in any gameplay camera. Make the ground plane large enough to always cover the ortho frustum (or attach a ground plane to the camera so it always fills view), tiled. Remove/hide the template map's default floor so it never shows through.
+3. **Flat 2D sprites** — characters/enemies/boss/pickups/buildings render as clean flat sprites (unlit, masked, constant scale, readable on a phone). With the orthographic top-down camera they should appear as 2D images, not tilted 3D quads. Keep them upright/readable. Blob shadows optional; if kept, make them read as simple 2D drop shadows, not 3D discs.
+4. No visible 3D depth cues (no perspective, no receding floor, no skybox/3D horizon in frame). UMG HUD/joystick stay as-is (already 2D).
+
+## Also fix these cosmetic issues (user asked to fix the minor issues)
+5. **Re-import cleaned character + floor textures.** A parallel asset pass regenerated/re-keyed several character sprites (green-slime, skeleton-archer, and any others with background remnants) and toned down the corrupted-grass floor texture, overwriting the PNGs under `GeneratedAssets/processed/`. The UE-imported copies in `/Game/Emberbound/Generated/` are now stale — **re-import the changed textures** (reuse `Tools/AssetGeneration/import_to_unreal.py`, or a targeted re-import of `Characters/*` and `Environment/T_CorruptedGrass`) so the 2D sprites and expedition floor use the cleaned art. Do this BEFORE the re-capture/re-package so screenshots and the shipped build reflect the fixes. (If this pass hasn't finished when you reach this step, the orchestrator will tell you — otherwise re-import whatever is current.)
+6. **Floor saturation:** in addition to the toned texture, if the expedition floor still reads too saturated, reduce the material instance's tint/saturation ~30%.
+
+Update `ASSUMPTIONS.md`: record the 2D presentation decision (orthographic top-down, full-screen 2D ground, flat sprites, landscape) and why.
+
+## Verify (must re-capture and visually confirm)
+1. UBT green (both targets).
+2. Run the autopilot end-to-end (editor `-game`, `Ember.Autopilot 1`) — confirm the loop still logs `AUTOPILOT COMPLETE` (presentation change must not break gameplay).
+3. RE-CAPTURE the three settled screenshots via `Ember.CaptureAfter` (real-RHI, `-RenderOffScreen`, no `-unattended`), overwriting `Docs/validation/shot_camp.png`, `shot_expedition.png`, `shot_boss.png`. Inspect each PNG and CONFIRM IN THE REPORT: orthographic (no perspective trapezoid), ground fills the frame with no checkerboard/edges, sprites are flat 2D and readable. If any still shows 3D perspective or checkerboard, iterate until fixed.
+4. **Re-package** the standalone build (RunUAT BuildCookRun Win64 Development to `Packaged/`, same as M11) so the shipped exe reflects the 2D look; do a packaged boot capture to `Docs/validation/packaged_camp.png` and confirm it's 2D. Kill only your own packaged PIDs; ensure no packaged process is left running that would lock the exe.
+5. Write `Docs/orchestration/M13_report.md` (before/after, camera settings, how the ground was made full-screen) + TEST_REPORT rows. Commit `M13: 2D orthographic phone-game presentation`. Print `M13_DONE`.

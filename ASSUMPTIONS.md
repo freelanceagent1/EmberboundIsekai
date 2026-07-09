@@ -36,6 +36,7 @@ All practical assumptions made during autonomous development. Updated per milest
 16. **PCH virtual-memory failures** under shared-machine load → module builds with `PCHUsage = NoPCHs` (slightly slower compiles, deterministic under memory pressure).
 17. Content-script log markers emit via `unreal.log_warning` because plain `print` is suppressed in this commandlet path.
 18. Machine is shared with the user's own concurrent workloads: UBT capped at `-MaxParallelActions=10`; no foreign processes are ever terminated.
+19. **2D presentation correction:** the shipped game presentation is orthographic top-down, landscape, with full-screen generated ground and flat sprite planes for characters/enemies/buildings/pickups. This replaces the earlier angled perspective/spring-arm camera because the target is a genuine 2D phone game, not a perspective-3D scene.
 
 ## Open risks
 

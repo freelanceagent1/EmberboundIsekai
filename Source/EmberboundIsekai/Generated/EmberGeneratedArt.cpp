@@ -162,11 +162,12 @@ namespace EmberGeneratedArt
 		const APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
 		if (PC && PC->PlayerCameraManager)
 		{
-			const FVector ToCamera = (PC->PlayerCameraManager->GetCameraLocation() - Component->GetComponentLocation()).GetSafeNormal();
-			if (!ToCamera.IsNearlyZero())
+			const FRotator CameraRotation = PC->PlayerCameraManager->GetCameraRotation();
+			const FVector CameraNormal = -FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
+			if (!CameraNormal.IsNearlyZero())
 			{
-				const FVector CameraRight = FRotationMatrix(PC->PlayerCameraManager->GetCameraRotation()).GetUnitAxis(EAxis::Y);
-				Component->SetWorldRotation(FRotationMatrix::MakeFromXZ(CameraRight, ToCamera).Rotator());
+				const FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
+				Component->SetWorldRotation(FRotationMatrix::MakeFromXZ(CameraRight, CameraNormal).Rotator());
 			}
 		}
 	}

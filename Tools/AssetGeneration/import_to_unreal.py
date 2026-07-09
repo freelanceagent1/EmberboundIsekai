@@ -9,7 +9,7 @@ import unreal
 REPO_ROOT = r"E:\mobilegamer\EmberboundIsekai"
 MANIFEST_JSON_PATH = os.path.join(REPO_ROOT, "Tools", "AssetGeneration", "asset_manifest.json")
 MATERIAL_PATH = "/Game/Emberbound/Materials/Generated"
-FORCE_REIMPORT = False
+FORCE_REIMPORT = os.environ.get("EMBER_FORCE_REIMPORT", "0").strip().lower() in ("1", "true", "yes")
 
 
 CATEGORY_TEXTURE_SETTINGS = {
@@ -175,7 +175,7 @@ def create_material(name: str, masked: bool = True, translucent: bool = False, u
 def create_materials() -> None:
     create_material("M_Generated_Icon", masked=False, translucent=True, unlit=True, two_sided=False)
     create_material("M_Generated_Billboard", masked=True, translucent=False, unlit=True, two_sided=True)
-    create_material("M_Generated_Floor", masked=False, translucent=False, unlit=False, two_sided=False)
+    create_material("M_Generated_Floor", masked=False, translucent=False, unlit=True, two_sided=False)
     create_material("M_Stylized_Enemy", masked=True, translucent=False, unlit=True, two_sided=True)
     create_material("M_Campfire_Flame", masked=False, translucent=True, unlit=True, two_sided=True, panner=True)
     create_material("M_Corruption_Decal", masked=False, translucent=True, unlit=True, two_sided=False, decal=True)
