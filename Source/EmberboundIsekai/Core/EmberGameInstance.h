@@ -41,9 +41,14 @@ public:
 	virtual void Init() override;
 	virtual void OnStart() override;
 
+	bool IsMainMenuActive() const { return bMainMenuActive; }
+	void SetMainMenuActive(bool bActive) { bMainMenuActive = bActive; }
+	bool WillShowInitialMainMenu() const;
+
 	UPROPERTY(BlueprintReadWrite, Category = "Run")
 	FEmberRunResult LastRunResult;
 
 private:
 	bool bSplashShown = false;
+	bool bMainMenuActive = false;
 };

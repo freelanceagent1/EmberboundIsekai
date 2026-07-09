@@ -15,6 +15,7 @@ class EMBERBOUNDISEKAI_API ACampGameMode : public AGameModeBase
 public:
 	ACampGameMode();
 	virtual void BeginPlay() override;
+	void StartCampAfterMenu();
 
 private:
 	UPROPERTY()
@@ -22,6 +23,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UVirtualJoystickWidget> JoystickWidget;
+
+	bool bCampPresentationStarted = false;
 
 	void SpawnCampActors();
 	void ShowJoystickIfNeeded();

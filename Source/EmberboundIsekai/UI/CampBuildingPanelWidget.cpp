@@ -6,7 +6,9 @@
 #include "Data/BuildingData.h"
 #include "Data/MonsterData.h"
 #include "Generated/EmberGeneratedArt.h"
+#include "UI/EmberUIStyle.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/SafeZone.h"
@@ -36,12 +38,36 @@ static FString CampPanelResourceLabel(EEmberResource Resource)
 	}
 }
 
+static FText BuildingHelpText(FName BuildingId)
+{
+	if (BuildingId == TEXT("campfire-core"))
+	{
+		return NSLOCTEXT("Camp", "CampfireHelp", "(?) Campfire Core: grows the safe zone and offline storage.");
+	}
+	if (BuildingId == TEXT("grim-forge"))
+	{
+		return NSLOCTEXT("Camp", "ForgeHelp", "(?) Grim Forge: +15% bow damage per level.");
+	}
+	if (BuildingId == TEXT("monster-pen"))
+	{
+		return NSLOCTEXT("Camp", "MonsterPenHelp", "(?) Monster Pen: assign tamed monsters as workers, companions, or defenders.");
+	}
+	if (BuildingId == TEXT("watchtower"))
+	{
+		return NSLOCTEXT("Camp", "WatchtowerHelp", "(?) Watchtower: start a Camp Defense wave and use defenders.");
+	}
+	return NSLOCTEXT("Camp", "BuildingHelp", "(?) Upgrade this building to strengthen the camp.");
+}
+
 void UCampBuildingPanelWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	USafeZone* SafeRoot = WidgetTree->ConstructWidget<USafeZone>(USafeZone::StaticClass(), TEXT("SafeRoot"));
+	UBorder* Panel = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("BuildingPanelFrame"));
+	EmberUIStyle::ApplyPanel(Panel);
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
-	SafeRoot->AddChild(Root);
+	Panel->SetContent(Root);
+	SafeRoot->AddChild(Panel);
 	WidgetTree->RootWidget = SafeRoot;
 	TitleText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("Title"));
 	HeaderIcon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("HeaderIcon"));
@@ -53,10 +79,14 @@ void UCampBuildingPanelWidget::NativeOnInitialized()
 	CloseButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("CloseButton"));
 	UTextBlock* UpgradeText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("UpgradeText"));
 	UpgradeText->SetText(NSLOCTEXT("Camp", "Upgrade", "Upgrade"));
+	EmberUIStyle::ApplyText(UpgradeText, 18.0f, EmberUIStyle::Bone(), true);
+	EmberUIStyle::ApplyButton(UpgradeButton);
 	UpgradeButton->AddChild(UpgradeText);
 	UpgradeButton->OnClicked.AddDynamic(this, &UCampBuildingPanelWidget::HandleUpgrade);
 	UTextBlock* CloseText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("CloseText"));
 	CloseText->SetText(NSLOCTEXT("Camp", "Close", "Close"));
+	EmberUIStyle::ApplyText(CloseText, 18.0f, EmberUIStyle::Bone(), true);
+	EmberUIStyle::ApplyButton(CloseButton);
 	CloseButton->AddChild(CloseText);
 	CloseButton->OnClicked.AddDynamic(this, &UCampBuildingPanelWidget::HandleClose);
 	Root->AddChildToVerticalBox(HeaderIcon);
@@ -67,6 +97,12 @@ void UCampBuildingPanelWidget::NativeOnInitialized()
 	Root->AddChildToVerticalBox(DetailBox);
 	Root->AddChildToVerticalBox(UpgradeButton);
 	Root->AddChildToVerticalBox(CloseButton);
+	EmberUIStyle::ApplyText(TitleText, 26.0f, EmberUIStyle::Ink());
+	EmberUIStyle::ApplyText(LevelText, 18.0f, EmberUIStyle::Ember());
+	EffectText->SetAutoWrapText(true);
+	CostText->SetAutoWrapText(true);
+	EmberUIStyle::ApplyText(EffectText, 17.0f);
+	EmberUIStyle::ApplyText(CostText, 16.0f);
 }
 
 void UCampBuildingPanelWidget::SetBuilding(UBuildingData* InBuildingData, bool bInLocked, FText InLockReason)
@@ -114,7 +150,7 @@ void UCampBuildingPanelWidget::Refresh()
 		RefreshWatchtowerPanel();
 	}
 	const float Effect = BuildingData->PerLevelEffectMagnitude.IsValidIndex(FMath::Max(0, CurrentLevel - 1)) ? BuildingData->PerLevelEffectMagnitude[FMath::Max(0, CurrentLevel - 1)] : 0.0f;
-	EffectText->SetText(FText::FromString(FString::Printf(TEXT("Effect: %.1f per level"), Effect)));
+	EffectText->SetText(FText::Format(NSLOCTEXT("Camp", "BuildingEffectFmt", "{0}\nCurrent effect value: {1} per level."), BuildingHelpText(BuildingData->Id), FText::AsNumber(Effect)));
 	bool bAffordable = false;
 	CostText->SetText(FText::FromString(CostLinesForLevel(CurrentLevel <= 0 ? 1 : CurrentLevel, bAffordable)));
 	UpgradeButton->SetIsEnabled(CurrentLevel < BuildingData->MaxLevel && bAffordable);
@@ -129,6 +165,7 @@ void UCampBuildingPanelWidget::RefreshMonsterPanel()
 	}
 	UTextBlock* Slots = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 	Slots->SetText(FText::FromString(FString::Printf(TEXT("Assignments: %d/%d"), Monsters->GetUsedAssignmentSlots(), Monsters->GetAssignmentSlotCap())));
+	EmberUIStyle::ApplyText(Slots, 16.0f);
 	DetailBox->AddChildToVerticalBox(Slots);
 	for (UMonsterData* Monster : Monsters->GetCatalog())
 	{
@@ -142,6 +179,8 @@ void UCampBuildingPanelWidget::RefreshMonsterPanel()
 		const FString Progress = bOwned ? TEXT("OWNED") : FString::Printf(TEXT("%d/%d shards"), Shards, Monster->ShardsToUnlock);
 		UTextBlock* Line = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 		Line->SetText(FText::FromString(FString::Printf(TEXT("%s - %s - %s"), *Monster->DisplayName.ToString(), *Progress, *Assignment)));
+		Line->SetAutoWrapText(true);
+		EmberUIStyle::ApplyText(Line, 15.0f);
 		DetailBox->AddChildToVerticalBox(Line);
 		if (!bOwned)
 		{
@@ -158,6 +197,8 @@ void UCampBuildingPanelWidget::RefreshMonsterPanel()
 			Button->Role = Role;
 			UTextBlock* ButtonText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 			ButtonText->SetText(FText::FromString(Role == EMonsterAssignmentRole::None ? TEXT("None") : StaticEnum<EMonsterAssignmentRole>()->GetNameStringByValue(static_cast<int64>(Role))));
+			EmberUIStyle::ApplyText(ButtonText, 15.0f, EmberUIStyle::Bone(), true);
+			EmberUIStyle::ApplyButton(Button);
 			Button->AddChild(ButtonText);
 			Button->OnClicked.AddDynamic(Button, &UMonsterAssignButton::HandleClicked);
 			DetailBox->AddChildToVerticalBox(Button);
@@ -174,10 +215,13 @@ void UCampBuildingPanelWidget::RefreshWatchtowerPanel()
 	}
 	UTextBlock* DefenderPower = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 	DefenderPower->SetText(FText::FromString(FString::Printf(TEXT("Defender Power: %.1f DPS"), Monsters->GetDefenderPower())));
+	EmberUIStyle::ApplyText(DefenderPower, 16.0f);
 	DetailBox->AddChildToVerticalBox(DefenderPower);
 	StartDefenseButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("StartDefenseButton"));
 	UTextBlock* ButtonText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 	ButtonText->SetText(NSLOCTEXT("Camp", "StartDefense", "Start Defense"));
+	EmberUIStyle::ApplyText(ButtonText, 17.0f, EmberUIStyle::Bone(), true);
+	EmberUIStyle::ApplyButton(StartDefenseButton);
 	StartDefenseButton->AddChild(ButtonText);
 	StartDefenseButton->OnClicked.AddDynamic(this, &UCampBuildingPanelWidget::HandleStartDefense);
 	if (UDefenseEventManager* Defense = GetWorld() ? GetWorld()->GetSubsystem<UDefenseEventManager>() : nullptr)

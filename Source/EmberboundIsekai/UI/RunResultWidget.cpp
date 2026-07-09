@@ -2,7 +2,9 @@
 #include "Core/EmberAudioSubsystem.h"
 #include "Core/SceneFlowSubsystem.h"
 #include "Generated/EmberGeneratedArt.h"
+#include "UI/EmberUIStyle.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
@@ -14,8 +16,11 @@ void URunResultWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
+	UBorder* Panel = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("ResultPanel"));
+	EmberUIStyle::ApplyPanel(Panel);
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
-	WidgetTree->RootWidget = Root;
+	Panel->SetContent(Root);
+	WidgetTree->RootWidget = Panel;
 
 	HeaderImage = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("HeaderImage"));
 	TitleText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("TitleText"));
@@ -25,11 +30,15 @@ void URunResultWidget::NativeOnInitialized()
 
 	UTextBlock* RunAgainText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("RunAgainText"));
 	RunAgainText->SetText(NSLOCTEXT("RunResult", "RunAgain", "Run Again"));
+	EmberUIStyle::ApplyText(RunAgainText, 18.0f, EmberUIStyle::Bone(), true);
+	EmberUIStyle::ApplyButton(RunAgainButton);
 	RunAgainButton->AddChild(RunAgainText);
 	RunAgainButton->OnClicked.AddDynamic(this, &URunResultWidget::HandleRunAgain);
 
 	UTextBlock* ReturnText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("ReturnCampText"));
 	ReturnText->SetText(NSLOCTEXT("RunResult", "ReturnCamp", "Return to Camp"));
+	EmberUIStyle::ApplyText(ReturnText, 18.0f, EmberUIStyle::Bone(), true);
+	EmberUIStyle::ApplyButton(ReturnCampButton);
 	ReturnCampButton->AddChild(ReturnText);
 	ReturnCampButton->SetIsEnabled(true);
 	ReturnCampButton->OnClicked.AddDynamic(this, &URunResultWidget::HandleReturnCamp);
@@ -44,6 +53,9 @@ void URunResultWidget::NativeOnInitialized()
 	Root->AddChildToVerticalBox(LootText);
 	Root->AddChildToVerticalBox(RunAgainButton);
 	Root->AddChildToVerticalBox(ReturnCampButton);
+	EmberUIStyle::ApplyText(TitleText, 30.0f, EmberUIStyle::Ember(), true);
+	LootText->SetAutoWrapText(true);
+	EmberUIStyle::ApplyText(LootText, 18.0f);
 }
 
 void URunResultWidget::SetResult(const FEmberRunResult& Result)

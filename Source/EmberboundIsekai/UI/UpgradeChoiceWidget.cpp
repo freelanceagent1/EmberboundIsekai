@@ -2,6 +2,7 @@
 #include "Data/RunUpgradeData.h"
 #include "Generated/EmberGeneratedArt.h"
 #include "Run/RunUpgradeManager.h"
+#include "UI/EmberUIStyle.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
@@ -92,6 +93,9 @@ void UUpgradeChoiceWidget::RebuildCards()
 	{
 		URunUpgradeData* Upgrade = Offer[Index];
 		UButton* Button = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass());
+		EmberUIStyle::ApplyButton(Button);
+		UBorder* CardFrame = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass());
+		EmberUIStyle::ApplyPanel(CardFrame, FLinearColor(0.86f, 0.72f, 0.49f, 0.96f));
 		UVerticalBox* Body = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
 		UTextBlock* Title = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 		UTextBlock* Description = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
@@ -99,11 +103,14 @@ void UUpgradeChoiceWidget::RebuildCards()
 		UImage* Icon = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass());
 		Title->SetText(Upgrade ? Upgrade->Title : FText::GetEmpty());
 		Title->SetColorAndOpacity(GetRarityColor(Upgrade));
+		EmberUIStyle::ApplyText(Title, 22.0f, GetRarityColor(Upgrade).GetSpecifiedColor());
 		Description->SetText(Upgrade ? Upgrade->Description : FText::GetEmpty());
 		Description->SetAutoWrapText(true);
+		EmberUIStyle::ApplyText(Description, 16.0f);
 		const FString RarityText = Upgrade ? StaticEnum<ERunUpgradeRarity>()->GetNameStringByValue(static_cast<int64>(Upgrade->Rarity)) : FString();
-		Rarity->SetText(FText::FromString(FString::Printf(TEXT("%d  %s"), Index + 1, *RarityText)));
+		Rarity->SetText(FText::FromString(FString::Printf(TEXT("Pick %d - %s"), Index + 1, *RarityText)));
 		Rarity->SetColorAndOpacity(GetRarityColor(Upgrade));
+		EmberUIStyle::ApplyText(Rarity, 17.0f, GetRarityColor(Upgrade).GetSpecifiedColor());
 		if (Upgrade)
 		{
 			if (UTexture2D* Texture = Upgrade->Icon.LoadSynchronous())
@@ -119,7 +126,8 @@ void UUpgradeChoiceWidget::RebuildCards()
 		Body->AddChildToVerticalBox(Icon);
 		Body->AddChildToVerticalBox(Title);
 		Body->AddChildToVerticalBox(Description);
-		Button->AddChild(Body);
+		CardFrame->SetContent(Body);
+		Button->AddChild(CardFrame);
 		if (Index == 0)
 		{
 			Button->OnClicked.AddDynamic(this, &UUpgradeChoiceWidget::ChooseFirst);

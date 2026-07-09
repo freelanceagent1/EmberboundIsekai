@@ -10,6 +10,8 @@ class UCampBuildingPanelWidget;
 class UMaterialInterface;
 class UPrimitiveComponent;
 class USphereComponent;
+class UTextRenderComponent;
+class UWidgetComponent;
 
 UCLASS()
 class EMBERBOUNDISEKAI_API ACampBuildingActor : public AActor
@@ -20,6 +22,7 @@ public:
 	ACampBuildingActor();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 
 	UPROPERTY(EditAnywhere, Category = "Building")
 	FName BuildingId;
@@ -40,6 +43,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> InteractionSphere;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UTextRenderComponent> NameplateText;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> NameplateWidget;
+
 	UPROPERTY()
 	TObjectPtr<UBuildingData> BuildingData;
 
@@ -48,6 +57,7 @@ protected:
 	virtual void OpenPanel();
 	UBuildingData* LoadBuildingData() const;
 	void ConfigureBillboardMaterial(UStaticMeshComponent* Component, const FString& TexturePath, UMaterialInterface* OverrideMaterial = nullptr);
+	FText GetDisplayName() const;
 
 	UFUNCTION()
 	void HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

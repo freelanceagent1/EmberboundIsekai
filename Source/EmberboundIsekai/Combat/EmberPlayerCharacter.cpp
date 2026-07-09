@@ -123,6 +123,14 @@ void AEmberPlayerCharacter::SetAutoAttackEnabled(bool bEnabled)
 	}
 }
 
+void AEmberPlayerCharacter::SetCameraOrthoWidth(float OrthoWidth)
+{
+	if (Camera)
+	{
+		Camera->SetOrthoWidth(OrthoWidth);
+	}
+}
+
 void AEmberPlayerCharacter::ApplyVirtualJoystickVector(const FVector2D& Movement)
 {
 	if (!Movement.IsNearlyZero())

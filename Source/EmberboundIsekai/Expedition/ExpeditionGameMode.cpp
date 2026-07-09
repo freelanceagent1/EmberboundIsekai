@@ -17,6 +17,7 @@
 #include "Run/EmberCompanionActor.h"
 #include "Run/RunUpgradeManager.h"
 #include "UI/EmberHUDWidget.h"
+#include "UI/OnboardingHintWidget.h"
 #include "UI/RunResultWidget.h"
 #include "UI/VirtualJoystickWidget.h"
 #include "Camera/PlayerCameraManager.h"
@@ -147,6 +148,7 @@ void AExpeditionGameMode::BeginPlay()
 			HUDWidget->AddToViewport();
 		}
 	}
+	UOnboardingHintWidget::ShowCards(this, true);
 	RegisterDebugHooks();
 	BindPlayerDeath();
 	SpawnAssignedCompanion();
@@ -231,9 +233,14 @@ void AExpeditionGameMode::StartCurrentRoom()
 	{
 		HUDWidget->SetRoom(CurrentRoomIndex + 1, Rooms.Num());
 		HUDWidget->ClearBossHealthSource();
+		HUDWidget->SetRoomMessage(NSLOCTEXT("Expedition", "ClearAllEnemies", "Clear all enemies to open the portal."));
 	}
 	if (Rooms[CurrentRoomIndex].RoomType == EEmberRoomType::Boss)
 	{
+		if (HUDWidget)
+		{
+			HUDWidget->SetRoomMessage(NSLOCTEXT("Expedition", "BossObjective", "BOSS - Tutorial Dragon Lv.3"));
+		}
 		SpawnBoss();
 		if (CVarEmberDebugAutoDamageBoss.GetValueOnGameThread() != 0)
 		{
@@ -336,6 +343,10 @@ void AExpeditionGameMode::SpawnPortal()
 	if (CurrentPortal)
 	{
 		CurrentPortal->OnPortalEntered.BindUObject(this, &AExpeditionGameMode::EnterNextRoom);
+	}
+	if (HUDWidget)
+	{
+		HUDWidget->SetRoomMessage(NSLOCTEXT("Expedition", "RoomClearedPortal", "Room cleared! -> head to the glowing portal."));
 	}
 }
 

@@ -169,12 +169,20 @@ void UEmberAutopilotSubsystem::ResumeForCurrentWorld()
 	}
 }
 
-void UEmberAutopilotSubsystem::BeginCampStart(ACampGameMode*)
+void UEmberAutopilotSubsystem::BeginCampStart(ACampGameMode* CampMode)
 {
 	UWorld* World = FindGameWorld(GetGameInstance());
 	if (!World)
 	{
 		return;
+	}
+	if (UEmberGameInstance* EmberGI = Cast<UEmberGameInstance>(GetGameInstance()))
+	{
+		EmberGI->SetMainMenuActive(false);
+	}
+	if (CampMode)
+	{
+		CampMode->StartCampAfterMenu();
 	}
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: AUTOPILOT phase=CampStart"));
 	if (USaveManagerSubsystem* Save = GetGameInstance()->GetSubsystem<USaveManagerSubsystem>())
@@ -257,12 +265,20 @@ void UEmberAutopilotSubsystem::ExpeditionTick()
 	}
 }
 
-void UEmberAutopilotSubsystem::BeginCampReturn(ACampGameMode*)
+void UEmberAutopilotSubsystem::BeginCampReturn(ACampGameMode* CampMode)
 {
 	UWorld* World = FindGameWorld(GetGameInstance());
 	if (!World)
 	{
 		return;
+	}
+	if (UEmberGameInstance* EmberGI = Cast<UEmberGameInstance>(GetGameInstance()))
+	{
+		EmberGI->SetMainMenuActive(false);
+	}
+	if (CampMode)
+	{
+		CampMode->StartCampAfterMenu();
 	}
 	Phase = EEmberAutopilotPhase::CampReturn;
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: AUTOPILOT phase=CampReturn"));

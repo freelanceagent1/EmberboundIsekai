@@ -54,6 +54,9 @@ public:
 	bool bShowJoystick = false;
 
 	UPROPERTY(BlueprintReadWrite, SaveGame)
+	bool bSeenTutorial = false;
+
+	UPROPERTY(BlueprintReadWrite, SaveGame)
 	TMap<FName, bool> UnlockedFlags;
 
 	UPROPERTY(BlueprintReadWrite, SaveGame)

@@ -19,6 +19,7 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void SetRoom(int32 Room, int32 MaxRooms);
+	void SetRoomMessage(const FText& Message);
 	void SetBossHealthSource(UHealthComponent* InBossHealth);
 	void ClearBossHealthSource();
 
@@ -40,6 +41,12 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UTextBlock> RoomText;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> ObjectiveText;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> RoomMessageText;
 
 	UPROPERTY()
 	TObjectPtr<UTextBlock> ResourceText;

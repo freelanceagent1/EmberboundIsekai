@@ -4,8 +4,13 @@
 #include "Data/BuildingData.h"
 #include "Generated/EmberGeneratedArt.h"
 #include "UI/CampBuildingPanelWidget.h"
+#include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetTree.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/TextBlock.h"
+#include "Components/TextRenderComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Engine/GameInstance.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
@@ -40,6 +45,25 @@ ACampBuildingActor::ACampBuildingActor()
 	InteractionSphere->InitSphereRadius(180.0f);
 	InteractionSphere->SetupAttachment(SceneRoot);
 	InteractionSphere->OnComponentBeginOverlap.AddDynamic(this, &ACampBuildingActor::HandleBeginOverlap);
+
+	NameplateText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("NameplateText"));
+	NameplateText->SetupAttachment(SceneRoot);
+	NameplateText->SetHorizontalAlignment(EHTA_Center);
+	NameplateText->SetVerticalAlignment(EVRTA_TextCenter);
+	NameplateText->SetTextRenderColor(FColor(72, 43, 24));
+	NameplateText->SetWorldSize(52.0f);
+	NameplateText->SetRelativeLocation(FVector(0.0f, 0.0f, 212.0f));
+	NameplateText->SetRelativeRotation(FRotator(90.0f, 180.0f, 0.0f));
+
+	NameplateWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("NameplateWidget"));
+	NameplateWidget->SetupAttachment(SceneRoot);
+	NameplateWidget->SetWidgetSpace(EWidgetSpace::World);
+	NameplateWidget->SetDrawSize(FVector2D(320.0f, 70.0f));
+	NameplateWidget->SetPivot(FVector2D(0.5f, 0.5f));
+	NameplateWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 245.0f));
+	NameplateWidget->SetRelativeScale3D(FVector(0.55f, 0.55f, 0.55f));
+	NameplateWidget->SetTwoSided(true);
+	NameplateWidget->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
 	if (CubeMesh)
 	{
@@ -50,10 +74,10 @@ ACampBuildingActor::ACampBuildingActor()
 	{
 		BillboardVisual->SetStaticMesh(PlaneMesh);
 		BillboardVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 82.0f));
-		BillboardVisual->SetRelativeScale3D(FVector(1.8f, 1.45f, 1.0f));
+		BillboardVisual->SetRelativeScale3D(FVector(1.45f, 1.16f, 1.0f));
 		FlameVisual->SetStaticMesh(PlaneMesh);
 		FlameVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 120.0f));
-		FlameVisual->SetRelativeScale3D(FVector(0.48f, 0.62f, 1.0f));
+		FlameVisual->SetRelativeScale3D(FVector(0.46f, 0.58f, 1.0f));
 	}
 }
 
@@ -69,6 +93,13 @@ void ACampBuildingActor::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	EmberGeneratedArt::FaceComponentToPlayerCamera(BillboardVisual, this);
 	EmberGeneratedArt::FaceComponentToPlayerCamera(FlameVisual, this);
+	EmberGeneratedArt::FaceComponentToPlayerCamera(NameplateWidget, this);
+}
+
+void ACampBuildingActor::NotifyActorOnClicked(FKey ButtonPressed)
+{
+	Super::NotifyActorOnClicked(ButtonPressed);
+	OpenPanel();
 }
 
 bool ACampBuildingActor::IsInteractionLocked(FText& OutReason) const
@@ -82,6 +113,32 @@ void ACampBuildingActor::ConfigureVisual()
 	if (!BuildingId.IsNone())
 	{
 		ConfigureBillboardMaterial(BillboardVisual, EmberGeneratedArt::BuildingTexturePath(BuildingId));
+	}
+	if (NameplateText)
+	{
+		NameplateText->SetText(GetDisplayName());
+	}
+	if (NameplateWidget && GetWorld())
+	{
+		UUserWidget* LabelWidget = CreateWidget<UUserWidget>(GetWorld(), UUserWidget::StaticClass());
+		if (LabelWidget && LabelWidget->WidgetTree)
+		{
+			UTextBlock* LabelText = LabelWidget->WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("BuildingNameplateText"));
+			if (LabelText)
+			{
+				LabelText->SetText(GetDisplayName());
+				LabelText->SetJustification(ETextJustify::Center);
+				LabelText->SetColorAndOpacity(FSlateColor(FLinearColor(1.0f, 0.82f, 0.42f, 1.0f)));
+				LabelText->SetShadowOffset(FVector2D(1.5f, 1.5f));
+				LabelText->SetShadowColorAndOpacity(FLinearColor(0.12f, 0.055f, 0.02f, 0.95f));
+				FSlateFontInfo FontInfo = LabelText->GetFont();
+				FontInfo.Size = 20;
+				FontInfo.TypefaceFontName = TEXT("Bold");
+				LabelText->SetFont(FontInfo);
+				LabelWidget->WidgetTree->RootWidget = LabelText;
+				NameplateWidget->SetWidget(LabelWidget);
+			}
+		}
 	}
 }
 
@@ -144,12 +201,21 @@ UBuildingData* ACampBuildingActor::LoadBuildingData() const
 	return LoadObject<UBuildingData>(nullptr, *Path);
 }
 
+FText ACampBuildingActor::GetDisplayName() const
+{
+	if (BuildingData)
+	{
+		return BuildingData->DisplayName;
+	}
+	if (BuildingId == TEXT("expedition-portal"))
+	{
+		return NSLOCTEXT("Camp", "ExpeditionPortalName", "Expedition");
+	}
+	return FText::FromName(BuildingId);
+}
+
 void ACampBuildingActor::HandleBeginOverlap(UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent*, int32, bool, const FHitResult&)
 {
-	if (OtherActor == UGameplayStatics::GetPlayerPawn(this, 0))
-	{
-		OpenPanel();
-	}
 }
 
 ACampfireCoreActor::ACampfireCoreActor()
@@ -161,6 +227,10 @@ void ACampfireCoreActor::ConfigureVisual()
 {
 	VisualMesh->SetWorldScale3D(FVector(1.0f, 1.0f, 0.7f));
 	ConfigureBillboardMaterial(BillboardVisual, EmberGeneratedArt::BuildingTexturePath(BuildingId));
+	if (BillboardVisual)
+	{
+		BillboardVisual->SetRelativeScale3D(FVector(1.30f, 1.08f, 1.0f));
+	}
 	if (FlameVisual)
 	{
 		FlameVisual->SetHiddenInGame(false);

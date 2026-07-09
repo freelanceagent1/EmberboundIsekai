@@ -4,7 +4,9 @@
 #include "Combat/XPComponent.h"
 #include "Core/EconomySubsystem.h"
 #include "Generated/EmberGeneratedArt.h"
+#include "UI/EmberUIStyle.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/Border.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
@@ -20,8 +22,11 @@ void UEmberHUDWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	USafeZone* SafeRoot = WidgetTree->ConstructWidget<USafeZone>(USafeZone::StaticClass(), TEXT("SafeRoot"));
+	UBorder* Panel = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("HudPanel"));
+	EmberUIStyle::ApplyPanel(Panel, FLinearColor(0.86f, 0.72f, 0.49f, 0.0f));
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
-	SafeRoot->AddChild(Root);
+	Panel->SetContent(Root);
+	SafeRoot->AddChild(Panel);
 	WidgetTree->RootWidget = SafeRoot;
 
 	HPBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("HPBar"));
@@ -30,6 +35,8 @@ void UEmberHUDWidget::NativeOnInitialized()
 	BossText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("BossText"));
 	LevelText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("LevelText"));
 	RoomText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("RoomText"));
+	ObjectiveText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("ObjectiveText"));
+	RoomMessageText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("RoomMessageText"));
 	ResourceText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("ResourceText"));
 	UHorizontalBox* IconRow = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(), TEXT("ResourceIconRow"));
 
@@ -55,9 +62,18 @@ void UEmberHUDWidget::NativeOnInitialized()
 	Root->AddChildToVerticalBox(BossHPBar);
 	Root->AddChildToVerticalBox(LevelText);
 	Root->AddChildToVerticalBox(RoomText);
+	Root->AddChildToVerticalBox(ObjectiveText);
+	Root->AddChildToVerticalBox(RoomMessageText);
 	Root->AddChildToVerticalBox(ResourceText);
+	EmberUIStyle::ApplyText(BossText, 22.0f, EmberUIStyle::Ember(), true);
+	EmberUIStyle::ApplyText(LevelText, 17.0f);
+	EmberUIStyle::ApplyText(RoomText, 19.0f, EmberUIStyle::Ink());
+	EmberUIStyle::ApplyText(ObjectiveText, 18.0f, EmberUIStyle::Ink());
+	EmberUIStyle::ApplyText(RoomMessageText, 18.0f, EmberUIStyle::Ember());
+	EmberUIStyle::ApplyText(ResourceText, 16.0f);
 	BossText->SetVisibility(ESlateVisibility::Collapsed);
 	BossHPBar->SetVisibility(ESlateVisibility::Collapsed);
+	RoomMessageText->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UEmberHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -76,12 +92,16 @@ void UEmberHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 			LevelText->SetText(FText::Format(NSLOCTEXT("EmberHUD", "LevelFmt", "Level {0}"), XP->GetLevel()));
 		}
 	}
-	RoomText->SetText(FText::Format(NSLOCTEXT("EmberHUD", "RoomFmt", "Room {0}/{1}"), CurrentRoom, TotalRooms));
+	RoomText->SetText(FText::Format(NSLOCTEXT("EmberHUD", "RoomFmt", "Room {0} / {1}"), CurrentRoom, TotalRooms));
+	if (ObjectiveText)
+	{
+		ObjectiveText->SetText(FText::Format(NSLOCTEXT("EmberHUD", "ObjectiveFmt", "Objective: Room {0} / {1} - clear all enemies"), CurrentRoom, TotalRooms));
+	}
 	if (BossHealth.IsValid())
 	{
 		BossText->SetVisibility(ESlateVisibility::HitTestInvisible);
 		BossHPBar->SetVisibility(ESlateVisibility::HitTestInvisible);
-		BossText->SetText(NSLOCTEXT("EmberHUD", "BossName", "Tutorial Dragon Lv.3"));
+		BossText->SetText(NSLOCTEXT("EmberHUD", "BossName", "BOSS - Tutorial Dragon Lv.3"));
 		BossHPBar->SetPercent(BossHealth->GetMaxHP() > 0.0f ? BossHealth->GetCurrentHP() / BossHealth->GetMaxHP() : 0.0f);
 	}
 	else
@@ -106,6 +126,17 @@ void UEmberHUDWidget::SetRoom(int32 Room, int32 MaxRooms)
 {
 	CurrentRoom = Room;
 	TotalRooms = MaxRooms;
+	SetRoomMessage(FText::GetEmpty());
+}
+
+void UEmberHUDWidget::SetRoomMessage(const FText& Message)
+{
+	if (!RoomMessageText)
+	{
+		return;
+	}
+	RoomMessageText->SetText(Message);
+	RoomMessageText->SetVisibility(Message.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
 }
 
 void UEmberHUDWidget::SetBossHealthSource(UHealthComponent* InBossHealth)

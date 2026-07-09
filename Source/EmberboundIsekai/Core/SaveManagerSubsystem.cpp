@@ -204,7 +204,7 @@ FString USaveManagerSubsystem::BuildSummary() const
 	const int32 OwnedCount = CurrentSave ? CurrentSave->OwnedMonsters.Num() : 0;
 	const int32 AssignmentCount = CurrentSave ? CurrentSave->Assignments.Num() : 0;
 	const int32 TitleCount = CurrentSave ? CurrentSave->UnlockedTitles.Num() : 0;
-	return FString::Printf(TEXT("Gold=%d Wood=%d SoulAsh=%d campfire=%d forge=%d slimeShards=%d owned=%d assignments=%d titles=%d volume=%.2f joystick=%d"), Gold, Wood, SoulAsh, Campfire, Forge, SlimeShards, OwnedCount, AssignmentCount, TitleCount, CurrentSave ? CurrentSave->MasterVolume : 1.0f, CurrentSave && CurrentSave->bShowJoystick ? 1 : 0);
+	return FString::Printf(TEXT("Gold=%d Wood=%d SoulAsh=%d campfire=%d forge=%d slimeShards=%d owned=%d assignments=%d titles=%d volume=%.2f joystick=%d tutorial=%d"), Gold, Wood, SoulAsh, Campfire, Forge, SlimeShards, OwnedCount, AssignmentCount, TitleCount, CurrentSave ? CurrentSave->MasterVolume : 1.0f, CurrentSave && CurrentSave->bShowJoystick ? 1 : 0, CurrentSave && CurrentSave->bSeenTutorial ? 1 : 0);
 }
 
 UEconomySubsystem* USaveManagerSubsystem::GetEconomy() const
@@ -260,6 +260,7 @@ void USaveManagerSubsystem::RegisterDebugHooks()
 	Console.RegisterConsoleCommand(TEXT("Ember.TravelCamp"), TEXT("Travel to camp."), FConsoleCommandWithArgsDelegate::CreateUObject(this, &USaveManagerSubsystem::TravelCampConsole), ECVF_Default);
 	Console.RegisterConsoleCommand(TEXT("Ember.BuyBuilding"), TEXT("Debug buy building by id."), FConsoleCommandWithArgsDelegate::CreateUObject(this, &USaveManagerSubsystem::BuyBuildingConsole), ECVF_Default);
 	Console.RegisterConsoleCommand(TEXT("Ember.SetJoystick"), TEXT("Persist custom joystick visibility. Usage: Ember.SetJoystick 1"), FConsoleCommandWithArgsDelegate::CreateUObject(this, &USaveManagerSubsystem::SetJoystickConsole), ECVF_Default);
+	Console.RegisterConsoleCommand(TEXT("Ember.ResetTutorial"), TEXT("Show onboarding again on next camp/expedition."), FConsoleCommandWithArgsDelegate::CreateUObject(this, &USaveManagerSubsystem::ResetTutorialConsole), ECVF_Default);
 }
 
 void USaveManagerSubsystem::UnregisterDebugHooks()
@@ -271,6 +272,7 @@ void USaveManagerSubsystem::UnregisterDebugHooks()
 	Console.UnregisterConsoleObject(TEXT("Ember.TravelCamp"), false);
 	Console.UnregisterConsoleObject(TEXT("Ember.BuyBuilding"), false);
 	Console.UnregisterConsoleObject(TEXT("Ember.SetJoystick"), false);
+	Console.UnregisterConsoleObject(TEXT("Ember.ResetTutorial"), false);
 }
 
 void USaveManagerSubsystem::GrantResourcesConsole(const TArray<FString>& Args)
@@ -322,6 +324,17 @@ void USaveManagerSubsystem::SetJoystickConsole(const TArray<FString>& Args)
 	CurrentSave->bShowJoystick = Args.IsValidIndex(0) ? FCString::Atoi(*Args[0]) != 0 : true;
 	SaveNow();
 	UE_LOG(LogEmberbound, Log, TEXT("EMBER: JoystickSetting %d"), CurrentSave->bShowJoystick ? 1 : 0);
+}
+
+void USaveManagerSubsystem::ResetTutorialConsole(const TArray<FString>&)
+{
+	if (!CurrentSave)
+	{
+		return;
+	}
+	CurrentSave->bSeenTutorial = false;
+	SaveNow();
+	UE_LOG(LogEmberbound, Log, TEXT("EMBER: TutorialReset"));
 }
 
 UBuildingData* USaveManagerSubsystem::LoadBuildingData(FName BuildingId) const

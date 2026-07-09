@@ -7,7 +7,9 @@
 #include "Core/MonsterCollectionSubsystem.h"
 #include "Core/TitleSubsystem.h"
 #include "Generated/EmberGeneratedArt.h"
+#include "UI/EmberUIStyle.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Image.h"
@@ -23,9 +25,17 @@ void UCampHUDWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	USafeZone* SafeRoot = WidgetTree->ConstructWidget<USafeZone>(USafeZone::StaticClass(), TEXT("SafeRoot"));
+	UBorder* Panel = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("CampHudPanel"));
+	EmberUIStyle::ApplyPanel(Panel, FLinearColor(0.86f, 0.72f, 0.49f, 0.0f));
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
-	SafeRoot->AddChild(Root);
+	Panel->SetContent(Root);
+	SafeRoot->AddChild(Panel);
 	WidgetTree->RootWidget = SafeRoot;
+	UTextBlock* GoalText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("CampGoal"));
+	GoalText->SetText(NSLOCTEXT("Camp", "CampGoal", "Camp Goal: upgrade buildings, assign monsters, then run Expedition to beat Room 7."));
+	GoalText->SetAutoWrapText(true);
+	EmberUIStyle::ApplyText(GoalText, 17.0f);
+	Root->AddChildToVerticalBox(GoalText);
 	UHorizontalBox* Resources = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(), TEXT("Resources"));
 	Root->AddChildToVerticalBox(Resources);
 	int32 ResolvedIcons = 0;
@@ -43,6 +53,12 @@ void UCampHUDWidget::NativeOnInitialized()
 		}
 		Resources->AddChildToHorizontalBox(Icon);
 		UTextBlock* Text = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
+		Text->SetToolTipText(Resource == EEmberResource::Gold ? NSLOCTEXT("Camp", "GoldTip", "Gold: primary upgrade currency from expeditions and defense.") :
+			Resource == EEmberResource::Wood ? NSLOCTEXT("Camp", "WoodTip", "Wood: building material for camp upgrades.") :
+			Resource == EEmberResource::SoulAsh ? NSLOCTEXT("Camp", "SoulAshTip", "Soul Ash: magic fuel for stronger camp upgrades.") :
+			Resource == EEmberResource::MonsterEssence ? NSLOCTEXT("Camp", "EssenceTip", "Monster Essence: monster and defense growth resource.") :
+			NSLOCTEXT("Camp", "EmbersTip", "Embers: rare premium sparks from boss victories."));
+		EmberUIStyle::ApplyText(Text, 16.0f);
 		ResourceTexts.Add(Resource, Text);
 		Resources->AddChildToHorizontalBox(Text);
 	}
@@ -56,6 +72,13 @@ void UCampHUDWidget::NativeOnInitialized()
 	UButton* Defense = MakeButton(NSLOCTEXT("Camp", "Defense", "Defense"), TEXT("DefenseButton"));
 	UButton* Save = MakeButton(NSLOCTEXT("Camp", "Save", "Save"), TEXT("SaveButton"));
 	UButton* Reset = MakeButton(NSLOCTEXT("Camp", "Reset", "Reset"), TEXT("ResetButton"));
+	Expedition->SetToolTipText(NSLOCTEXT("Camp", "ExpeditionTip", "Enter the dungeon. Clear rooms, pick upgrades, defeat the Tutorial Dragon in Room 7."));
+	Upgrades->SetToolTipText(NSLOCTEXT("Camp", "UpgradesTip", "Walk to a named building to buy persistent upgrades."));
+	Monsters->SetToolTipText(NSLOCTEXT("Camp", "MonstersTip", "Assign tamed monsters as workers, companions, or defenders."));
+	Titles->SetToolTipText(NSLOCTEXT("Camp", "TitlesTip", "View unlocked passive title bonuses."));
+	Defense->SetToolTipText(NSLOCTEXT("Camp", "DefenseTip", "Start a Watchtower camp defense wave."));
+	Save->SetToolTipText(NSLOCTEXT("Camp", "SaveTip", "Save camp progress now."));
+	Reset->SetToolTipText(NSLOCTEXT("Camp", "ResetTip", "Debug reset save data."));
 	Expedition->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleExpedition);
 	Upgrades->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleUpgrades);
 	Monsters->OnClicked.AddDynamic(this, &UCampHUDWidget::HandleMonsters);
@@ -76,7 +99,10 @@ void UCampHUDWidget::NativeOnInitialized()
 	Buttons->AddChildToHorizontalBox(Debug);
 #endif
 	StubText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("StubText"));
+	StubText->SetAutoWrapText(true);
+	EmberUIStyle::ApplyText(StubText, 16.0f);
 	Root->AddChildToVerticalBox(StubText);
+	StubText->SetText(NSLOCTEXT("Camp", "HelpDefault", "(?) Tap buildings for details: Campfire grows storage, Forge raises bow damage, Pen assigns monsters, Watchtower starts defense."));
 	RefreshResources();
 }
 
@@ -93,8 +119,11 @@ void UCampHUDWidget::RefreshResources()
 UButton* UCampHUDWidget::MakeButton(const FText& Label, FName Name)
 {
 	UButton* Button = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), Name);
+	EmberUIStyle::ApplyButton(Button);
 	UTextBlock* Text = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 	Text->SetText(Label);
+	Text->SetJustification(ETextJustify::Center);
+	EmberUIStyle::ApplyText(Text, 15.0f, EmberUIStyle::Bone(), true);
 	Button->AddChild(Text);
 	return Button;
 }
@@ -109,12 +138,12 @@ void UCampHUDWidget::HandleExpedition()
 
 void UCampHUDWidget::HandleUpgrades()
 {
-	StubText->SetText(NSLOCTEXT("Camp", "UpgradesStub", "Walk to a building to upgrade"));
+	StubText->SetText(NSLOCTEXT("Camp", "UpgradesStub", "(?) Walk to a named building. Campfire Core grows safe zone and storage; Grim Forge adds +15% bow damage per level."));
 }
 
 void UCampHUDWidget::HandleMonsters()
 {
-	StubText->SetText(NSLOCTEXT("Camp", "MonstersStub", "M6"));
+	StubText->SetText(NSLOCTEXT("Camp", "MonstersStub", "(?) Monster Pen: assign owned monsters as workers for income, companions for runs, or defenders for Watchtower waves."));
 }
 
 void UCampHUDWidget::HandleTitles()

@@ -1,5 +1,7 @@
 #include "UI/DefenseStatusWidget.h"
+#include "UI/EmberUIStyle.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/Border.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
@@ -7,12 +9,16 @@
 void UDefenseStatusWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+	UBorder* Panel = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("DefenseStatusPanel"));
+	EmberUIStyle::ApplyPanel(Panel, FLinearColor(0.86f, 0.72f, 0.49f, 0.88f));
 	UVerticalBox* Root = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Root"));
-	WidgetTree->RootWidget = Root;
+	Panel->SetContent(Root);
+	WidgetTree->RootWidget = Panel;
 	TitleText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("DefenseTitle"));
 	CampfireHealthBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("CampfireHealth"));
 	Root->AddChildToVerticalBox(TitleText);
 	Root->AddChildToVerticalBox(CampfireHealthBar);
+	EmberUIStyle::ApplyText(TitleText, 18.0f, EmberUIStyle::Ink());
 	SetStatus(0, 1.0f, 1.0f);
 }
 

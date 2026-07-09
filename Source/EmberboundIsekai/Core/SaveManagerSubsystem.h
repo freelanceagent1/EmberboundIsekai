@@ -62,6 +62,7 @@ private:
 	FDelegateHandle TravelCampCommandHandle;
 	FDelegateHandle BuyBuildingCommandHandle;
 	FDelegateHandle SetJoystickCommandHandle;
+	FDelegateHandle ResetTutorialCommandHandle;
 
 	UEconomySubsystem* GetEconomy() const;
 	void LoadOrCreate();
@@ -75,5 +76,6 @@ private:
 	void TravelCampConsole(const TArray<FString>& Args);
 	void BuyBuildingConsole(const TArray<FString>& Args);
 	void SetJoystickConsole(const TArray<FString>& Args);
+	void ResetTutorialConsole(const TArray<FString>& Args);
 	UBuildingData* LoadBuildingData(FName BuildingId) const;
 };

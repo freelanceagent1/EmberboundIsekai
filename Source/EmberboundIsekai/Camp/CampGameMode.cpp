@@ -2,11 +2,13 @@
 #include "Camp/CampBuildingActor.h"
 #include "Combat/EmberPlayerCharacter.h"
 #include "Core/EmberAutopilotSubsystem.h"
+#include "Core/EmberGameInstance.h"
 #include "Core/SaveManagerSubsystem.h"
 #include "Core/MonsterCollectionSubsystem.h"
 #include "Core/EmberCaptureDebug.h"
 #include "UI/CampHUDWidget.h"
 #include "UI/OfflineRewardWidget.h"
+#include "UI/OnboardingHintWidget.h"
 #include "UI/VirtualJoystickWidget.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/GameInstance.h"
@@ -54,8 +56,7 @@ ACampGameMode::ACampGameMode()
 void ACampGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	SpawnCampFloor(GetWorld(), TEXT("M13_CampMeadowFloor_Fullscreen2D"), FVector(0.0f, 0.0f, 6.0f), FVector(120.0f, 120.0f, 1.0f), TEXT("/Game/Emberbound/Materials/Generated/MI_CampFloor_MeadowGrass.MI_CampFloor_MeadowGrass"));
-	SpawnCampFloor(GetWorld(), TEXT("M5b_CampDirtPatch"), FVector(0.0f, 0.0f, 7.0f), FVector(7.0f, 7.0f, 1.0f), TEXT("/Game/Emberbound/Materials/Generated/MI_CampDirt.MI_CampDirt"));
+	SpawnCampFloor(GetWorld(), TEXT("M15_CampMeadowFloor_Fullscreen2D"), FVector(0.0f, 0.0f, 6.0f), FVector(120.0f, 120.0f, 1.0f), TEXT("/Game/Emberbound/Materials/Generated/MI_CampFloor_MeadowGrass.MI_CampFloor_MeadowGrass"));
 	if (USaveManagerSubsystem* Save = GetGameInstance() ? GetGameInstance()->GetSubsystem<USaveManagerSubsystem>() : nullptr)
 	{
 		const bool bBankedRun = Save->BankPendingRunResult();
@@ -80,27 +81,49 @@ void ACampGameMode::BeginPlay()
 			Save->SaveNow();
 		}
 	}
-	SpawnCampActors();
 	if (AEmberPlayerCharacter* Player = Cast<AEmberPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
 	{
 		Player->SetAutoAttackEnabled(false);
+		Player->SetCameraOrthoWidth(980.0f);
 	}
+	const UEmberGameInstance* EmberGI = GetGameInstance() ? Cast<UEmberGameInstance>(GetGameInstance()) : nullptr;
+	const bool bMainMenuActive = EmberGI && (EmberGI->IsMainMenuActive() || EmberGI->WillShowInitialMainMenu());
+	if (!bMainMenuActive)
+	{
+		StartCampAfterMenu();
+	}
+	FTimerHandle JoystickCheckHandle;
+	if (!bMainMenuActive)
+	{
+		GetWorldTimerManager().SetTimer(JoystickCheckHandle, this, &ACampGameMode::ShowJoystickIfNeeded, 0.5f, true);
+	}
+	FEmberCaptureDebug::ScheduleFromCommandLine(GetWorld());
+	if (UEmberAutopilotSubsystem* Autopilot = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEmberAutopilotSubsystem>() : nullptr)
+	{
+		Autopilot->OnCampBeginPlay(this);
+	}
+}
+
+void ACampGameMode::StartCampAfterMenu()
+{
+	if (bCampPresentationStarted)
+	{
+		return;
+	}
+	bCampPresentationStarted = true;
+	SpawnCampActors();
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
+		PC->bEnableClickEvents = true;
+		PC->bEnableTouchEvents = true;
 		CampHUD = CreateWidget<UCampHUDWidget>(PC, UCampHUDWidget::StaticClass());
 		if (CampHUD)
 		{
 			CampHUD->AddToViewport();
 		}
 	}
+	UOnboardingHintWidget::ShowCards(this, false);
 	ShowJoystickIfNeeded();
-	FTimerHandle JoystickCheckHandle;
-	GetWorldTimerManager().SetTimer(JoystickCheckHandle, this, &ACampGameMode::ShowJoystickIfNeeded, 0.5f, true);
-	FEmberCaptureDebug::ScheduleFromCommandLine(GetWorld());
-	if (UEmberAutopilotSubsystem* Autopilot = GetGameInstance() ? GetGameInstance()->GetSubsystem<UEmberAutopilotSubsystem>() : nullptr)
-	{
-		Autopilot->OnCampBeginPlay(this);
-	}
 }
 
 void ACampGameMode::SpawnCampActors()
@@ -110,11 +133,11 @@ void ACampGameMode::SpawnCampActors()
 	{
 		return;
 	}
-	World->SpawnActor<ACampfireCoreActor>(FVector(0.0f, 0.0f, 70.0f), FRotator::ZeroRotator);
-	World->SpawnActor<AGrimForgeActor>(FVector(360.0f, 0.0f, 70.0f), FRotator::ZeroRotator);
-	World->SpawnActor<AMonsterPenActor>(FVector(-360.0f, 0.0f, 70.0f), FRotator::ZeroRotator);
-	World->SpawnActor<AWatchtowerActor>(FVector(0.0f, 360.0f, 70.0f), FRotator::ZeroRotator);
-	World->SpawnActor<AExpeditionPortalActor>(FVector(0.0f, -420.0f, 70.0f), FRotator::ZeroRotator);
+	World->SpawnActor<ACampfireCoreActor>(FVector(0.0f, -20.0f, 70.0f), FRotator::ZeroRotator);
+	World->SpawnActor<AGrimForgeActor>(FVector(180.0f, 80.0f, 70.0f), FRotator::ZeroRotator);
+	World->SpawnActor<AMonsterPenActor>(FVector(-180.0f, 80.0f, 70.0f), FRotator::ZeroRotator);
+	World->SpawnActor<AWatchtowerActor>(FVector(185.0f, -150.0f, 70.0f), FRotator::ZeroRotator);
+	World->SpawnActor<AExpeditionPortalActor>(FVector(-185.0f, -150.0f, 70.0f), FRotator::ZeroRotator);
 }
 
 void ACampGameMode::ShowJoystickIfNeeded()
