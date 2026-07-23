@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face { font-family: 'EbiPixel'; src: url('assets/na/font/NormalFont.ttf'); }
+html, body { margin: 0; padding: 0; background: #0e0b13; color: #f2e8d8; font-family: Verdana, Geneva, sans-serif; }
+a { color: #ff9e50; } a:hover { color: #ffd97a; }
+button { font-family: inherit; }
+button:focus-visible { outline: 3px solid #ffd97a; outline-offset: 2px; }
+*::-webkit-scrollbar { width: 10px; height: 10px; } *::-webkit-scrollbar-thumb { background: #3a3147; border: 2px solid #1d1826; border-radius: 6px; } *::-webkit-scrollbar-track { background: transparent; }
+@keyframes ebiFlicker { 0%,100% { opacity: 1; } 50% { opacity: .72; } }
+@keyframes ebiPop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+</style>
+<script src="data/canonical.js"></script>
+<script src="data/proposed.js"></script>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px;box-sizing:border-box;background:radial-gradient(1200px 600px at 50% -100px, #1d1626, #0e0b13)">
+  <!-- Review toolbar -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;max-width:1100px;width:100%;justify-content:center">
+    <button onClick="{{ toggleReview }}" style="display:flex;align-items:center;gap:8px;background:{{ reviewBtnBg }};color:#f2e8d8;border:1px solid #3a3147;border-radius:6px;padding:8px 14px;font-size:12px;cursor:pointer;min-height:34px">
+      <span style="width:10px;height:10px;border-radius:50%;background:{{ reviewDotBg }};display:inline-block"></span> Review mode
+    </button>
+    <sc-if value="{{ review }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:#181322;border:1px solid #3a3147;border-radius:6px;padding:6px 8px">
+        <span style="font-size:10px;color:#a99bb8;letter-spacing:.08em">FRAME</span>
+        <sc-for list="{{ aspectBtns }}" as="ab" hint-placeholder-count="4">
+          <button onClick="{{ ab.go }}" style="background:{{ ab.bg }};color:{{ ab.fg }};border:1px solid #3a3147;border-radius:4px;padding:6px 9px;font-size:11px;cursor:pointer">{{ ab.label }}</button>
+        </sc-for>
+        <span style="width:1px;height:18px;background:#3a3147"></span>
+        <sc-for list="{{ a11yBtns }}" as="tb" hint-placeholder-count="3">
+          <button onClick="{{ tb.go }}" style="background:{{ tb.bg }};color:{{ tb.fg }};border:1px solid #3a3147;border-radius:4px;padding:6px 9px;font-size:11px;cursor:pointer">{{ tb.label }}</button>
+        </sc-for>
+        <span style="width:1px;height:18px;background:#3a3147"></span>
+        <button onClick="{{ askReset }}" style="background:#2c1d1d;color:#ff9d8a;border:1px solid #6b3434;border-radius:4px;padding:6px 9px;font-size:11px;cursor:pointer">Reset prototype data</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;background:#181322;border:1px solid #3a3147;border-radius:6px;padding:6px 8px;max-width:1100px">
+        <span style="font-size:10px;color:#a99bb8;letter-spacing:.08em">JUMP</span>
+        <sc-for list="{{ jumpBtns }}" as="jb" hint-placeholder-count="10">
+          <button onClick="{{ jb.go }}" style="background:{{ jb.bg }};color:{{ jb.fg }};border:1px solid #3a3147;border-radius:4px;padding:5px 8px;font-size:11px;cursor:pointer">{{ jb.label }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+  <!-- Device frame -->
+  <div style="position:relative;background:#14111a;border:1px solid #3a3147;border-radius:14px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6);width:{{ frameW }};height:{{ frameH }};font-size:{{ frameFont }};filter:{{ frameFilter }}">
+   <div style="position:absolute;inset:0;display:flex;flex-direction:column;padding-left:{{ safeL }};padding-right:{{ safeR }};box-sizing:border-box">
+
+    <!-- ============ MAIN MENU ============ -->
+    <sc-if value="{{ showMenu }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Main Menu" style="flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background-image:url('assets/ebi/keyart-splash.png');background-size:cover;background-position:center">
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(14,11,19,.55), rgba(14,11,19,.88))"></div>
+        <div style="position:relative;text-align:center">
+          <div style="font-family:'EbiPixel',monospace;font-size:2.6em;color:#ff9e50;text-shadow:0 4px 0 #4a1f10, 0 0 24px rgba(255,158,80,.35);letter-spacing:.04em">EMBERBOUND</div>
+          <div style="font-family:'EbiPixel',monospace;font-size:1.05em;color:#c9a0ff;letter-spacing:.5em;margin-top:4px">ISEKAI</div>
+        </div>
+        <div style="position:relative;display:flex;flex-direction:column;gap:8px;width:230px">
+          <sc-for list="{{ menuBtns }}" as="mb" hint-placeholder-count="5">
+            <button onClick="{{ mb.go }}" disabled="{{ mb.off }}" style="min-height:48px;background:{{ mb.bg }};color:{{ mb.fg }};border:2px solid {{ mb.edge }};border-radius:8px;font-family:'EbiPixel',monospace;font-size:1.05em;letter-spacing:.06em;cursor:pointer;opacity:{{ mb.op }}" style-hover="filter:brightness(1.15)">{{ mb.label }}</button>
+          </sc-for>
+        </div>
+        <div style="position:relative;font-size:.68em;color:#a99bb8">Vertical-slice save: {{ saveNote }}</div>
+      </div>
+    </sc-if>
+
+    <!-- ============ QUIT HANDOFF ============ -->
+    <sc-if value="{{ showQuit }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Quit Handoff" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#0e0b13">
+        <div style="font-family:'EbiPixel',monospace;font-size:1.3em;color:#f2e8d8">Returning control to the platform</div>
+        <div style="font-size:.8em;color:#a99bb8;max-width:420px;text-align:center;line-height:1.6">On device, the OS takes over here (app suspends or closes). The HTML prototype cannot quit the app — this state is the truthful handoff placeholder.</div>
+        <button onClick="{{ backToMenu }}" style="min-height:48px;background:#262031;color:#f2e8d8;border:2px solid #3a3147;border-radius:8px;padding:0 22px;font-family:'EbiPixel',monospace;cursor:pointer">Back to menu (prototype only)</button>
+      </div>
+    </sc-if>
+
+    <!-- ============ GAME SHELL ============ -->
+    <sc-if value="{{ showShell }}" hint-placeholder-val="{{ false }}">
+      <!-- Top bar -->
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#181322;border-bottom:1px solid #3a3147;flex-wrap:wrap">
+        <img src="assets/ebi/archer-portrait.png" alt="Rift Archer portrait" style="width:34px;height:34px;border-radius:6px;border:1px solid #3a3147;object-fit:cover" />
+        <div style="min-width:120px">
+          <div style="font-family:'EbiPixel',monospace;font-size:.85em;color:#f2e8d8">{{ playerName }}</div>
+          <div style="font-size:.62em;color:#c9a0ff">{{ activeTitle }}</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;flex:1;justify-content:center">
+          <sc-for list="{{ resBar }}" as="r" hint-placeholder-count="5">
+            <div title="{{ r.desc }}" style="display:flex;align-items:center;gap:5px;background:#221b2e;border:1px solid #3a3147;border-radius:14px;padding:3px 10px 3px 5px">
+              <img src="{{ r.icon }}" alt="{{ r.name }}" style="width:18px;height:18px;image-rendering:pixelated" />
+              <span style="font-size:.72em;color:{{ r.color }};font-weight:bold">{{ r.amount }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <button onClick="{{ openSettings }}" aria-label="Settings" style="min-width:48px;min-height:40px;background:#262031;color:#f2e8d8;border:1px solid #3a3147;border-radius:8px;cursor:pointer;font-size:.9em">⚙ <span style="font-size:.7em">Settings</span></button>
+      </div>
+      <div style="flex:1;display:flex;min-height:0">
+        <!-- Nav rail -->
+        <nav aria-label="Camp navigation" style="display:flex;flex-direction:column;gap:4px;padding:8px 6px;background:#161020;border-right:1px solid #3a3147;overflow-y:auto;flex:none">
+          <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="9">
+            <button onClick="{{ n.go }}" aria-current="{{ n.cur }}" style="display:flex;align-items:center;gap:8px;min-height:48px;min-width:118px;background:{{ n.bg }};color:{{ n.fg }};border:1px solid {{ n.edge }};border-left:4px solid {{ n.mark }};border-radius:8px;padding:4px 10px;font-size:.74em;cursor:pointer;text-align:left" style-hover="filter:brightness(1.18)">
+              <img src="{{ n.icon }}" alt="" style="width:20px;height:20px;image-rendering:pixelated" /> {{ n.label }}
+            </button>
+          </sc-for>
+        </nav>
+        <!-- Content -->
+        <div style="flex:1;min-width:0;overflow-y:auto;background:radial-gradient(900px 380px at 60% -80px, #221a30, #14111a)">
+
+          <!-- ==== CAMP TAB ==== -->
+          <sc-if value="{{ tabCamp }}" hint-placeholder-val="{{ true }}">
+            <div data-screen-label="Camp Overview" style="padding:14px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+                <h1 style="margin:0;font-family:'EbiPixel',monospace;font-size:1.25em;color:#ff9e50">Camp</h1>
+                <span style="font-size:.68em;color:#a99bb8">The last safe fire in the Rift-torn valley.</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px">
+                <sc-for list="{{ campCards }}" as="c" hint-placeholder-count="4">
+                  <div style="background:#1d1826;border:1px solid #3a3147;border-radius:10px;padding:10px;display:flex;gap:10px;align-items:center">
+                    <img src="{{ c.img }}" alt="{{ c.name }}" style="width:52px;height:52px;object-fit:contain;image-rendering:auto" />
+                    <div style="flex:1;min-width:0">
+                      <div style="display:flex;gap:6px;align-items:center"><span style="font-family:'EbiPixel',monospace;font-size:.78em;color:#f2e8d8">{{ c.name }}</span><span style="font-size:.6em;color:#ffd97a;background:#2e2617;border:1px solid #5c4a1e;border-radius:8px;padding:1px 7px">Lv {{ c.lvl }}</span></div>
+                      <div style="font-size:.63em;color:#a99bb8;margin-top:3px;line-height:1.45">{{ c.line }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px">
+                <div style="background:#1d1826;border:1px solid #3a3147;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font-family:'EbiPixel',monospace;font-size:.85em;color:#7fd8d8">Camp Defense</div>
+                  <div style="font-size:.68em;color:#a99bb8;line-height:1.5">{{ defenseLine }}</div>
+                  <button onClick="{{ startDefense }}" disabled="{{ defenseOff }}" style="min-height:48px;background:{{ defenseBg }};color:{{ defenseFg }};border:2px solid {{ defenseEdge }};border-radius:8px;font-family:'EbiPixel',monospace;font-size:.85em;cursor:pointer;opacity:{{ defenseOp }}">Start Defense</button>
+                  <sc-if value="{{ defenseWhy }}" hint-placeholder-val="{{ false }}"><div role="alert" style="font-size:.64em;color:#ff9d8a">⚑ {{ defenseWhyText }}</div></sc-if>
+                </div>
+                <div style="background:#1d1826;border:1px solid #3a3147;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font-family:'EbiPixel',monospace;font-size:.85em;color:#9fe8a0">Worker Production</div>
+                  <sc-for list="{{ workerLines }}" as="w" hint-placeholder-count="2">
+                    <div style="display:flex;gap:8px;align-items:center;font-size:.68em;color:#f2e8d8"><img src="{{ w.face }}" alt="" style="width:22px;height:22px;image-rendering:pixelated;border-radius:4px" /> {{ w.text }}</div>
+                  </sc-for>
+                  <div style="font-size:.63em;color:#a99bb8">{{ offlineCapLine }}</div>
+                </div>
+                <div style="background:#1d1826;border:1px solid #3a3147;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font-family:'EbiPixel',monospace;font-size:.85em;color:#ff9e50">Expedition Portal</div>
+                  <div style="font-size:.68em;color:#a99bb8;line-height:1.5">Choose a biome on the World map, review your loadout, then step through.</div>
+                  <button onClick="{{ goWorld }}" style="min-height:48px;background:#4a2410;color:#ffd9b8;border:2px solid #ff9e50;border-radius:8px;font-family:'EbiPixel',monospace;font-size:.85em;cursor:pointer" style-hover="filter:brightness(1.2)">Open World Map</button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ==== CHARACTER TAB ==== -->
+          <sc-if value="{{ tabCharacter }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Character" style="padding:14px;display:flex;flex-direction:column;gap:12px">
+              <h1 style="margin:0;font-family:'EbiPixel',monospace;font-size:1.25em;color:#ff9e50">Character</h1>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;align-items:start">
+                <div style="background:#1d1826;border:1px solid #3a3147;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px">
+                  <div style="font-family:'EbiPixel',monospace;font-size:.8em;color:#c9a0ff">Permanent Stats</div>
+                  <sc-for list="{{ charStats }}" as="s" hint-placeholder-count="6">
+                    <div style="display:flex;justify-content:space-between;gap:8px;font-size:.7em;border-bottom:1px dashed #2b2438;padding:4px 0">
+                      <span style="color:#a99bb8" title="{{ s.why }}">{{ s.name }} ⓘ</span><span style="color:{{ s.color }};font-weight:bold">{{ s.val }}</span>
+                    </div>
+                  </sc-for>
+                  <div style="font-size:.6em;color:#6d6280;line-height:1.5">Derived: base (BALANCE.md) × Grim Forge × purchased Skills. Hover ⓘ for the breakdown.</div>
+                </div>
+                <div style="background:#1d1826;border:1px solid #3a3147;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font-family:'EbiPixel',monospace;font-size:.8em;color:#c9a0ff">Loadout</div>
+                  <div style="display:flex;gap:8px;align-items:center;background:#221b2e;border:1px solid #3a3147;border-radius:8px;padding:8px">
+                    <img src="{{ eqWeaponIcon }}" alt="" style="width:34px;height:34px;image-rendering:pixelated" />
+                    <div><div style="font-size:.72em;color:{{ eqWeaponColor }}">{{ eqWeaponName }}</div><div style="font-size:.6em;color:#a99bb8">{{ eqWeaponTrait }}</div></div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                    <sc-for list="{{ eqArtifacts }}" as="a" hint-placeholder-count="4">
+                      <button onClick="{{ a.go }}" style="display:flex;gap:6px;align-items:center;background:#221b2e;border:1px dashed {{ a.edge }};border-radius:8px;padding:6px;cursor:pointer;min-height:48px;text-align:left">
+                        <span style="width:24px;height:24px;flex:none;display:inline-flex;align-items:center;justify-content:center;background:#181322;border-radius:6px;color:{{ a.color }};font-size:.85em">{{ a.glyph }}</span>
+                        <span style="min-width:0"><span style="display:block;font-size:.62em;color:{{ a.color }}">{{ a.name }}</span><span style="display:block;font-size:.55em;color:#6d6280">{{ a.slot }}</span></span>
+                      </button>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center;background:#221b2e;border:1px solid #3a3147;border-radius:8px;padding:8px">
+                    <img src="{{ activePetFace }}" alt="" style="width:28px;height:28px;image-rendering:pixelated;border-radius:5px" />
+                    <div style="font-size:.68em;color:#9fe8a0">{{ activePetLine }}</div>
+                  </div>
+                  <div style="font-size:.62em;color:{{ loadoutMsgColor }}">{{ loadoutMsg }}</div>
+                </div>
+                <div style="background:#1d1826;border:1px solid #3a3147;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px">
+                  <div style="font-family:'EbiPixel',monospace;font-size:.8em;color:#c9a0ff">Permanent Skills</div>
+                  <sc-for list="{{ skillSummary }}" as="b" hint-placeholder-count="3">
+                    <div style="font-size:.68em;color:#f2e8d8;display:flex;justify-content:space-between"><span style="color:{{ b.color }}">{{ b.name }}</span><span>{{ b.count }}</span></div>
+                  </sc-for>
+                  <sc-if value="{{ runActive }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:6px;border-top:1px solid #3a3147;padding-top:6px">
+                      <div style="font-size:.68em;color:#ff9e50">Temporary run boons (this run only)</div>
+                      <sc-for list="{{ runBoonLines }}" as="rb" hint-placeholder-count="2">
+                        <div style="font-size:.64em;color:#ffd9b8">{{ rb.text }}</div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ==== SKILLS TAB ==== -->
+          <sc-if value="{{ tabSkills }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Skills" style="padding:14px;display:flex;flex-direction:column;gap:10px" tabIndex="0" onKeyDown="{{ skillKey }}">
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <h1 style="margin:0;font-family:'EbiPixel',monospace;font-size:1.25em;color:#ff9e50">Skills</h1>
+                <span style="font-size:.66em;color:#a99bb8">Permanent. Paid in <b style="color:#c9a0ff">Soul Ash</b> ({{ soulAshAmt }} held). Cost rises by tier.</span>
+                <button onClick="{{ askRespec }}" style="margin-left:auto;min-height:40px;background:#262031;color:#c9a0ff;border:1px solid #574a72;border-radius:8px;padding:0 14px;font-size:.7em;cursor:pointer">Respec…</button>
+              </div>
+              <div style="font-size:.6em;color:#6d6280">Keyboard: focus this panel, arrows move between nodes, Enter purchases. Same map drives gamepad focus.</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:start">
+                <sc-for list="{{ skillCols }}" as="col" hint-placeholder-count="3">
+                  <div style="background:#1d1826;border:1px solid #3a3147;border-top:3px solid {{ col.color }};border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px">
+                    <div style="display:flex;gap:8px;align-items:center"><img src="{{ col.icon }}" alt="" style="width:22px;height:22px;image-rendering:pixelated" /><span style="font-family:'EbiPixel',monospace;font-size:.8em;color:{{ col.color }}">{{ col.name }}</span><span style="margin-left:auto;font-size:.6em;color:#a99bb8">{{ col.count }}</span></div>
+                    <div style="font-size:.6em;color:#a99bb8;line-height:1.4">{{ col.desc }}</div>
+                    <sc-for list="{{ col.nodes }}" as="nd" hint-placeholder-count="10">
+                      <button onClick="{{ nd.go }}" aria-pressed="{{ nd.sel }}" style="display:flex;gap:8px;align-items:center;min-height:44px;background:{{ nd.bg }};border:2px solid {{ nd.edge }};border-radius:8px;padding:4px 8px;cursor:pointer;text-align:left;opacity:{{ nd.op }}">
+                        <span style="width:22px;height:22px;flex:none;border-radius:50%;background:{{ nd.dot }};display:inline-flex;align-items:center;justify-content:center;font-size:.6em;color:#14111a;font-weight:bold">{{ nd.tier }}</span>
+                        <span style="min-width:0;flex:1"><span style="display:block;font-size:.66em;color:{{ nd.fg }}">{{ nd.name }}</span><span style="display:block;font-size:.55em;color:#a99bb8">{{ nd.status }}</span></span>
+                        <span style="font-size:.6em;color:{{ nd.costColor }}">{{ nd.cost }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-for>
+                <!-- Node detail -->
+                <div style="background:#1d1826;border:1px solid #574a72;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;position:sticky;top:10px">
+                  <div style="display:flex;gap:6px;align-items:center"><span style="font-family:'EbiPixel',monospace;font-size:.85em;color:#f2e8d8">{{ selNodeName }}</span>
+                    <sc-if value="{{ selNodeProposedBadge }}" hint-placeholder-val="{{ false }}"><span style="font-size:.55em;background:#3d2a12;color:#ffd97a;border:1px solid #7a5a1e;border-radius:6px;padding:1px 6px">PROPOSED CONTENT</span></sc-if>
+                  </div>
+                  <div style="font-size:.7em;color:#ffd9b8;line-height:1.5">{{ selNodeEffect }}</div>
+                  <div style="font-size:.62em;color:#a99bb8">{{ selNodeReq }}</div>
+                  <div style="font-size:.62em;color:#c9a0ff">{{ selNodeCostLine }}</div>
+                  <button onClick="{{ buyNode }}" disabled="{{ selNodeBuyOff }}" style="min-height:48px;background:{{ selNodeBuyBg }};color:{{ selNodeBuyFg }};border:2px solid {{ selNodeBuyEdge }};border-radius:8px;font-family:'EbiPixel',monospace;font-size:.8em;cursor:pointer;opacity:{{ selNodeBuyOp }}">{{ selNodeBuyLabel }}</button>
+                  <div aria-live="polite" style="font-size:.62em;color:{{ skillMsgColor }};min-height:1.2em">{{ skillMsg }}</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ==== ARSENAL TAB ==== -->
+          <sc-if value="{{ tabArsenal }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Arsenal" style="padding:14px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <h1 style="margin:0;font-family:'EbiPixel',monospace;font-size:1.25em;color:#ff9e50">Arsenal</h1>
+                <span style="font-size:.66em;color:#a99bb8">Bows only — the Rift Archer trusts nothing else.</span>
+                <div style="margin-left:auto;display:flex;gap:5px;flex-wrap:wrap">
+                  <sc-for list="{{ wpnFilters }}" as="f" hint-placeholder-count="5">
+                    <button onClick="{{ f.go }}" style="background:{{ f.bg }};color:{{ f.fg }};border:1px solid #3a3147;border-radius:12px;padding:6px 11px;font-size:.62em;cursor:pointer;min-height:34px">{{ f.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:10px;align-items:start">
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+                  <sc-for list="{{ weaponCards }}" as="w" hint-placeholder-count="5">
+                    <button onClick="{{ w.go }}" style="position:relative;display:flex;flex-direction:column;gap:6px;background:{{ w.bg }};border:2px solid {{ w.edge }};border-radius:10px;padding:10px;cursor:pointer;text-align:left;min-height:48px;opacity:{{ w.op }}">
+                      <sc-if value="{{ w.fav }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;right:8px;color:#ffd97a;font-size:.8em">★</span></sc-if>
+                      <sc-if value="{{ w.equipped }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;left:8px;font-size:.52em;background:#173322;color:#9fe8a0;border:1px solid #2e5c40;border-radius:6px;padding:1px 6px">EQUIPPED</span></sc-if>
+                      <img src="{{ w.icon }}" alt="" style="width:40px;height:40px;image-rendering:pixelated;align-self:center;margin-top:10px;filter:{{ w.imgFilter }}" />
+                      <span style="font-size:.68em;color:{{ w.rColor }}">{{ w.name }}</span>
+                      <span style="font-size:.56em;color:#a99bb8">{{ w.sub }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <!-- Weapon detail -->
+                <div style="background:#1d1826;border:1px solid #574a72;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;position:sticky;top:10px">
+                  <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                    <span style="font-family:'EbiPixel',monospace;font-size:.85em;color:{{ selWColor }}">{{ selWName }}</span>
+                    <span style="font-size:.55em;color:{{ selWColor }};border:1px solid {{ selWColor }};border-radius:6px;padding:1px 6px">{{ selWRarity }}</span>
+                    <sc-if value="{{ selWProposedBadge }}" hint-placeholder-val="{{ false }}"><span style="font-size:.55em;background:#3d2a12;color:#ffd97a;border:1px solid #7a5a1e;border-radius:6px;padding:1px 6px">PROPOSED CONTENT</span></sc-if>
+                  </div>
+                  <div style="font-size:.64em;color:#a99bb8;line-height:1.5;font-style:italic">{{ selWIdentity }}</div>
+                  <sc-for list="{{ selWStats }}" as="st" hint-placeholder-count="4">
+                    <div style="display:flex;justify-content:space-between;font-size:.66em;border-bottom:1px dashed #2b2438;padding:3px 0"><span style="color:#a99bb8">{{ st.k }}</span><span style="color:{{ st.color }}">{{ st.v }}</span></div>
+                  </sc-for>
+                  <div style="font-size:.6em;color:#7fd8d8">{{ selWCompare }}</div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <button onClick="{{ wEquip }}" disabled="{{ wEquipOff }}" style="flex:1;min-height:48px;background:{{ wEquipBg }};color:{{ wEquipFg }};border:2px solid {{ wEquipEdge }};border-radius:8px;font-family:'EbiPixel',monospace;font-size:.72em;cursor:pointer;opacity:{{ wEquipOp }}">{{ wEquipLabel }}</button>
+                    <button onClick="{{ wFav }}" style="min-width:48px;min-height:48px;background:#262031;color:#ffd97a;border:1px solid #3a3147;border-radius:8px;cursor:pointer">{{ wFavGlyph }}</button>
+                  </div>
+                  <button onClick="{{ wUpgrade }}" disabled="{{ wUpOff }}" style="min-height:48px;background:{{ wUpBg }};color:{{ wUpFg }};border:2px solid {{ wUpEdge }};border-radius:8px;font-size:.7em;cursor:pointer;opacity:{{ wUpOp }}">{{ wUpLabel }}</button>
+                  <button onClick="{{ wDismantle }}" disabled="{{ wDisOff }}" style="min-height:44px;background:#2c1d1d;color:#ff9d8a;border:1px solid #6b3434;border-radius:8px;font-size:.66em;cursor:pointer;opacity:{{ wDisOp }}">Dismantle…</button>
+                  <div aria-live="polite" style="font-size:.62em;color:{{ wMsgColor }};min-height:1.2em">{{ wMsg }}</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ==== ARTIFACTS TAB ==== -->
+          <sc-if value="{{ tabArtifacts }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Artifacts" style="padding:14px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <h1 style="margin:0;font-family:'EbiPixel',monospace;font-size:1.25em;color:#ff9e50">Artifacts</h1>
+                <span style="font-size:.66em;color:#a99bb8">One per slot: Trinket · Quiver · Charm · Relic.</span>
+                <div style="margin-left:auto;display:flex;gap:5px;flex-wrap:wrap">
+                  <sc-for list="{{ artFilters }}" as="f" hint-placeholder-count="5">
+                    <button onClick="{{ f.go }}" style="background:{{ f.bg }};color:{{ f.fg }};border:1px solid #3a3147;border-radius:12px;padding:6px 11px;font-size:.62em;cursor:pointer;min-height:34px">{{ f.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ artSlotChips }}" as="sl" hint-placeholder-count="4">
+                  <div style="display:flex;gap:6px;align-items:center;background:#1d1826;border:1px dashed {{ sl.edge }};border-radius:10px;padding:6px 10px;font-size:.64em;color:{{ sl.color }}">{{ sl.label }}</div>
+                </sc-for>
+              </div>
+              <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:10px;align-items:start">
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px">
+                  <sc-for list="{{ artCards }}" as="a" hint-placeholder-count="12">
+                    <button onClick="{{ a.go }}" style="position:relative;display:flex;flex-direction:column;gap:5px;background:{{ a.bg }};border:2px solid {{ a.edge }};border-radius:10px;padding:9px;cursor:pointer;text-align:left;min-height:48px;opacity:{{ a.op }}">
+                      <sc-if value="{{ a.equipped }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:5px;right:7px;font-size:.52em;background:#173322;color:#9fe8a0;border:1px solid #2e5c40;border-radius:6px;padding:1px 5px">ON</span></sc-if>
+                      <span style="font-size:1.15em;color:{{ a.rColor }}">{{ a.glyph }}</span>
+                      <span style="font-size:.64em;color:{{ a.rColor }}">{{ a.name }}</span>
+                      <span style="font-size:.55em;color:#a99bb8">{{ a.sub }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="background:#1d1826;border:1px solid #574a72;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;position:sticky;top:10px">
+                  <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                    <span style="font-family:'EbiPixel',monospace;font-size:.85em;color:{{ selAColor }}">{{ selAName }}</span>
+                    <span style="font-size:.55em;color:{{ selAColor }};border:1px solid {{ selAColor }};border-radius:6px;padding:1px 6px">{{ selARarity }}</span>
+                    <sc-if value="{{ selAProposedBadge }}" hint-placeholder-val="{{ false }}"><span style="font-size:.55em;background:#3d2a12;color:#ffd97a;border:1px solid #7a5a1e;border-radius:6px;padding:1px 6px">PROPOSED CONTENT</span></sc-if>
+                  </div>
+                  <div style="font-size:.68em;color:#ffd9b8;line-height:1.5">{{ selAEffect }}</div>
+                  <div style="font-size:.62em;color:#a99bb8">Slot: {{ selASlot }} · Level {{ selALvl }}</div>
+                  <div style="font-size:.6em;color:#7fd8d8">{{ selACompare }}</div>
+                  <div style="font-size:.6em;color:#c9a0ff">{{ selASet }}</div>
+                  <button onClick="{{ aEquip }}" disabled="{{ aEquipOff }}" style="min-height:48px;background:{{ aEquipBg }};color:{{ aEquipFg }};border:2px solid {{ aEquipEdge }};border-radius:8px;font-family:'EbiPixel',monospace;font-size:.72em;cursor:pointer;opacity:{{ aEquipOp }}">{{ aEquipLabel }}</button>
+                  <button onClick="{{ aUpgrade }}" disabled="{{ aUpOff }}" style="min-height:48px;background:{{ aUpBg }};color:{{ aUpFg }};border:2px solid {{ aUpEdge }};border-radius:8px;font-size:.7em;cursor:pointer;opacity:{{ aUpOp }}">{{ aUpLabel }}</button>
+                  <button onClick="{{ aDismantle }}" disabled="{{ aDisOff }}" style="min-height:44px;background:#2c1d1d;color:#ff9d8a;border:1px solid #6b3434;border-radius:8px;font-size:.66em;cursor:pointer;opacity:{{ aDisOp }}">Dismantle…</button>
+                  <div aria-live="polite" style="font-size:.62em;color:{{ aMsgColor }};min-height:1.2em">{{ aMsg }}</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ==== PETS TAB ==== -->
+          <sc-if value="{{ tabPets }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Pet Training" style="padding:14px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <h1 style="margin:0;font-family:'EbiPixel',monospace;font-size:1.25em;color:#ff9e50">Pet Training</h1>
+                <span style="font-size:.66em;color:#a99bb8">Tame with shards. Assign to Worker, Companion, or Defender roles. Slots: {{ petSlotLine }}</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:10px;align-items:start">
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px">
+                  <sc-for list="{{ petCards }}" as="p" hint-placeholder-count="9">
+                    <button onClick="{{ p.go }}" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;background:{{ p.bg }};border:2px solid {{ p.edge }};border-radius:10px;padding:10px;cursor:pointer;min-height:48px;opacity:{{ p.op }}">
+                      <sc-if value="{{ p.roleTag }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:5px;right:7px;font-size:.52em;background:#173322;color:#9fe8a0;border:1px solid #2e5c40;border-radius:6px;padding:1px 5px">{{ p.roleTagText }}</span></sc-if>
+                      <img src="{{ p.face }}" alt="{{ p.alt }}" style="width:44px;height:44px;image-rendering:pixelated;border-radius:8px;filter:{{ p.imgFilter }}" />
+                      <span style="font-size:.64em;color:{{ p.fg }}">{{ p.name }}</span>
+                      <span style="font-size:.55em;color:#a99bb8">{{ p.sub }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="background:#1d1826;border:1px solid #574a72;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;position:sticky;top:10px">
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <img src="{{ selPFace }}" alt="" style="width:36px;height:36px;image-rendering:pixelated;border-radius:6px;filter:{{ selPImgFilter }}" />
+                    <span style="font-family:'EbiPixel',monospace;font-size:.85em;color:#f2e8d8">{{ selPName }}</span>
+                    <sc-if value="{{ selPProposedBadge }}" hint-placeholder-val="{{ false }}"><span style="font-size:.55em;background:#3d2a12;color:#ffd97a;border:1px solid #7a5a1e;border-radius:6px;padding:1px 6px">PROPOSED CONTENT</span></sc-if>
+                  </div>
+                  <div style="font-size:.64em;color:#a99bb8">{{ selPStatus }}</div>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <div style="flex:1;height:10px;background:#14111a;border:1px solid #3a3147;border-radius:5px;overflow:hidden"><div style="height:100%;width:{{ selPXpPct }};background:linear-gradient(90deg,#9fe8a0,#7fd8d8)"></div></div>
+                    <span style="font-size:.6em;color:#9fe8a0">{{ selPLvlLine }}</span>
+                  </div>
+                  <div style="font-size:.62em;color:#ffd9b8;line-height:1.5">{{ selPPassive }}</div>
+                  <sc-for list="{{ selPRoles }}" as="r" hint-placeholder-count="3">
+                    <button onClick="{{ r.go }}" disabled="{{ r.off }}" style="display:flex;justify-content:space-between;gap:6px;min-height:44px;align-items:center;background:{{ r.bg }};border:1px solid {{ r.edge }};border-radius:8px;padding:4px 10px;cursor:pointer;opacity:{{ r.op }}">
+                      <span style="font-size:.66em;color:{{ r.fg }}">{{ r.label }}</span><span style="font-size:.56em;color:#a99bb8">{{ r.sub }}</span>
+                    </button>
+                  </sc-for>
+                  <div style="display:flex;gap:6px">
+                    <button onClick="{{ petFeed }}" disabled="{{ petFeedOff }}" style="flex:1;min-height:48px;background:{{ petFeedBg }};color:{{ petFeedFg }};border:2px solid {{ petFeedEdge }};border-radius:8px;font-size:.68em;cursor:pointer;opacity:{{ petFeedOp }}">{{ petFeedLabel }}</button>
+                    <button onClick="{{ petAscend }}" disabled="{{ petAscOff }}" style="flex:1;min-height:48px;background:{{ petAscBg }};color:{{ petAscFg }};border:2px solid {{ petAscEdge }};border-radius:8px;font-size:.68em;cursor:pointer;opacity:{{ petAscOp }}">{{ petAscLabel }}</button>
+                  </div>
+                  <div style="font-size:.58em;color:#6d6280;line-height:1.5">Duplicates auto-convert to shards. Shards feed taming and ascension.</div>
+                  <div aria-live="polite" style="font-size:.62em;color:{{ petMsgColor }};min-height:1.2em">{{ petMsg }}</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ==== WORLD TAB ==== -->
+          <sc-if value="{{ tabWorld }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="World Map" style="padding:14px;display:flex;flex-direction:column;gap:10px">
+              <h1 style="margin:0;font-family:'EbiPixel',monospace;font-size:1.25em;color:#ff9e50">World Map</h1>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px">
+                <sc-for list="{{ biomeCards }}" as="b" hint-placeholder-count="3">
+                  <button onClick="{{ b.go }}" style="position:relative;display:flex;flex-direction:column;gap:0;background:#1d1826;border:2px solid {{ b.edge }};border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;min-height:48px;opacity:{{ b.op }}">
+                    <div style="height:74px;background-image:url('{{ b.tile }}');background-size:220px;image-rendering:pixelated;filter:{{ b.tileFilter }}"></div>
+                    <div style="padding:10px;display:flex;flex-direction:column;gap:4px">
+                      <div style="display:flex;gap:6px;align-items:center"><span style="font-family:'EbiPixel',monospace;font-size:.78em;color:{{ b.accent }}">{{ b.name }}</span><span style="font-size:.55em;color:{{ b.stateColor }};border:1px solid {{ b.stateColor }};border-radius:6px;padding:1px 6px">{{ b.state }}</span></div>
+                      <div style="font-size:.6em;color:#a99bb8;line-height:1.45">{{ b.desc }}</div>
+                      <div style="font-size:.56em;color:#6d6280">{{ b.unlock }}</div>
+                    </div>
+                  </button>
+                </sc-for>
+              </div>
+              <!-- Biome detail -->
+              <sc-if value="{{ selBiomeOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#1d1826;border:1px solid #574a72;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <span style="font-family:'EbiPixel',monospace;font-size:1em;color:{{ selBAccent }}">{{ selBName }}</span>
+                    <sc-if value="{{ selBProposedBadge }}" hint-placeholder-val="{{ false }}"><span style="font-size:.55em;background:#3d2a12;color:#ffd97a;border:1px solid #7a5a1e;border-radius:6px;padding:1px 6px">PROPOSED CONTENT</span></sc-if>
+                    <span style="margin-left:auto;font-size:.62em;color:#a99bb8">{{ selBHazard }}</span>
+                  </div>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:6px">
+                      <div style="font-size:.66em;color:#7fd8d8">Difficulty</div>
+                      <div style="display:flex;gap:6px" role="radiogroup" aria-label="Difficulty">
+                        <sc-for list="{{ selBDiffs }}" as="d" hint-placeholder-count="3">
+                          <button onClick="{{ d.go }}" role="radio" aria-checked="{{ d.on }}" style="flex:1;min-height:44px;background:{{ d.bg }};color:{{ d.fg }};border:2px solid {{ d.edge }};border-radius:8px;font-size:.64em;cursor:pointer">{{ d.label }}</button>
+                        </sc-for>
+                      </div>
+                      <div style="font-size:.62em;color:#a99bb8">Expected: {{ selBRewards }}</div>
+                      <div style="font-size:.62em;color:#ffd9b8">Room plan: {{ selBRooms }}</div>
+                    </div>
+                    <div style="flex:1.4;min-width:220px;display:flex;flex-direction:column;gap:6px">
+                      <div style="font-size:.66em;color:#7fd8d8">Denizens</div>
+                      <div style="display:flex;gap:6px;flex-wrap:wrap">
+                        <sc-for list="{{ selBFoes }}" as="f" hint-placeholder-count="8">
+                          <button onClick="{{ f.go }}" title="{{ f.name }}" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:#221b2e;border:1px solid {{ f.edge }};border-radius:8px;padding:5px;cursor:pointer;min-width:52px;min-height:48px">
+                            <img src="{{ f.face }}" alt="{{ f.name }}" style="width:30px;height:30px;image-rendering:pixelated;filter:{{ f.imgFilter }}" />
+                            <span style="font-size:.5em;color:{{ f.tagColor }}">{{ f.tag }}</span>
+                          </button>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </div>
+                  <button onClick="{{ enterBiome }}" disabled="{{ enterOff }}" style="min-height:48px;background:{{ enterBg }};color:{{ enterFg }};border:2px solid {{ enterEdge }};border-radius:8px;font-family:'EbiPixel',monospace;font-size:.9em;cursor:pointer;opacity:{{ enterOp }}" style-hover="filter:brightness(1.15)">{{ enterLabel }}</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <!-- ==== BESTIARY TAB ==== -->
+          <sc-if value="{{ tabBestiary }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Bestiary" style="padding:14px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <h1 style="margin:0;font-family:'EbiPixel',monospace;font-size:1.25em;color:#ff9e50">Bestiary</h1>
+                <span style="font-size:.66em;color:#a99bb8">{{ bestiaryCount }}</span>
+                <div style="margin-left:auto;display:flex;gap:5px;flex-wrap:wrap">
+                  <sc-for list="{{ beastFilters }}" as="f" hint-placeholder-count="5">
+                    <button onClick="{{ f.go }}" style="background:{{ f.bg }};color:{{ f.fg }};border:1px solid #3a3147;border-radius:12px;padding:6px 11px;font-size:.62em;cursor:pointer;min-height:34px">{{ f.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:10px;align-items:start">
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px">
+                  <sc-for list="{{ beastCards }}" as="b" hint-placeholder-count="12">
+                    <button onClick="{{ b.go }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;background:{{ b.bg }};border:2px solid {{ b.edge }};border-radius:10px;padding:8px;cursor:pointer;min-height:48px">
+                      <img src="{{ b.face }}" alt="{{ b.alt }}" style="width:38px;height:38px;image-rendering:pixelated;filter:{{ b.imgFilter }}" />
+                      <span style="font-size:.58em;color:{{ b.fg }};text-align:center">{{ b.name }}</span>
+                      <span style="font-size:.5em;color:{{ b.tagColor }}">{{ b.tag }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="background:#1d1826;border:1px solid #574a72;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:7px;position:sticky;top:10px">
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <img src="{{ selEFace }}" alt="" style="width:40px;height:40px;image-rendering:pixelated;border-radius:6px;filter:{{ selEImgFilter }}" />
+                    <span style="font-family:'EbiPixel',monospace;font-size:.85em;color:#f2e8d8">{{ selEName }}</span>
+                    <sc-if value="{{ selEProposedBadge }}" hint-placeholder-val="{{ false }}"><span style="font-size:.55em;background:#3d2a12;color:#ffd97a;border:1px solid #7a5a1e;border-radius:6px;padding:1px 6px">PROPOSED CONTENT</span></sc-if>
+                  </div>
+                  <sc-for list="{{ selELines }}" as="l" hint-placeholder-count="6">
+                    <div style="font-size:.64em;line-height:1.5;border-bottom:1px dashed #2b2438;padding:3px 0"><span style="color:#7fd8d8">{{ l.k }}:</span> <span style="color:{{ l.color }}">{{ l.v }}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ==== BUILDINGS TAB ==== -->
+          <sc-if value="{{ tabBuildings }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Camp Buildings" style="padding:14px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+                <h1 style="margin:0;font-family:'EbiPixel',monospace;font-size:1.25em;color:#ff9e50">Camp Buildings</h1>
+                <span style="font-size:.66em;color:#a99bb8">Upgrades spend camp resources and save immediately.</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px">
+                <sc-for list="{{ buildingCards }}" as="b" hint-placeholder-count="4">
+                  <div style="background:#1d1826;border:2px solid {{ b.edge }};border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;opacity:{{ b.op }}">
+                    <div style="display:flex;gap:10px;align-items:center">
+                      <img src="{{ b.img }}" alt="" style="width:46px;height:46px;object-fit:contain" />
+                      <div><div style="font-family:'EbiPixel',monospace;font-size:.8em;color:#f2e8d8">{{ b.name }}</div>
+                        <div style="font-size:.62em;color:#ffd97a">Level {{ b.lvl }} {{ b.maxTag }}</div></div>
+                    </div>
+                    <div style="font-size:.64em;color:#a99bb8;line-height:1.5">{{ b.effect }}</div>
+                    <div style="font-size:.64em;color:#9fe8a0">{{ b.next }}</div>
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                      <sc-for list="{{ b.costs }}" as="c" hint-placeholder-count="2">
+                        <span style="display:flex;gap:4px;align-items:center;font-size:.64em;color:{{ c.color }}"><img src="{{ c.icon }}" alt="" style="width:15px;height:15px;image-rendering:pixelated" /> {{ c.text }}</span>
+                      </sc-for>
+                    </div>
+                    <button onClick="{{ b.go }}" disabled="{{ b.off }}" style="min-height:48px;background:{{ b.btnBg }};color:{{ b.btnFg }};border:2px solid {{ b.btnEdge }};border-radius:8px;font-family:'EbiPixel',monospace;font-size:.75em;cursor:pointer;opacity:{{ b.btnOp }}">{{ b.btnLabel }}</button>
+                    <sc-if value="{{ b.note }}" hint-placeholder-val="{{ false }}"><div style="font-size:.6em;color:#ff9d8a">⚑ {{ b.noteText }}</div></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+              <div aria-live="polite" style="font-size:.66em;color:{{ bldMsgColor }};min-height:1.2em">{{ bldMsg }}</div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ EXPEDITION RUN ============ -->
+    <sc-if value="{{ showRun }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Expedition Run" style="flex:1;display:flex;flex-direction:column;background:#14111a;min-height:0">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#181322;border-bottom:1px solid #3a3147;flex-wrap:wrap">
+          <span style="font-family:'EbiPixel',monospace;font-size:.8em;color:{{ runAccent }}">{{ runTitle }}</span>
+          <div style="display:flex;gap:4px;align-items:center" aria-label="Room progress">
+            <sc-for list="{{ runPips }}" as="p" hint-placeholder-count="7">
+              <span title="{{ p.label }}" style="width:16px;height:16px;border-radius:{{ p.rad }};background:{{ p.bg }};border:2px solid {{ p.edge }};display:inline-flex;align-items:center;justify-content:center;font-size:.5em;color:#14111a;font-weight:bold">{{ p.glyph }}</span>
+            </sc-for>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:10px;align-items:center;font-size:.66em">
+            <span style="color:#ff9d8a">♥ {{ runHp }}</span><span style="color:#ffd97a">◈ {{ runGold }} Gold</span><span style="color:#c9a0ff">✦ {{ runAsh }} Ash</span>
+            <button onClick="{{ askRetreat }}" style="min-height:38px;background:#2c1d1d;color:#ff9d8a;border:1px solid #6b3434;border-radius:6px;padding:0 10px;font-size:.95em;cursor:pointer">Retreat</button>
+          </div>
+        </div>
+        <div style="flex:1;position:relative;overflow-y:auto;background-image:url('{{ runBgTile }}');background-size:260px;image-rendering:pixelated">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center, rgba(20,17,26,.55), rgba(20,17,26,.92))"></div>
+          <div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:100%;padding:18px;box-sizing:border-box">
+            <!-- Fight phase -->
+            <sc-if value="{{ runPhaseFight }}" hint-placeholder-val="{{ true }}">
+              <div style="font-family:'EbiPixel',monospace;font-size:1.1em;color:#f2e8d8;text-shadow:0 2px 0 #000">{{ runRoomLabel }}</div>
+              <div style="display:flex;gap:14px;align-items:flex-end">
+                <sc-for list="{{ runFoes }}" as="f" hint-placeholder-count="3">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                    <img src="{{ f.face }}" alt="{{ f.name }}" style="width:{{ f.size }};height:{{ f.size }};image-rendering:pixelated;animation:{{ f.anim }}" />
+                    <span style="font-size:.58em;color:#ffd9b8;background:rgba(0,0,0,.5);border-radius:6px;padding:1px 7px">{{ f.name }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size:.66em;color:#a99bb8;max-width:440px;text-align:center;line-height:1.55">{{ runNarration }}</div>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ runFight }}" style="min-height:48px;min-width:170px;background:#4a2410;color:#ffd9b8;border:2px solid #ff9e50;border-radius:8px;font-family:'EbiPixel',monospace;font-size:.95em;cursor:pointer" style-hover="filter:brightness(1.2)">{{ runFightLabel }}</button>
+              </div>
+            </sc-if>
+            <!-- Boon pick -->
+            <sc-if value="{{ runPhaseBoon }}" hint-placeholder-val="{{ false }}">
+              <div style="font-family:'EbiPixel',monospace;font-size:1em;color:#c9a0ff">Room clear — choose a boon</div>
+              <div style="font-size:.62em;color:#a99bb8">Temporary: lasts this run only. Rarity roll {{ rarityRoll }}.</div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+                <sc-for list="{{ boonOffers }}" as="o" hint-placeholder-count="3">
+                  <button onClick="{{ o.go }}" style="display:flex;flex-direction:column;gap:6px;width:180px;background:#1d1826;border:2px solid {{ o.edge }};border-radius:10px;padding:12px;cursor:pointer;text-align:left;min-height:48px;animation:ebiPop .25s ease both" style-hover="filter:brightness(1.2)">
+                    <span style="font-size:.58em;color:{{ o.rColor }};border:1px solid {{ o.rColor }};border-radius:6px;padding:1px 6px;align-self:flex-start">{{ o.rarity }}</span>
+                    <span style="font-family:'EbiPixel',monospace;font-size:.72em;color:#f2e8d8">{{ o.name }}</span>
+                    <span style="font-size:.6em;color:#a99bb8;line-height:1.45">{{ o.desc }}</span>
+                    <span style="font-size:.56em;color:#9fe8a0">{{ o.stack }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <!-- Results -->
+            <sc-if value="{{ runPhaseResults }}" hint-placeholder-val="{{ false }}">
+              <div style="font-family:'EbiPixel',monospace;font-size:1.4em;color:{{ resultColor }};text-shadow:0 3px 0 #000">{{ resultTitle }}</div>
+              <div style="font-size:.68em;color:#a99bb8">{{ resultBankLine }}</div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+                <sc-for list="{{ resultLines }}" as="l" hint-placeholder-count="4">
+                  <div style="display:flex;gap:6px;align-items:center;background:#1d1826;border:1px solid #3a3147;border-radius:10px;padding:8px 12px;font-size:.7em;color:{{ l.color }}">
+                    <img src="{{ l.icon }}" alt="" style="width:18px;height:18px;image-rendering:pixelated" /> {{ l.text }}
+                  </div>
+                </sc-for>
+              </div>
+              <div style="background:#1d1826;border:1px solid #3a3147;border-radius:10px;padding:10px 14px;max-width:460px">
+                <div style="font-size:.62em;color:#7fd8d8;margin-bottom:4px">Build this run</div>
+                <div style="font-size:.6em;color:#ffd9b8;line-height:1.6">Permanent: {{ resultPermLine }}</div>
+                <div style="font-size:.6em;color:#c9a0ff;line-height:1.6">Temporary boons (now expired): {{ resultBoonLine }}</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ runReturn }}" style="min-height:48px;min-width:160px;background:#4a2410;color:#ffd9b8;border:2px solid #ff9e50;border-radius:8px;font-family:'EbiPixel',monospace;font-size:.85em;cursor:pointer">Return to Camp</button>
+                <button onClick="{{ runRetry }}" style="min-height:48px;background:#262031;color:#f2e8d8;border:2px solid #3a3147;border-radius:8px;padding:0 16px;font-family:'EbiPixel',monospace;font-size:.85em;cursor:pointer">Run it back</button>
+              </div>
+            </sc-if>
+            <!-- Loot reveal -->
+            <sc-if value="{{ runPhaseLoot }}" hint-placeholder-val="{{ false }}">
+              <div style="font-family:'EbiPixel',monospace;font-size:1em;color:#ffd97a">Spoils of the Rift</div>
+              <div style="font-size:.6em;color:#a99bb8">{{ lootProgress }}</div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px;background:#1d1826;border:2px solid {{ lootEdge }};border-radius:14px;padding:18px 26px;min-width:230px;animation:ebiPop .3s ease both">
+                <img src="{{ lootIcon }}" alt="" style="width:52px;height:52px;image-rendering:pixelated" />
+                <span style="font-size:.6em;color:{{ lootRColor }};border:1px solid {{ lootRColor }};border-radius:6px;padding:1px 8px">{{ lootRarity }}</span>
+                <span style="font-family:'EbiPixel',monospace;font-size:.85em;color:#f2e8d8">{{ lootName }}</span>
+                <span style="font-size:.62em;color:#a99bb8;text-align:center;line-height:1.5;max-width:260px">{{ lootDesc }}</span>
+                <sc-if value="{{ lootFull }}" hint-placeholder-val="{{ false }}"><div role="alert" style="font-size:.6em;color:#ff9d8a;text-align:center">Inventory full — keep replaces your lowest-level duplicate, or dismantle for materials.</div></sc-if>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
+                  <sc-for list="{{ lootBtns }}" as="lb" hint-placeholder-count="3">
+                    <button onClick="{{ lb.go }}" style="min-height:44px;background:{{ lb.bg }};color:{{ lb.fg }};border:2px solid {{ lb.edge }};border-radius:8px;padding:0 14px;font-size:.66em;cursor:pointer">{{ lb.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ PRE-RUN LOADOUT REVIEW ============ -->
+    <sc-if value="{{ showLoadout }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Pre-Run Loadout" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#14111a;padding:16px;box-sizing:border-box;overflow-y:auto">
+        <div style="font-family:'EbiPixel',monospace;font-size:1.1em;color:{{ selBAccent }}">Entering: {{ selBName }} — {{ loadoutDiff }}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;width:100%;max-width:720px">
+          <sc-for list="{{ loadoutCards }}" as="lc" hint-placeholder-count="4">
+            <div style="background:#1d1826;border:1px solid {{ lc.edge }};border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:5px">
+              <div style="font-size:.62em;color:#7fd8d8">{{ lc.k }}</div>
+              <div style="font-size:.7em;color:{{ lc.color }}">{{ lc.v }}</div>
+              <div style="font-size:.58em;color:#a99bb8;line-height:1.45">{{ lc.sub }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ loadoutWarn }}" hint-placeholder-val="{{ false }}"><div role="alert" style="font-size:.66em;color:#ff9d8a">⚑ {{ loadoutWarnText }}</div></sc-if>
+        <div style="display:flex;gap:8px">
+          <button onClick="{{ confirmLoadout }}" style="min-height:48px;min-width:180px;background:#4a2410;color:#ffd9b8;border:2px solid #ff9e50;border-radius:8px;font-family:'EbiPixel',monospace;font-size:.95em;cursor:pointer" style-hover="filter:brightness(1.2)">Step through the portal</button>
+          <button onClick="{{ cancelLoadout }}" style="min-height:48px;background:#262031;color:#f2e8d8;border:2px solid #3a3147;border-radius:8px;padding:0 16px;font-size:.8em;cursor:pointer">Back</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ OVERLAYS ============ -->
+    <sc-if value="{{ dialogOpen }}" hint-placeholder-val="{{ false }}">
+      <div role="dialog" aria-modal="true" aria-label="{{ dialogTitle }}" onKeyDown="{{ dialogKey }}" style="position:absolute;inset:0;background:rgba(10,8,14,.72);display:flex;align-items:center;justify-content:center;z-index:40">
+        <div style="background:#1d1826;border:2px solid #574a72;border-radius:14px;padding:18px;max-width:400px;width:86%;display:flex;flex-direction:column;gap:10px;animation:ebiPop .2s ease both">
+          <div style="font-family:'EbiPixel',monospace;font-size:.95em;color:#ff9e50">{{ dialogTitle }}</div>
+          <div style="font-size:.7em;color:#f2e8d8;line-height:1.6">{{ dialogBody }}</div>
+          <sc-for list="{{ dialogLines }}" as="dl" hint-placeholder-count="2">
+            <div style="display:flex;gap:6px;align-items:center;font-size:.66em;color:{{ dl.color }}">
+              <sc-if value="{{ dl.icon }}" hint-placeholder-val="{{ false }}"><img src="{{ dl.iconSrc }}" alt="" style="width:16px;height:16px;image-rendering:pixelated" /></sc-if>
+              {{ dl.text }}
+            </div>
+          </sc-for>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button onClick="{{ dialogCancel }}" ref="{{ dialogCancelRef }}" style="min-height:48px;background:#262031;color:#f2e8d8;border:1px solid #3a3147;border-radius:8px;padding:0 16px;font-size:.72em;cursor:pointer">{{ dialogCancelLabel }}</button>
+            <sc-if value="{{ dialogHasConfirm }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ dialogConfirm }}" style="min-height:48px;background:{{ dialogConfirmBg }};color:{{ dialogConfirmFg }};border:2px solid {{ dialogConfirmEdge }};border-radius:8px;padding:0 16px;font-size:.72em;cursor:pointer">{{ dialogConfirmLabel }}</button>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- Settings / Credits overlay -->
+    <sc-if value="{{ settingsOpen }}" hint-placeholder-val="{{ false }}">
+      <div role="dialog" aria-modal="true" aria-label="Settings" style="position:absolute;inset:0;background:rgba(10,8,14,.8);display:flex;align-items:center;justify-content:center;z-index:30">
+        <div data-screen-label="Settings" style="background:#1d1826;border:2px solid #574a72;border-radius:14px;padding:18px;max-width:420px;width:88%;max-height:86%;overflow-y:auto;display:flex;flex-direction:column;gap:10px">
+          <div style="font-family:'EbiPixel',monospace;font-size:1em;color:#ff9e50">{{ settingsTitle }}</div>
+          <sc-if value="{{ settingsIsCredits }}" hint-placeholder-val="{{ false }}">
+            <sc-for list="{{ creditLines }}" as="cl" hint-placeholder-count="6">
+              <div style="font-size:.64em;color:#f2e8d8;line-height:1.55;border-bottom:1px dashed #2b2438;padding:4px 0"><b style="color:#7fd8d8">{{ cl.k }}</b> — {{ cl.v }}</div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ settingsIsSettings }}" hint-placeholder-val="{{ true }}">
+            <sc-for list="{{ settingRows }}" as="sr" hint-placeholder-count="5">
+              <button onClick="{{ sr.go }}" role="switch" aria-checked="{{ sr.on }}" style="display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:48px;background:#221b2e;border:1px solid #3a3147;border-radius:8px;padding:4px 12px;cursor:pointer">
+                <span style="font-size:.7em;color:#f2e8d8;text-align:left">{{ sr.label }}<span style="display:block;font-size:.82em;color:#6d6280">{{ sr.sub }}</span></span>
+                <span style="width:38px;height:20px;flex:none;border-radius:10px;background:{{ sr.trackBg }};position:relative"><span style="position:absolute;top:2px;left:{{ sr.knobLeft }};width:16px;height:16px;border-radius:50%;background:#f2e8d8;transition:left .15s"></span></span>
+              </button>
+            </sc-for>
+            <button onClick="{{ openCreditsFromSettings }}" style="min-height:44px;background:#262031;color:#c9a0ff;border:1px solid #574a72;border-radius:8px;font-size:.7em;cursor:pointer">Credits</button>
+          </sc-if>
+          <button onClick="{{ closeSettings }}" style="min-height:48px;background:#4a2410;color:#ffd9b8;border:2px solid #ff9e50;border-radius:8px;font-family:'EbiPixel',monospace;font-size:.8em;cursor:pointer">{{ settingsBackLabel }}</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- Toast -->
+    <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+      <div aria-live="polite" style="position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:#262031;border:1px solid {{ toastEdge }};border-radius:10px;padding:9px 16px;font-size:.7em;color:{{ toastColor }};z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:ebiPop .2s ease both">{{ toastText }}</div>
+    </sc-if>
+   </div>
+   <!-- Display cutout indicator for 20:9 -->
+   <sc-if value="{{ showNotch }}" hint-placeholder-val="{{ false }}">
+     <div style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:22px;height:80px;background:#000;border-radius:0 12px 12px 0;z-index:60"></div>
+   </sc-if>
+  </div>
+  <div style="font-size:11px;color:#6d6280;max-width:900px;text-align:center;line-height:1.6">Emberbound Isekai — release-complete UI/UX scaffold (HTML reference, not Unreal gameplay). Canonical values from repository; PROPOSED badges appear in review mode. Prototype state persists locally (key {{ storageKey }}).</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1200, &quot;height&quot;: 780}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.KEY = 'ebi-expanded-proto-v1';
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(this.KEY)); } catch (e) {}
+    this.state = {
+      review: false, aspect: '16:9', hc: false, rm: false, ts: false,
+      screen: 'menu', tab: 'camp', settingsFrom: null, settingsMode: null,
+      selNode: 'mk1', selW: 'ashwood-recurve', selA: 'barbed-quiver', selPet: 'slime', selBiome: null, selDiff: 'Standard', selBeast: 'green-slime',
+      wpnFilter: 'All', artFilter: 'All', beastFilter: 'All',
+      msgs: {}, dialog: null, toast: null,
+      model: (saved && saved.v === 1) ? saved : this.freshModel(),
+    };
+    this._toastT = null;
+  }
+  freshModel() {
+    const P = window.EBI_PROPOSED;
+    return {
+      v: 1, hasSave: true,
+      wallet: Object.assign({}, P.prototypeOnly.startingWallet),
+      buildings: { 'campfire-core': 1, 'grim-forge': 1, 'monster-pen': 0, 'watchtower': 1 },
+      skills: {}, respecs: 0,
+      weapons: { owned: ['ashwood-recurve', 'emberfang-longbow'], equipped: 'ashwood-recurve', levels: {}, favs: {} },
+      artifacts: { owned: ['barbed-quiver', 'ember-locket', 'ash-sigil'], equipped: { Trinket: 'ember-locket', Quiver: 'barbed-quiver', Charm: null, Relic: null }, levels: {}, favs: {} },
+      pets: { shards: { slime: 5, 'bone-rat': 3, 'moss-kappa': 1 }, unlocked: ['slime'], levels: { slime: 1 }, xp: { slime: 0 }, asc: {}, assign: { Worker: null, Companion: 'slime', Defender: null } },
+      bestiary: ['green-slime', 'red-slime', 'goblin-stabber', 'goblin-archer', 'bone-rat', 'tutorial-dragon'],
+      world: { completed: {}, mastered: {} },
+      offline: { pending: true, gold: 24, soulAsh: 6, claimed: false },
+      run: null,
+    };
+  }
+  save(m) { const model = m || this.state.model; try { localStorage.setItem(this.KEY, JSON.stringify(model)); } catch (e) {} }
+  setModel(fn, cb) { this.setState(s => { const m = JSON.parse(JSON.stringify(s.model)); fn(m); return { model: m }; }, () => { this.save(); cb && cb(); }); }
+  toast(text, kind) { clearTimeout(this._toastT); this.setState({ toast: { text, kind: kind || 'ok' } }); this._toastT = setTimeout(() => this.setState({ toast: null }), 2600); }
+  msg(key, text, bad) { this.setState(s => ({ msgs: Object.assign({}, s.msgs, { [key]: { text, bad } }) })); }
+  // ---- shared lookups
+  C() { return window.EBI_CANON; } P() { return window.EBI_PROPOSED; }
+  rarColor(r) { return { common: '#a99bb8', rare: '#7fd8d8', epic: '#c9a0ff', legendary: '#ffd97a' }[r] || '#a99bb8'; }
+  nodeCost(nd) { return this.P().prototypeOnly.skillNodeCost[nd.tier - 1]; }
+  giGlyph(name) { const map = { 'barbed-arrow': '➳', 'arrow-cluster': '⁂', 'arrow-scope': '◎', 'archery-target': '🎯', 'broadhead-arrow': '➤', 'arrow-flights': '⇶', 'burning-embers': '♨', 'burning-dot': '●', 'bright-explosion': '✷', 'aura': '◍', 'awareness': '👁', 'ball-glow': '☄', 'book-aura': '📖', 'beams-aura': '✺', 'bolt-shield': '⛨', 'black-hole-bolas': '◉', 'body-swapping': '⇄', 'boomerang-sun': '☀', 'campfire': '🔥', 'armor-vest': '🛡', 'bandage-roll': '➰', 'bell-shield': '🔔' }; return map[name] || '◆'; }
+  findBeast(id) { return this.P().bestiary.find(b => b.id === id); }
+  petSlots(m) { return { Worker: m.buildings['monster-pen'], Companion: 1, Defender: m.buildings['watchtower'] > 0 ? 1 : 0 }; }
+  discovered(m, id) { return m.bestiary.indexOf(id) >= 0; }
+  biomeState(m, b, i) {
+    const done = m.world.completed[b.id] || 0;
+    if (i === 1 && !(m.world.completed['ember-meadows'] > 0)) return 'locked';
+    if (i === 2 && !(m.world.completed['gloomroot-hollow'] > 0)) return 'locked';
+    if (m.world.mastered[b.id]) return 'mastered';
+    if (done > 0) return 'completed';
+    if (i > 0 && done === 0) return 'new';
+    return 'available';
+  }
+  // ---- run helpers
+  boonPool() { return this.C().runUpgrades; }
+  makeOffers(m) {
+    const pool = this.boonPool(); const offers = []; const used = {};
+    let n = m.artifacts.equipped.Relic === 'genre-savvy-script' ? 4 : 3;
+    while (offers.length < n) { const i = (m.run.seed = ((m.run.seed || 7) * 31 + 17) % 997) % pool.length; if (used[i]) { m.run.seed++; continue; } used[i] = 1; const roll = m.run.seed % 10; offers.push({ id: pool[i].id, rarity: roll < 6 ? 'common' : roll < 9 ? 'rare' : 'epic' }); }
+    return offers;
+  }
+  roomsFor(biome) { const bio = this.P().biomes.find(b => b.id === biome); return { normals: 5, foes: bio.enemies, elites: bio.elites, boss: bio.boss, bio }; }
+  // =====================================================================
+  renderVals() {
+    const s = this.state, m = s.model, C = this.C(), P = this.P();
+    const setS = (o) => () => this.setState(o);
+    const on = '#4a2410', onEdge = '#ff9e50', off = '#262031', offEdge = '#3a3147';
+    const frame = { '16:9': [960, 540], '20:9': [1080, 486], '4:3': [820, 615], 'Portrait': [400, 700] }[s.aspect];
+    const proposedBadge = (canon) => s.review && canon === false;
+    // ---- toolbar
+    const v = {
+      review: s.review, toggleReview: () => this.setState({ review: !s.review }),
+      reviewBtnBg: s.review ? '#3d2a12' : '#181322', reviewDotBg: s.review ? '#ffd97a' : '#3a3147',
+      aspectBtns: ['16:9', '20:9', '4:3', 'Portrait'].map(a => ({ label: a, bg: s.aspect === a ? on : off, fg: s.aspect === a ? '#ffd9b8' : '#a99bb8', go: setS({ aspect: a }) })),
+      a11yBtns: [
+        { label: '125% text', key: 'ts' }, { label: 'High contrast', key: 'hc' }, { label: 'Reduced motion', key: 'rm' },
+      ].map(t => ({ label: t.label, bg: s[t.key] ? on : off, fg: s[t.key] ? '#ffd9b8' : '#a99bb8', go: () => this.setState({ [t.key]: !s[t.key] }) })),
+      askReset: () => this.setState({ dialog: { kind: 'reset', title: 'Reset prototype data?', body: 'Wipes the local prototype save (wallet, skills, pets, discoveries) and returns to a fresh first-launch state. Review-only control.', confirm: 'Reset everything', danger: true } }),
+      jumpBtns: [
+        ['Menu', () => this.setState({ screen: 'menu' })], ['Camp', () => this.setState({ screen: 'camp', tab: 'camp' })],
+        ['Character', () => this.setState({ screen: 'camp', tab: 'character' })], ['Skills', () => this.setState({ screen: 'camp', tab: 'skills' })],
+        ['Arsenal', () => this.setState({ screen: 'camp', tab: 'arsenal' })], ['Artifacts', () => this.setState({ screen: 'camp', tab: 'artifacts' })],
+        ['Pets', () => this.setState({ screen: 'camp', tab: 'pets' })], ['World', () => this.setState({ screen: 'camp', tab: 'world' })],
+        ['Bestiary', () => this.setState({ screen: 'camp', tab: 'bestiary' })], ['Buildings', () => this.setState({ screen: 'camp', tab: 'buildings' })],
+        ['Run demo', () => this.demoRun()], ['Results', () => this.demoResults()], ['Offline', () => this.setModel(mm => { mm.offline = { pending: true, gold: 24, soulAsh: 6, claimed: false }; }, () => this.setState({ screen: 'camp', tab: 'camp', dialog: { kind: 'offline', title: 'While you were gone…', body: 'Your workers kept at it. Claimable once per reward event.', confirm: 'Claim' } }))], ['Quit state', () => this.setState({ screen: 'quit' })],
+      ].map(([label, go]) => ({ label, go, bg: off, fg: '#a99bb8' })),
+      frameW: frame[0] + 'px', frameH: frame[1] + 'px', frameFont: (s.ts ? 20 : 16) + 'px',
+      frameFilter: s.hc ? 'contrast(1.25) saturate(1.1)' : 'none',
+      safeL: s.aspect === '20:9' ? '30px' : '0px', safeR: s.aspect === '20:9' ? '14px' : '0px',
+      showNotch: s.aspect === '20:9', storageKey: this.KEY,
+    };
+    // ---- menu
+    v.showMenu = s.screen === 'menu'; v.showQuit = s.screen === 'quit';
+    v.saveNote = m.hasSave ? 'slot "' + C.saveSlot + '" found' : 'no save yet';
+    v.menuBtns = [
+      { label: 'Continue', off: !m.hasSave, go: () => this.enterCamp() },
+      { label: 'New Game', go: () => this.setState({ dialog: { kind: 'newgame', title: 'Start a new game?', body: m.hasSave ? 'This resets the prototype save and replays first-launch onboarding state.' : 'Begin your unfortunate second life.', confirm: 'Begin' } }) },
+      { label: 'Settings', go: () => this.setState({ settingsFrom: 'menu', settingsMode: 'settings' }) },
+      { label: 'Credits', go: () => this.setState({ settingsFrom: 'menu', settingsMode: 'credits' }) },
+      { label: 'Quit', go: () => this.setState({ screen: 'quit' }) },
+    ].map((b, i) => ({ label: b.label, go: b.go, off: !!b.off, op: b.off ? .45 : 1, bg: i === 0 && m.hasSave ? on : off, edge: i === 0 && m.hasSave ? onEdge : offEdge, fg: i === 0 && m.hasSave ? '#ffd9b8' : '#f2e8d8' }));
+    v.backToMenu = () => this.setState({ screen: 'menu' });
+    // ---- shell chrome
+    v.showShell = s.screen === 'camp';
+    v.playerName = C.player.name; v.activeTitle = 'Former Office Drone (+5% offline production)';
+    v.resBar = C.resources.map(r => ({ name: r.name, icon: r.icon, color: r.color, desc: r.name + ': ' + r.desc, amount: String(m.wallet[r.id] ?? 0) }));
+    v.openSettings = () => this.setState({ settingsFrom: 'camp', settingsMode: 'settings' });
+    const tabs = [
+      ['camp', 'Camp', 'assets/ebi/icon-campfire.png'], ['character', 'Character', 'assets/ebi/icon-health.png'], ['skills', 'Skills', 'assets/ebi/icon-xp.png'],
+      ['arsenal', 'Arsenal', 'assets/ebi/icon-bow.png'], ['artifacts', 'Artifacts', 'assets/ebi/icon-embers.png'], ['pets', 'Pet Training', 'assets/ebi/icon-shard.png'],
+      ['world', 'World', 'assets/ebi/icon-gold.png'], ['bestiary', 'Bestiary', 'assets/ebi/icon-essence.png'], ['buildings', 'Camp Buildings', 'assets/ebi/icon-wood.png'],
+    ];
+    v.navItems = tabs.map(([id, label, icon]) => ({ label, icon, cur: s.tab === id ? 'page' : 'false', go: setS({ tab: id }), bg: s.tab === id ? '#262031' : 'transparent', fg: s.tab === id ? '#ffd9b8' : '#a99bb8', edge: s.tab === id ? '#3a3147' : 'transparent', mark: s.tab === id ? '#ff9e50' : 'transparent' }));
+    tabs.forEach(([id]) => { v['tab' + id.charAt(0).toUpperCase() + id.slice(1)] = s.tab === id; });
+    // ---- camp tab
+    const bnames = { 'campfire-core': ['Campfire Core', 'assets/ebi/building-campfire.png'], 'grim-forge': ['Grim Forge', 'assets/ebi/building-forge.png'], 'monster-pen': ['Monster Pen', 'assets/ebi/building-pen.png'], 'watchtower': ['Watchtower', 'assets/ebi/building-watchtower.png'] };
+    v.campCards = C.buildings.map(b => ({ name: b.name, img: bnames[b.id][1], lvl: String(m.buildings[b.id]), line: m.buildings[b.id] === 0 ? 'Not built — see Camp Buildings.' : b.effect }));
+    const defender = m.pets.assign.Defender;
+    v.defenseOff = !defender; v.defenseOp = defender ? 1 : .5;
+    v.defenseBg = defender ? on : off; v.defenseFg = defender ? '#ffd9b8' : '#a99bb8'; v.defenseEdge = defender ? onEdge : offEdge;
+    v.defenseLine = 'Waves assault the palisade; assigned Defenders and the Watchtower hold the line. Rules require at least one Defender on duty.';
+    v.defenseWhy = !defender; v.defenseWhyText = 'No Defender assigned. Assign one in Pet Training.';
+    v.startDefense = () => defender && this.setState({ dialog: { kind: 'defense', title: 'Start Defense?', body: 'Simulated defense event: your Defender repels the wave and banks the bounty.', confirm: 'Hold the line' } });
+    const workerPet = m.pets.assign.Worker;
+    v.workerLines = workerPet ? [{ face: P.pets.find(p => p.id === workerPet).face, text: P.pets.find(p => p.id === workerPet).name + ' — ' + (P.pets.find(p => p.id === workerPet).roles.worker || '—') }] : [{ face: 'assets/ebi/icon-wood.png', text: 'No Worker assigned — production idle.' }];
+    v.offlineCapLine = 'Offline cap: 4h × Campfire Core level = ' + (4 * m.buildings['campfire-core']) + 'h (canonical formula).';
+    v.goWorld = setS({ tab: 'world' });
+    // ---- character tab
+    const forgePct = (m.buildings['grim-forge'] || 0) * 15;
+    const dmgSkill = ['mk1', 'mk2'].filter(n => m.skills[n]).length;
+    v.charStats = [
+      { name: 'Max HP', val: String(C.player.hp) + (m.skills.sv1 ? ' + {skill_val}' : ''), why: 'Base 100 (BALANCE.md)' + (m.skills.sv1 ? ' + Thick Skin' : ''), color: '#ff9d8a' },
+      { name: 'Damage', val: C.player.damage + ' × ' + (100 + forgePct) + '%' + (dmgSkill ? ' × skills' : ''), why: 'Base 12 × Grim Forge Lv' + m.buildings['grim-forge'] + ' (+15%/level, canonical)', color: '#ff9e50' },
+      { name: 'Attack interval', val: C.player.attackInterval + 's', why: 'Base (BALANCE.md)', color: '#f2e8d8' },
+      { name: 'Move speed', val: String(C.player.moveSpeed), why: 'Base (BALANCE.md)', color: '#f2e8d8' },
+      { name: 'Crit', val: (C.player.critChance * 100) + '% ×' + C.player.critMult, why: 'Base (BALANCE.md)' + (m.skills.mk3 ? ' + Keen Eye' : ''), color: '#ffd97a' },
+      { name: 'Pickup radius', val: String(C.player.pickupRadius), why: 'Base (BALANCE.md)', color: '#f2e8d8' },
+    ];
+    const eqW = P.weapons.find(w => w.id === m.weapons.equipped);
+    v.eqWeaponIcon = eqW.icon; v.eqWeaponName = eqW.name + ' +' + (m.weapons.levels[eqW.id] || 0); v.eqWeaponColor = this.rarColor(eqW.rarity); v.eqWeaponTrait = eqW.stats.trait;
+    v.eqArtifacts = P.artifactSlots.map(slot => {
+      const id = m.artifacts.equipped[slot]; const a = id && P.artifacts.find(x => x.id === id);
+      return { slot, name: a ? a.name : 'Empty ' + slot, glyph: a ? this.giGlyph(a.gi) : '·', color: a ? this.rarColor(a.rarity) : '#6d6280', edge: a ? '#3a3147' : '#2b2438', go: () => this.setState({ tab: 'artifacts', artFilter: slot, selA: id || s.selA }) };
+    });
+    const compPet = m.pets.assign.Companion; const compP = compPet && P.pets.find(p => p.id === compPet);
+    v.activePetFace = compP ? compP.face : 'assets/ebi/icon-shard.png';
+    v.activePetLine = compP ? 'Companion: ' + compP.name + ' Lv' + (m.pets.levels[compPet] || 1) : 'No companion assigned.';
+    const emptySlots = P.artifactSlots.filter(sl => !m.artifacts.equipped[sl]).length;
+    v.loadoutMsg = emptySlots ? 'Partially equipped: ' + emptySlots + ' empty artifact slot(s).' : 'Loadout complete.';
+    v.loadoutMsgColor = emptySlots ? '#ffd97a' : '#9fe8a0';
+    v.skillSummary = P.skillBranches.map(b => ({ name: b.name, color: b.color, count: b.nodes.filter(n => m.skills[n.id]).length + ' / ' + b.nodes.length }));
+    v.runActive = !!m.run && m.run.phase !== 'done';
+    v.runBoonLines = m.run ? Object.keys(m.run.boons || {}).map(id => ({ text: C.runUpgrades.find(u => u.id === id).name + ' ×' + m.run.boons[id] })) : [];
+    // ---- skills tab
+    v.soulAshAmt = String(m.wallet.soulAsh);
+    const nodeStatus = (nd) => {
+      if (m.skills[nd.id]) return nd.capstone ? 'maxed' : 'purchased';
+      const reqOk = nd.req.every(r => m.skills[r]);
+      if (!reqOk) return nd.req.some(r => m.skills[r]) ? 'preq' : (nd.tier <= 2 ? 'discovered' : 'locked');
+      return m.wallet.soulAsh >= this.nodeCost(nd) ? 'affordable' : 'unaffordable';
+    };
+    const allNodes = {}; P.skillBranches.forEach(b => b.nodes.forEach(n => { allNodes[n.id] = Object.assign({ branch: b }, n); }));
+    v.skillCols = P.skillBranches.map(b => ({
+      name: b.name, color: b.color, icon: b.icon, desc: b.desc, count: b.nodes.filter(n => m.skills[n.id]).length + '/' + b.nodes.length,
+      nodes: b.nodes.map(nd => {
+        const st = nodeStatus(nd); const selEdge = s.selNode === nd.id ? '#ffd97a' : null;
+        const cfg = { purchased: ['#173322', '#2e5c40', '#9fe8a0', '✓ owned'], maxed: ['#2e2617', '#7a5a1e', '#ffd97a', '★ capstone owned'], affordable: ['#221b2e', b.color, '#f2e8d8', 'can learn'], unaffordable: ['#1d1826', '#3a3147', '#a99bb8', 'not enough Soul Ash'], preq: ['#1d1826', '#2b2438', '#6d6280', 'needs prerequisite'], discovered: ['#1d1826', '#3a3147', '#a99bb8', 'discovered'], locked: ['#17131f', '#241d2e', '#544a63', 'undiscovered'] }[st];
+        return { name: st === 'locked' ? '???' : nd.name, tier: String(nd.tier), status: cfg[3], bg: cfg[0], edge: selEdge || cfg[1], fg: cfg[2], dot: st === 'purchased' || st === 'maxed' ? '#9fe8a0' : b.color, op: st === 'locked' ? .55 : 1, sel: s.selNode === nd.id, cost: m.skills[nd.id] ? '' : this.nodeCost(nd) + ' ✦', costColor: st === 'affordable' ? '#c9a0ff' : '#6d6280', go: setS({ selNode: nd.id }) };
+      }),
+    }));
+    const selNd = allNodes[s.selNode] || allNodes.mk1; const selSt = nodeStatus(selNd);
+    v.selNodeName = selNd.name; v.selNodeProposedBadge = s.review; // whole tree is proposed content
+    v.selNodeEffect = selNd.effect + (selNd.capstone ? ' (capstone)' : '');
+    v.selNodeReq = selNd.req.length ? 'Requires: ' + selNd.req.map(r => allNodes[r].name + (m.skills[r] ? ' ✓' : ' ✗')).join(', ') : 'No prerequisites.';
+    v.selNodeCostLine = 'Cost: ' + this.nodeCost(selNd) + ' Soul Ash (prototype sample; final = {skill_cost} by tier). Held: ' + m.wallet.soulAsh + '.';
+    const buyable = selSt === 'affordable';
+    v.selNodeBuyOff = !buyable; v.selNodeBuyOp = buyable ? 1 : .55;
+    v.selNodeBuyLabel = selSt === 'purchased' || selSt === 'maxed' ? 'Learned' : selSt === 'unaffordable' ? 'Not enough Soul Ash' : selSt === 'preq' || selSt === 'locked' ? 'Prerequisite locked' : 'Learn ' + selNd.name;
+    v.selNodeBuyBg = buyable ? on : off; v.selNodeBuyFg = buyable ? '#ffd9b8' : '#a99bb8'; v.selNodeBuyEdge = buyable ? onEdge : offEdge;
+    v.buyNode = () => { if (!buyable) return; this.setModel(mm => { mm.wallet.soulAsh -= this.nodeCost(selNd); mm.skills[selNd.id] = true; }, () => { this.msg('skill', 'Learned ' + selNd.name + '.', false); this.toast('Skill learned: ' + selNd.name); }); };
+    v.skillMsg = (s.msgs.skill || {}).text || ''; v.skillMsgColor = (s.msgs.skill || {}).bad ? '#ff9d8a' : '#9fe8a0';
+    v.askRespec = () => this.setState({ dialog: { kind: 'respec', title: 'Respec all skills?', body: 'Refunds every learned node at full value (' + Object.keys(m.skills).reduce((t, id) => t + this.nodeCost(allNodes[id]), 0) + ' Soul Ash back), then charges the respec fee of ' + P.prototypeOnly.respecCost + ' Soul Ash (sample; final = {respec_cost}).', confirm: 'Respec' } });
+    v.skillKey = (e) => {
+      const flat = P.skillBranches.map(b => b.nodes.map(n => n.id));
+      let bi = 0, ni = 0; flat.forEach((col, i) => { const j = col.indexOf(s.selNode); if (j >= 0) { bi = i; ni = j; } });
+      if (e.key === 'ArrowDown') { ni = Math.min(ni + 1, flat[bi].length - 1); e.preventDefault(); }
+      else if (e.key === 'ArrowUp') { ni = Math.max(ni - 1, 0); e.preventDefault(); }
+      else if (e.key === 'ArrowRight') { bi = Math.min(bi + 1, flat.length - 1); ni = Math.min(ni, flat[bi].length - 1); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft') { bi = Math.max(bi - 1, 0); ni = Math.min(ni, flat[bi].length - 1); e.preventDefault(); }
+      else if (e.key === 'Enter') { v.buyNode(); return; } else return;
+      this.setState({ selNode: flat[bi][ni] });
+    };
+    // ---- arsenal tab
+    const rarities = ['All', 'common', 'rare', 'epic', 'legendary'];
+    v.wpnFilters = rarities.map(r => ({ label: r === 'All' ? 'All' : r, bg: s.wpnFilter === r ? on : off, fg: s.wpnFilter === r ? '#ffd9b8' : '#a99bb8', go: setS({ wpnFilter: r }) }));
+    v.weaponCards = P.weapons.filter(w => s.wpnFilter === 'All' || w.rarity === s.wpnFilter).map(w => {
+      const owned = m.weapons.owned.indexOf(w.id) >= 0, eq = m.weapons.equipped === w.id;
+      return { name: owned ? w.name : '??? (' + w.family + ')', icon: w.icon, rColor: this.rarColor(w.rarity), sub: owned ? w.family + ' · +' + (m.weapons.levels[w.id] || 0) : 'Locked — drops in expeditions', equipped: eq, fav: !!m.weapons.favs[w.id], op: owned ? 1 : .6, imgFilter: owned ? 'none' : 'brightness(0) opacity(.5)', bg: s.selW === w.id ? '#262031' : '#1d1826', edge: s.selW === w.id ? '#ffd97a' : (eq ? '#2e5c40' : '#3a3147'), go: setS({ selW: w.id }) };
+    });
+    const selW = P.weapons.find(w => w.id === s.selW) || P.weapons[0];
+    const selWOwned = m.weapons.owned.indexOf(selW.id) >= 0, selWEq = m.weapons.equipped === selW.id, selWLvl = m.weapons.levels[selW.id] || 0;
+    v.selWName = selWOwned ? selW.name : 'Undiscovered ' + selW.family; v.selWColor = this.rarColor(selW.rarity); v.selWRarity = selW.rarity;
+    v.selWProposedBadge = s.review; v.selWIdentity = selWOwned ? selW.identity : 'Find this bow in the Rift to reveal its story.';
+    v.selWStats = [
+      { k: 'Damage', v: selW.stats.damage + (selWLvl ? ' (+' + selWLvl + ' lv)' : ''), color: '#ff9e50' },
+      { k: 'Draw speed', v: selW.stats.speed, color: '#7fd8d8' },
+      { k: 'Trait', v: selW.stats.trait, color: '#ffd9b8' },
+      { k: 'Enhance level', v: selWLvl + ' / ' + P.weaponUpgrade.maxLevel, color: selWLvl >= P.weaponUpgrade.maxLevel ? '#ffd97a' : '#f2e8d8' },
+    ];
+    v.selWCompare = selWEq ? 'This is your equipped bow.' : 'vs equipped (' + eqW.name + '): trait "' + eqW.stats.trait + '" → "' + selW.stats.trait + '". Numeric deltas pend {weapon_damage} tuning.';
+    v.wEquipOff = !selWOwned || selWEq; v.wEquipOp = v.wEquipOff ? .55 : 1;
+    v.wEquipLabel = selWEq ? 'Equipped' : selWOwned ? 'Equip' : 'Locked';
+    v.wEquipBg = v.wEquipOff ? off : on; v.wEquipFg = v.wEquipOff ? '#a99bb8' : '#ffd9b8'; v.wEquipEdge = v.wEquipOff ? offEdge : onEdge;
+    v.wEquip = () => this.setModel(mm => { mm.weapons.equipped = selW.id; }, () => this.toast('Equipped ' + selW.name));
+    v.wFav = () => this.setModel(mm => { mm.weapons.favs[selW.id] = !mm.weapons.favs[selW.id]; });
+    v.wFavGlyph = m.weapons.favs[selW.id] ? '★' : '☆';
+    const upCost = P.prototypeOnly.weaponUpgradeCost, canUpW = selWOwned && selWLvl < P.weaponUpgrade.maxLevel && m.wallet.gold >= upCost.gold && m.wallet.soulAsh >= upCost.soulAsh;
+    v.wUpOff = !canUpW; v.wUpOp = canUpW ? 1 : .55;
+    v.wUpLabel = !selWOwned ? 'Locked' : selWLvl >= P.weaponUpgrade.maxLevel ? 'Max level' : 'Enhance (' + upCost.gold + ' Gold + ' + upCost.soulAsh + ' Ash)';
+    v.wUpBg = canUpW ? '#173322' : off; v.wUpFg = canUpW ? '#9fe8a0' : '#a99bb8'; v.wUpEdge = canUpW ? '#2e5c40' : offEdge;
+    v.wUpgrade = () => canUpW && this.setModel(mm => { mm.wallet.gold -= upCost.gold; mm.wallet.soulAsh -= upCost.soulAsh; mm.weapons.levels[selW.id] = (mm.weapons.levels[selW.id] || 0) + 1; }, () => { this.msg('wpn', selW.name + ' enhanced to +' + (selWLvl + 1) + '.', false); this.toast('Enhanced ' + selW.name); });
+    const canDisW = selWOwned && !selWEq;
+    v.wDisOff = !canDisW; v.wDisOp = canDisW ? 1 : .5;
+    v.wDismantle = () => canDisW && this.setState({ dialog: { kind: 'disW', title: 'Dismantle ' + selW.name + '?', body: 'Returns exactly ' + P.prototypeOnly.dismantleReturnPct + '% of invested materials (sample; final = {dismantle_pct}%).', lines: [{ text: '+' + Math.floor(upCost.gold * selWLvl * .6) + ' Gold, +' + Math.floor(upCost.soulAsh * selWLvl * .6) + ' Soul Ash returned', color: '#9fe8a0', icon: true, iconSrc: 'assets/ebi/icon-gold.png' }], confirm: 'Dismantle', danger: true } });
+    v.wMsg = (s.msgs.wpn || {}).text || ''; v.wMsgColor = (s.msgs.wpn || {}).bad ? '#ff9d8a' : '#9fe8a0';
+    // ---- artifacts tab
+    const artFs = ['All'].concat(P.artifactSlots);
+    v.artFilters = artFs.map(f => ({ label: f, bg: s.artFilter === f ? on : off, fg: s.artFilter === f ? '#ffd9b8' : '#a99bb8', go: setS({ artFilter: f }) }));
+    v.artSlotChips = P.artifactSlots.map(slot => { const id = m.artifacts.equipped[slot]; const a = id && P.artifacts.find(x => x.id === id); return { label: slot + ': ' + (a ? a.name : 'empty'), color: a ? this.rarColor(a.rarity) : '#6d6280', edge: a ? '#3a3147' : '#2b2438' }; });
+    v.artCards = P.artifacts.filter(a => s.artFilter === 'All' || a.slot === s.artFilter).map(a => {
+      const owned = m.artifacts.owned.indexOf(a.id) >= 0, eq = m.artifacts.equipped[a.slot] === a.id;
+      return { name: owned ? a.name : '???', glyph: owned ? this.giGlyph(a.gi) : '?', rColor: owned ? this.rarColor(a.rarity) : '#544a63', sub: owned ? a.slot + ' · Lv' + (m.artifacts.levels[a.id] || 1) : 'Locked', equipped: eq, op: owned ? 1 : .55, bg: s.selA === a.id ? '#262031' : '#1d1826', edge: s.selA === a.id ? '#ffd97a' : (eq ? '#2e5c40' : '#3a3147'), go: setS({ selA: a.id }) };
+    });
+    const selA = P.artifacts.find(a => a.id === s.selA) || P.artifacts[0];
+    const selAOwned = m.artifacts.owned.indexOf(selA.id) >= 0, selAEq = m.artifacts.equipped[selA.slot] === selA.id, selALvl = m.artifacts.levels[selA.id] || 1;
+    v.selAName = selAOwned ? selA.name : 'Undiscovered artifact'; v.selAColor = this.rarColor(selA.rarity); v.selARarity = selA.rarity;
+    v.selAProposedBadge = s.review; v.selAEffect = selAOwned ? selA.effect : 'Recover this artifact from elite caches and boss hoards.';
+    v.selASlot = selA.slot; v.selALvl = String(selALvl);
+    const curInSlot = m.artifacts.equipped[selA.slot] && P.artifacts.find(x => x.id === m.artifacts.equipped[selA.slot]);
+    v.selACompare = selAEq ? 'Currently equipped in ' + selA.slot + '.' : curInSlot ? 'Replaces ' + curInSlot.name + ' ("' + curInSlot.effect + '").' : 'Slot ' + selA.slot + ' is empty — equipping fills it.';
+    const setDef = P.artifactSets[0];
+    v.selASet = setDef.pieces.indexOf(selA.id) >= 0 ? 'Set: ' + setDef.name + ' — 2 pieces: ' + setDef.bonus2 : '';
+    v.aEquipOff = !selAOwned; v.aEquipOp = selAOwned ? 1 : .55;
+    v.aEquipLabel = selAEq ? 'Unequip' : curInSlot ? 'Replace ' + curInSlot.name : 'Equip';
+    v.aEquipBg = selAOwned ? on : off; v.aEquipFg = selAOwned ? '#ffd9b8' : '#a99bb8'; v.aEquipEdge = selAOwned ? onEdge : offEdge;
+    v.aEquip = () => selAOwned && this.setModel(mm => { mm.artifacts.equipped[selA.slot] = selAEq ? null : selA.id; }, () => this.toast(selAEq ? 'Unequipped ' + selA.name : 'Equipped ' + selA.name));
+    const aUpCost = P.prototypeOnly.artifactUpgradeCost, canUpA = selAOwned && selALvl < 5 && m.wallet.soulAsh >= aUpCost.soulAsh && m.wallet.essence >= aUpCost.essence;
+    v.aUpOff = !canUpA; v.aUpOp = canUpA ? 1 : .55;
+    v.aUpLabel = !selAOwned ? 'Locked' : selALvl >= 5 ? 'Max level' : 'Empower (' + aUpCost.soulAsh + ' Ash + ' + aUpCost.essence + ' Essence)';
+    v.aUpBg = canUpA ? '#173322' : off; v.aUpFg = canUpA ? '#9fe8a0' : '#a99bb8'; v.aUpEdge = canUpA ? '#2e5c40' : offEdge;
+    v.aUpgrade = () => canUpA && this.setModel(mm => { mm.wallet.soulAsh -= aUpCost.soulAsh; mm.wallet.essence -= aUpCost.essence; mm.artifacts.levels[selA.id] = selALvl + 1; }, () => { this.msg('art', selA.name + ' empowered to Lv' + (selALvl + 1) + '.', false); this.toast('Empowered ' + selA.name); });
+    const canDisA = selAOwned && !selAEq;
+    v.aDisOff = !canDisA; v.aDisOp = canDisA ? 1 : .5;
+    v.aDismantle = () => canDisA && this.setState({ dialog: { kind: 'disA', title: 'Dismantle ' + selA.name + '?', body: 'Returns ' + P.prototypeOnly.dismantleReturnPct + '% of invested materials. Duplicates found later convert to materials automatically.', lines: [{ text: '+' + (2 * selALvl) + ' Soul Ash, +' + selALvl + ' Essence returned', color: '#9fe8a0', icon: true, iconSrc: 'assets/ebi/icon-soul-ash.png' }], confirm: 'Dismantle', danger: true } });
+    v.aMsg = (s.msgs.art || {}).text || ''; v.aMsgColor = (s.msgs.art || {}).bad ? '#ff9d8a' : '#9fe8a0';
+    // ---- pets tab
+    const slots = this.petSlots(m);
+    v.petSlotLine = 'Worker ' + (m.pets.assign.Worker ? 1 : 0) + '/' + slots.Worker + ' (Monster Pen) · Companion ' + (m.pets.assign.Companion ? 1 : 0) + '/1 · Defender ' + (m.pets.assign.Defender ? 1 : 0) + '/' + slots.Defender + ' (Watchtower)';
+    const petState = (p) => {
+      const shards = m.pets.shards[p.id] || 0, unlocked = m.pets.unlocked.indexOf(p.id) >= 0;
+      const need = typeof p.shardsToUnlock === 'number' ? p.shardsToUnlock : 5;
+      if (unlocked) return 'unlocked'; if (shards >= need) return 'summonable'; if (shards > 0 || this.discovered(m, p.id)) return 'discovered'; return 'undiscovered';
+    };
+    v.petCards = P.pets.map(p => {
+      const st = petState(p); const role = Object.keys(m.pets.assign).find(r => m.pets.assign[r] === p.id);
+      const need = typeof p.shardsToUnlock === 'number' ? p.shardsToUnlock : 5;
+      return { name: st === 'undiscovered' ? '???' : p.name, alt: st === 'undiscovered' ? 'Unknown monster' : p.name, face: p.face, imgFilter: st === 'undiscovered' ? 'brightness(0) opacity(.55)' : st === 'discovered' ? 'grayscale(1) brightness(.8)' : 'none', fg: st === 'unlocked' ? '#f2e8d8' : '#a99bb8', sub: st === 'unlocked' ? 'Lv' + (m.pets.levels[p.id] || 1) + (m.pets.asc[p.id] ? ' ★' + m.pets.asc[p.id] : '') : st === 'summonable' ? 'Ready to tame!' : (m.pets.shards[p.id] || 0) + '/' + need + ' shards', roleTag: !!role, roleTagText: role || '', op: st === 'undiscovered' ? .6 : 1, bg: s.selPet === p.id ? '#262031' : '#1d1826', edge: s.selPet === p.id ? '#ffd97a' : st === 'summonable' ? '#9fe8a0' : '#3a3147', go: setS({ selPet: p.id }) };
+    });
+    const selP = P.pets.find(p => p.id === s.selPet) || P.pets[0];
+    const selPSt = petState(selP), selPLvl = m.pets.levels[selP.id] || 1, selPXp = m.pets.xp[selP.id] || 0, selPNeed = typeof selP.shardsToUnlock === 'number' ? selP.shardsToUnlock : 5;
+    v.selPFace = selP.face; v.selPImgFilter = selPSt === 'undiscovered' ? 'brightness(0) opacity(.55)' : 'none';
+    v.selPName = selPSt === 'undiscovered' ? 'Unknown monster' : selP.name; v.selPProposedBadge = proposedBadge(selP.canon);
+    v.selPStatus = { undiscovered: 'Undiscovered — encounter it in the wild first.', discovered: 'Discovered. Shards: ' + (m.pets.shards[selP.id] || 0) + '/' + selPNeed + ' to tame.', summonable: 'Enough shards — tame it below!', unlocked: 'Tamed. Shards held: ' + (m.pets.shards[selP.id] || 0) + '.' }[selPSt];
+    v.selPXpPct = Math.min(100, selPXp * 10) + '%'; v.selPLvlLine = 'Lv' + selPLvl + ' · ' + selPXp + '/10 XP';
+    v.selPPassive = selPSt === 'undiscovered' ? '???' : 'Passive — ' + selP.passive;
+    v.selPRoles = ['Worker', 'Companion', 'Defender'].map(role => {
+      const spec = selP.roles[role.toLowerCase()]; const assigned = m.pets.assign[role] === selP.id;
+      const slotFree = role === 'Companion' ? !m.pets.assign.Companion : (role === 'Worker' ? slots.Worker > 0 && !m.pets.assign.Worker : slots.Defender > 0 && !m.pets.assign.Defender);
+      const canRole = selPSt === 'unlocked' && !!spec;
+      const conflictPet = !assigned && !slotFree && m.pets.assign[role] && P.pets.find(p => p.id === m.pets.assign[role]);
+      return { label: (assigned ? '✓ ' : '') + role + (spec ? '' : ' — unsuited'), sub: !spec ? '—' : assigned ? 'Assigned. Tap to unassign.' : conflictPet ? 'Replaces ' + conflictPet.name : (role === 'Worker' && slots.Worker === 0) ? 'Build the Monster Pen first' : spec, off: !canRole || (role === 'Worker' && slots.Worker === 0 && !assigned), op: canRole ? 1 : .5, fg: assigned ? '#9fe8a0' : canRole ? '#f2e8d8' : '#6d6280', bg: assigned ? '#173322' : '#221b2e', edge: assigned ? '#2e5c40' : '#3a3147',
+        go: () => { if (!canRole) return; if (assigned) { this.setModel(mm => { mm.pets.assign[role] = null; }, () => this.toast(selP.name + ' unassigned from ' + role)); } else if (conflictPet) { this.setState({ dialog: { kind: 'petConflict', title: role + ' slot occupied', body: conflictPet.name + ' currently holds the ' + role + ' role. Swap in ' + selP.name + '?', confirm: 'Swap', data: { role, pet: selP.id } } }); } else { this.setModel(mm => { mm.pets.assign[role] = selP.id; }, () => this.toast(selP.name + ' assigned as ' + role)); } } };
+    });
+    const feedCost = P.prototypeOnly.petFeedCost.essence;
+    const canFeed = selPSt === 'unlocked' && selPLvl < 10 && m.wallet.essence >= feedCost;
+    const canTame = selPSt === 'summonable';
+    v.petFeedOff = !(canFeed || canTame); v.petFeedOp = (canFeed || canTame) ? 1 : .55;
+    v.petFeedLabel = canTame ? 'Tame (' + selPNeed + ' shards)' : selPSt !== 'unlocked' ? 'Not tamed' : selPLvl >= 10 ? 'Max level' : 'Feed (' + feedCost + ' Essence)';
+    v.petFeedBg = (canFeed || canTame) ? on : off; v.petFeedFg = (canFeed || canTame) ? '#ffd9b8' : '#a99bb8'; v.petFeedEdge = (canFeed || canTame) ? onEdge : offEdge;
+    v.petFeed = () => { if (canTame) { this.setModel(mm => { mm.pets.shards[selP.id] -= selPNeed; mm.pets.unlocked.push(selP.id); mm.pets.levels[selP.id] = 1; mm.pets.xp[selP.id] = 0; if (mm.bestiary.indexOf(selP.id) < 0) mm.bestiary.push(selP.id); }, () => { this.msg('pet', selP.name + ' tamed! It regrets nothing.', false); this.toast('Tamed ' + selP.name + '!'); }); } else if (canFeed) { this.setModel(mm => { mm.wallet.essence -= feedCost; const xp = (mm.pets.xp[selP.id] || 0) + 4; if (xp >= 10) { mm.pets.levels[selP.id] = selPLvl + 1; mm.pets.xp[selP.id] = xp - 10; } else mm.pets.xp[selP.id] = xp; }, () => this.msg('pet', 'Fed ' + selP.name + '. It chirps ominously.', false)); } };
+    const ascNeed = P.prototypeOnly.petShardsToAscend, canAsc = selPSt === 'unlocked' && (m.pets.shards[selP.id] || 0) >= ascNeed && (m.pets.asc[selP.id] || 0) < 3;
+    v.petAscOff = !canAsc; v.petAscOp = canAsc ? 1 : .55;
+    v.petAscLabel = selPSt !== 'unlocked' ? 'Ascension locked' : (m.pets.asc[selP.id] || 0) >= 3 ? 'Fully ascended' : 'Ascend (' + ascNeed + ' shards)';
+    v.petAscBg = canAsc ? '#2e2617' : off; v.petAscFg = canAsc ? '#ffd97a' : '#a99bb8'; v.petAscEdge = canAsc ? '#7a5a1e' : offEdge;
+    v.petAscend = () => canAsc && this.setState({ dialog: { kind: 'petAsc', title: 'Ascend ' + selP.name + '?', body: 'Spends ' + ascNeed + ' shards. Preview: ★' + ((m.pets.asc[selP.id] || 0) + 1) + ' — abilities strengthen ({pet_asc_bonus}); appearance gains an ember tint.', confirm: 'Ascend' } });
+    v.petMsg = (s.msgs.pet || {}).text || ''; v.petMsgColor = (s.msgs.pet || {}).bad ? '#ff9d8a' : '#9fe8a0';
+    // ---- world tab
+    v.biomeCards = P.biomes.map((b, i) => {
+      const st = this.biomeState(m, b, i);
+      const stCfg = { locked: ['LOCKED', '#6d6280'], new: ['NEW!', '#ffd97a'], available: ['AVAILABLE', '#9fe8a0'], completed: ['CLEARED', '#7fd8d8'], mastered: ['MASTERED', '#ffd97a'] }[st];
+      return { name: b.name, accent: b.accent, desc: b.desc, tile: b.tile, tileFilter: st === 'locked' ? 'grayscale(1) brightness(.45)' : 'brightness(.85)', state: stCfg[0], stateColor: stCfg[1], unlock: st === 'locked' ? '🔒 ' + b.unlock : 'Hazard: ' + b.hazard, op: st === 'locked' ? .75 : 1, edge: s.selBiome === b.id ? '#ffd97a' : '#3a3147', go: () => this.setState({ selBiome: s.selBiome === b.id ? null : b.id }) };
+    });
+    const selB = P.biomes.find(b => b.id === s.selBiome);
+    v.selBiomeOpen = !!selB;
+    if (selB) {
+      const st = this.biomeState(m, selB, P.biomes.indexOf(selB));
+      v.selBName = selB.name; v.selBAccent = selB.accent; v.selBHazard = selB.hazard; v.selBProposedBadge = proposedBadge(selB.id !== 'ember-meadows');
+      v.selBDiffs = selB.difficulty.map(d => ({ label: d, on: s.selDiff === d, bg: s.selDiff === d ? on : off, fg: s.selDiff === d ? '#ffd9b8' : '#a99bb8', edge: s.selDiff === d ? onEdge : offEdge, go: setS({ selDiff: d }) }));
+      v.selBRewards = selB.resources.map(r => C.resources.find(x => x.id === r).name).join(', ') + ' · room clears ' + C.expedition.roomClear;
+      v.selBRooms = C.expedition.rooms + ' (canonical structure).';
+      v.selBFoes = selB.enemies.concat(selB.elites).concat([selB.boss]).map(id => {
+        const e = this.findBeast(id); const disc = this.discovered(m, id);
+        return { name: disc ? e.name : 'Unknown', face: e.face, imgFilter: disc ? 'none' : 'brightness(0) opacity(.55)', edge: e.kind === 'boss' ? '#e0623d' : e.kind === 'elite' ? '#c9a0ff' : '#3a3147', tag: e.kind === 'boss' ? 'BOSS' : e.kind === 'elite' ? 'ELITE' : (e.tameable && disc ? 'TAME' : ''), tagColor: e.kind === 'boss' ? '#ff9d8a' : e.kind === 'elite' ? '#c9a0ff' : '#9fe8a0', go: () => this.setState({ tab: 'bestiary', selBeast: id }) };
+      });
+      const enterable = st !== 'locked';
+      v.enterOff = !enterable; v.enterOp = enterable ? 1 : .5;
+      v.enterLabel = enterable ? 'Review loadout & enter' : '🔒 ' + selB.unlock;
+      v.enterBg = enterable ? on : off; v.enterFg = enterable ? '#ffd9b8' : '#a99bb8'; v.enterEdge = enterable ? onEdge : offEdge;
+      v.enterBiome = () => enterable && this.setState({ screen: 'loadout' });
+    } else { v.selBName = ''; v.selBAccent = '#ff9e50'; }
+    // ---- bestiary tab
+    const bf = ['All', 'Common', 'Elite', 'Boss', 'Tameable'];
+    v.beastFilters = bf.map(f => ({ label: f, bg: s.beastFilter === f ? on : off, fg: s.beastFilter === f ? '#ffd9b8' : '#a99bb8', go: setS({ beastFilter: f }) }));
+    const beasts = P.bestiary.filter(b => s.beastFilter === 'All' || (s.beastFilter === 'Tameable' ? b.tameable : b.kind === s.beastFilter.toLowerCase()));
+    v.bestiaryCount = m.bestiary.length + ' / ' + P.bestiary.length + ' discovered';
+    v.beastCards = beasts.map(b => {
+      const disc = this.discovered(m, b.id);
+      return { name: disc ? b.name : '???', alt: disc ? b.name : 'Undiscovered creature', face: b.face, imgFilter: disc ? 'none' : 'brightness(0) opacity(.55)', fg: disc ? '#f2e8d8' : '#544a63', tag: b.kind === 'boss' ? 'BOSS' : b.kind === 'elite' ? 'ELITE' : b.tameable ? 'TAMEABLE' : 'COMMON', tagColor: b.kind === 'boss' ? '#ff9d8a' : b.kind === 'elite' ? '#c9a0ff' : b.tameable ? '#9fe8a0' : '#6d6280', bg: s.selBeast === b.id ? '#262031' : '#1d1826', edge: s.selBeast === b.id ? '#ffd97a' : '#3a3147', go: setS({ selBeast: b.id }) };
+    });
+    const selE = this.findBeast(s.selBeast) || P.bestiary[0]; const selEDisc = this.discovered(m, selE.id);
+    v.selEFace = selE.face; v.selEImgFilter = selEDisc ? 'none' : 'brightness(0) opacity(.55)';
+    v.selEName = selEDisc ? selE.name : 'Undiscovered'; v.selEProposedBadge = proposedBadge(selE.canon);
+    v.selELines = !selEDisc ? [{ k: 'Status', v: 'Encounter this creature to fill its dossier.', color: '#a99bb8' }] : [
+      { k: 'Abilities', v: selE.abilities.join(' · '), color: '#ffd9b8' },
+      { k: 'Telegraph', v: selE.telegraph, color: '#7fd8d8' },
+      { k: 'Drops', v: selE.drops, color: '#ffd97a' },
+      { k: 'Habitat', v: selE.habitat + ' (' + P.biomes.find(b => b.id === selE.biome).name + ')', color: '#9fe8a0' },
+      { k: 'Resists', v: selE.resist, color: '#c9a0ff' },
+      { k: 'Tameable', v: selE.tameable ? 'Yes — collect shards' : 'No', color: selE.tameable ? '#9fe8a0' : '#a99bb8' },
+    ].concat(selE.phases ? [{ k: 'Phases', v: selE.phases.join(' → '), color: '#ff9d8a' }, { k: 'Defeated', v: (m.world.completed[selE.biome] > 0 && (selE.id === 'tutorial-dragon' || selE.kind === 'boss')) ? 'Yes' : 'Not yet', color: '#f2e8d8' }] : []);
+    // ---- buildings tab
+    v.buildingCards = C.buildings.map(b => {
+      const lvl = m.buildings[b.id]; const maxL = 5; const isMax = lvl >= maxL;
+      const locked = b.id === 'monster-pen' && m.buildings['campfire-core'] < 2 && lvl === 0;
+      const cost = { gold: b.cost12.gold * (lvl + 1) }; if (b.cost12.wood) cost.wood = b.cost12.wood * (lvl + 1); if (b.cost12.soulAsh) cost.soulAsh = b.cost12.soulAsh * (lvl + 1);
+      const afford = Object.keys(cost).every(k => m.wallet[k] >= cost[k]);
+      const can = !locked && !isMax && afford;
+      return {
+        name: b.name, img: bnames[b.id][1], lvl: String(lvl), maxTag: isMax ? '· MAX' : '', effect: b.effect,
+        next: isMax ? 'Fully upgraded.' : locked ? 'Locked.' : 'Next: Lv' + (lvl + 1) + ' — ' + b.effect.split(';')[0].trim() + ' scales up.',
+        costs: isMax || locked ? [] : Object.keys(cost).map(k => ({ text: cost[k] + ' ' + C.resources.find(r => r.id === k).name, icon: C.resources.find(r => r.id === k).icon, color: m.wallet[k] >= cost[k] ? '#9fe8a0' : '#ff9d8a' })),
+        off: !can, btnOp: can ? 1 : .55, btnLabel: locked ? '🔒 Requires Campfire Core Lv2' : isMax ? 'Max level' : afford ? (lvl === 0 ? 'Build' : 'Upgrade to Lv' + (lvl + 1)) : 'Insufficient resources',
+        btnBg: can ? on : off, btnFg: can ? '#ffd9b8' : '#a99bb8', btnEdge: can ? onEdge : offEdge,
+        edge: '#3a3147', op: locked ? .8 : 1, note: locked, noteText: 'Canonical prerequisite: Campfire Core Lv2 unlocks the Monster Pen.',
+        go: () => can && this.setState({ dialog: { kind: 'building', title: (lvl === 0 ? 'Build ' : 'Upgrade ') + b.name + '?', body: 'Spends ' + Object.keys(cost).map(k => cost[k] + ' ' + k).join(' + ') + '. Saves immediately (prototype model).', confirm: lvl === 0 ? 'Build' : 'Upgrade', data: { id: b.id, cost } } }),
+      };
+    });
+    v.bldMsg = (s.msgs.bld || {}).text || ''; v.bldMsgColor = (s.msgs.bld || {}).bad ? '#ff9d8a' : '#9fe8a0';
+    // ---- loadout review
+    v.showLoadout = s.screen === 'loadout';
+    v.loadoutDiff = s.selDiff;
+    v.loadoutCards = [
+      { k: 'Weapon', v: eqW.name + ' +' + (m.weapons.levels[eqW.id] || 0), sub: eqW.stats.trait, color: this.rarColor(eqW.rarity), edge: '#3a3147' },
+      { k: 'Artifacts', v: P.artifactSlots.filter(sl => m.artifacts.equipped[sl]).length + ' / 4 equipped', sub: P.artifactSlots.map(sl => { const id = m.artifacts.equipped[sl]; return sl + ': ' + (id ? P.artifacts.find(a => a.id === id).name : '—'); }).join(' · '), color: '#f2e8d8', edge: '#3a3147' },
+      { k: 'Companion', v: compP ? compP.name + ' Lv' + (m.pets.levels[compPet] || 1) : 'None', sub: compP ? (compP.roles.companion || '') : 'Assign one in Pet Training for run support.', color: compP ? '#9fe8a0' : '#ff9d8a', edge: '#3a3147' },
+      { k: 'Permanent skills', v: Object.keys(m.skills).length + ' learned', sub: P.skillBranches.map(b => b.name + ' ' + b.nodes.filter(n => m.skills[n.id]).length).join(' · '), color: '#c9a0ff', edge: '#3a3147' },
+    ];
+    v.loadoutWarn = emptySlots > 2 || !compP;
+    v.loadoutWarnText = !compP ? 'No companion assigned — runs are lonelier and deadlier.' : 'Mostly empty artifact slots — consider equipping before entering.';
+    v.confirmLoadout = () => this.startRun();
+    v.cancelLoadout = () => this.setState({ screen: 'camp', tab: 'world' });
+    // ---- run
+    const run = m.run;
+    v.showRun = s.screen === 'run' && !!run;
+    if (run) {
+      const bio = P.biomes.find(b => b.id === run.biome);
+      v.runAccent = bio.accent; v.runTitle = bio.name + ' — ' + run.difficulty;
+      v.runBgTile = bio.tile;
+      const stages = ['1', '2', '3', '4', '5', 'E', 'B'];
+      v.runPips = stages.map((g, i) => ({ glyph: g, label: i < 5 ? 'Room ' + (i + 1) : i === 5 ? 'Elite room' : 'Boss arena', rad: i === 6 ? '3px' : '50%', bg: i < run.room ? '#9fe8a0' : i === run.room ? '#ff9e50' : '#3a3147', edge: i === run.room ? '#ffd97a' : '#241d2e' }));
+      v.runHp = run.hp + '/' + C.player.hp; v.runGold = String(run.earned.gold); v.runAsh = String(run.earned.soulAsh);
+      v.runPhaseFight = run.phase === 'fight'; v.runPhaseBoon = run.phase === 'boon'; v.runPhaseResults = run.phase === 'results'; v.runPhaseLoot = run.phase === 'loot';
+      const isElite = run.room === 5, isBoss = run.room === 6;
+      v.runRoomLabel = isBoss ? 'Boss: ' + this.findBeast(bio.boss).name : isElite ? 'Elite Room' : 'Room ' + (run.room + 1) + ' of 5';
+      const foeIds = isBoss ? [bio.boss] : isElite ? [bio.elites[run.seed % 2]] : [bio.enemies[run.room % bio.enemies.length], bio.enemies[(run.room + 2) % bio.enemies.length]];
+      v.runFoes = foeIds.map(id => { const e = this.findBeast(id); return { name: this.discovered(m, id) ? e.name : '???', face: e.face, size: e.kind === 'boss' ? '84px' : e.kind === 'elite' ? '64px' : '48px', anim: s.rm ? 'none' : 'ebiFlicker 1.6s ease-in-out infinite' }; });
+      v.runNarration = isBoss ? this.findBeast(bio.boss).telegraph : isElite ? 'An elite blocks the way. Its cache doubles the room reward.' : 'Waves close in. Auto-fire holds them; you dodge, they die.';
+      v.runFightLabel = isBoss ? 'Fight the boss' : isElite ? 'Fight the elite' : 'Clear the room';
+      v.runFight = () => this.fightRoom();
+      v.askRetreat = () => this.setState({ dialog: { kind: 'retreat', title: 'Retreat to Camp?', body: 'Canonical defeat/retreat banking: keep ' + C.expedition.defeatBankPct + '% of resources earned this run.', confirm: 'Retreat', danger: true } });
+      v.rarityRoll = C.rarityRoll;
+      v.boonOffers = (run.offers || []).map(o => { const u = C.runUpgrades.find(x => x.id === o.id); const cnt = run.boons[o.id] || 0; return { name: u.name, desc: u.desc, rarity: o.rarity, rColor: this.rarColor(o.rarity), edge: this.rarColor(o.rarity), stack: cnt ? 'Currently ×' + cnt + ' → ×' + (cnt + 1) : 'New this run', go: () => this.pickBoon(o.id) }; });
+      // results
+      const win = run.won;
+      v.resultTitle = win ? 'VICTORY' : run.retreated ? 'RETREAT' : 'DEFEAT';
+      v.resultColor = win ? '#ffd97a' : '#ff9d8a';
+      const pct = win ? 100 : C.expedition.defeatBankPct;
+      v.resultBankLine = 'Banked ' + pct + '% of run earnings (canonical: victory 100%, defeat/retreat ' + C.expedition.defeatBankPct + '%).';
+      v.resultLines = [
+        { icon: 'assets/ebi/icon-gold.png', text: '+' + Math.floor(run.earned.gold * pct / 100) + ' Gold', color: '#ffd97a' },
+        { icon: 'assets/ebi/icon-wood.png', text: '+' + Math.floor(run.earned.wood * pct / 100) + ' Wood', color: '#d8b58a' },
+        { icon: 'assets/ebi/icon-soul-ash.png', text: '+' + Math.floor(run.earned.soulAsh * pct / 100) + ' Soul Ash', color: '#c9a0ff' },
+        { icon: 'assets/ebi/icon-shard.png', text: '+' + run.earned.shards + ' monster shards', color: '#9fe8a0' },
+      ];
+      v.resultPermLine = eqW.name + ', ' + Object.keys(m.skills).length + ' skills, ' + P.artifactSlots.filter(sl => m.artifacts.equipped[sl]).length + ' artifacts — these persist.';
+      v.resultBoonLine = Object.keys(run.boons).length ? Object.keys(run.boons).map(id => C.runUpgrades.find(u => u.id === id).name + ' ×' + run.boons[id]).join(', ') : 'none taken';
+      v.runReturn = () => this.finishRun(false);
+      v.runRetry = () => this.finishRun(true);
+      // loot
+      const lq = run.lootQueue || []; const li = run.lootIdx || 0; const item = lq[li];
+      if (item) {
+        v.lootProgress = 'Reward ' + (li + 1) + ' of ' + lq.length;
+        v.lootName = item.name; v.lootDesc = item.desc; v.lootIcon = item.icon; v.lootRarity = item.rarity || 'reward';
+        v.lootRColor = this.rarColor(item.rarity); v.lootEdge = this.rarColor(item.rarity);
+        v.lootFull = !!item.full;
+        v.lootBtns = item.btns.map(b => ({ label: b.label, bg: b.primary ? on : off, fg: b.primary ? '#ffd9b8' : '#f2e8d8', edge: b.primary ? onEdge : offEdge, go: () => this.lootAction(b.act, item) }));
+      }
+    }
+    // ---- dialogs
+    const d = s.dialog;
+    v.dialogOpen = !!d;
+    if (d) {
+      v.dialogTitle = d.title; v.dialogBody = d.body; v.dialogLines = d.lines || [];
+      v.dialogHasConfirm = !!d.confirm; v.dialogConfirmLabel = d.confirm || '';
+      v.dialogConfirmBg = d.danger ? '#5c2020' : on; v.dialogConfirmFg = d.danger ? '#ffb3a6' : '#ffd9b8'; v.dialogConfirmEdge = d.danger ? '#a04040' : onEdge;
+      v.dialogCancelLabel = d.confirm ? 'Cancel' : 'Close';
+      v.dialogCancel = () => this.setState({ dialog: null });
+      v.dialogConfirm = () => this.confirmDialog(d);
+      v.dialogKey = (e) => { if (e.key === 'Escape') this.setState({ dialog: null }); };
+      v.dialogCancelRef = (el) => { if (el && !this._dlgFocused) { this._dlgFocused = true; el.focus(); } };
+    } else this._dlgFocused = false;
+    // ---- settings/credits
+    v.settingsOpen = !!s.settingsMode;
+    v.settingsIsCredits = s.settingsMode === 'credits'; v.settingsIsSettings = s.settingsMode === 'settings';
+    v.settingsTitle = s.settingsMode === 'credits' ? 'Credits' : 'Settings';
+    v.settingsBackLabel = 'Back to ' + (s.settingsFrom === 'menu' ? 'menu' : 'Camp');
+    v.closeSettings = () => this.setState({ settingsMode: null }); // returns to opener context: overlay closes over it
+    v.openCreditsFromSettings = () => this.setState({ settingsMode: 'credits' });
+    v.settingRows = [
+      { label: 'Reduced motion', sub: 'Disables sprite idle animation and pop-ins', key: 'rm' },
+      { label: 'High contrast', sub: 'Boosts contrast across all screens', key: 'hc' },
+      { label: 'Large text (125%)', sub: 'Scales all UI text', key: 'ts' },
+    ].map(r => ({ label: r.label, sub: r.sub, on: s[r.key], trackBg: s[r.key] ? '#9fe8a0' : '#3a3147', knobLeft: s[r.key] ? '20px' : '2px', go: () => this.setState({ [r.key]: !s[r.key] }) }));
+    v.creditLines = [
+      { k: 'Ninja Adventure Asset Pack', v: 'Pixel-boy & AAA — CC0. Monsters, bosses, weapons, tilesets, skill icons, UI, font.' },
+      { k: 'Kenney (kenney.nl)', v: 'UI Pack Pixel Adventure, Fantasy UI Borders, Input Prompts, Particle Pack — CC0.' },
+      { k: 'Game-icons.net', v: 'Icons by Lorc — CC BY 3.0. Artifact and skill symbols (recolored). Full list in ASSET_USAGE_MANIFEST.csv.' },
+      { k: 'Emberbound key art', v: 'Existing project AI key art (main splash only), per ASSET_MANIFEST.md.' },
+      { k: 'Design scaffold', v: 'HTML UI reference — Design/ClaudeDesignCompletion. Not Unreal gameplay.' },
+    ];
+    // ---- toast
+    v.toastOn = !!s.toast;
+    if (s.toast) { v.toastText = s.toast.text; v.toastColor = s.toast.kind === 'bad' ? '#ff9d8a' : '#9fe8a0'; v.toastEdge = s.toast.kind === 'bad' ? '#6b3434' : '#2e5c40'; }
+    return v;
+  }
+  // ===================== actions =====================
+  enterCamp() {
+    const m = this.state.model;
+    this.setState({ screen: 'camp', tab: 'camp' }, () => {
+      if (m.offline.pending && !m.offline.claimed) {
+        this.setState({ dialog: { kind: 'offline', title: 'While you were gone…', body: 'Workers produced offline (formula: output/min × minutes, capped at 4h × Campfire Core level). Claimable once per reward event.', lines: [{ text: '+' + m.offline.gold + ' Gold', color: '#ffd97a', icon: true, iconSrc: 'assets/ebi/icon-gold.png' }, { text: '+' + m.offline.soulAsh + ' Soul Ash', color: '#c9a0ff', icon: true, iconSrc: 'assets/ebi/icon-soul-ash.png' }], confirm: 'Claim' } });
+      }
+    });
+  }
+  confirmDialog(d) {
+    const P = this.P();
+    if (d.kind === 'reset' || d.kind === 'newgame') {
+      const fresh = this.freshModel(); this.save(fresh);
+      this.setState({ model: fresh, dialog: null, screen: d.kind === 'newgame' ? 'camp' : 'menu', tab: 'camp' });
+      this.toast(d.kind === 'newgame' ? 'A truck, a flash of light… welcome back.' : 'Prototype data reset.');
+    } else if (d.kind === 'offline') {
+      this.setModel(m => { m.wallet.gold += m.offline.gold; m.wallet.soulAsh += m.offline.soulAsh; m.offline.claimed = true; m.offline.pending = false; }, () => { this.setState({ dialog: null }); this.toast('Offline rewards claimed.'); });
+    } else if (d.kind === 'defense') {
+      this.setModel(m => { m.wallet.gold += 15; m.wallet.wood += 3; }, () => { this.setState({ dialog: null }); this.toast('Defense held! +15 Gold, +3 Wood.'); });
+    } else if (d.kind === 'respec') {
+      const all = {}; P.skillBranches.forEach(b => b.nodes.forEach(n => { all[n.id] = n; }));
+      this.setModel(m => { let refund = 0; Object.keys(m.skills).forEach(id => { refund += this.nodeCost(all[id]); }); m.wallet.soulAsh += refund - P.prototypeOnly.respecCost; m.skills = {}; m.respecs++; }, () => { this.setState({ dialog: null }); this.msg('skill', 'Respec complete — Soul Ash refunded.', false); this.toast('Skills refunded.'); });
+    } else if (d.kind === 'building') {
+      this.setModel(m => { Object.keys(d.data.cost).forEach(k => { m.wallet[k] -= d.data.cost[k]; }); m.buildings[d.data.id]++; }, () => { this.setState({ dialog: null }); this.msg('bld', 'Upgrade applied and saved.', false); this.toast('Camp improved.'); });
+    } else if (d.kind === 'disW') {
+      const s = this.state, selW = s.selW, lvl = this.state.model.weapons.levels[selW] || 0, c = P.prototypeOnly.weaponUpgradeCost;
+      this.setModel(m => { m.weapons.owned = m.weapons.owned.filter(x => x !== selW); delete m.weapons.levels[selW]; m.wallet.gold += Math.floor(c.gold * lvl * .6); m.wallet.soulAsh += Math.floor(c.soulAsh * lvl * .6); }, () => { this.setState({ dialog: null, selW: this.state.model.weapons.equipped }); this.msg('wpn', 'Dismantled — materials returned.', false); });
+    } else if (d.kind === 'disA') {
+      const selA = this.state.selA, lvl = this.state.model.artifacts.levels[selA] || 1;
+      this.setModel(m => { m.artifacts.owned = m.artifacts.owned.filter(x => x !== selA); delete m.artifacts.levels[selA]; m.wallet.soulAsh += 2 * lvl; m.wallet.essence += lvl; }, () => { this.setState({ dialog: null }); this.msg('art', 'Dismantled — materials returned.', false); });
+    } else if (d.kind === 'petConflict') {
+      this.setModel(m => { m.pets.assign[d.data.role] = d.data.pet; }, () => { this.setState({ dialog: null }); this.toast('Role swapped.'); });
+    } else if (d.kind === 'petAsc') {
+      const pid = this.state.selPet, need = P.prototypeOnly.petShardsToAscend;
+      this.setModel(m => { m.pets.shards[pid] -= need; m.pets.asc[pid] = (m.pets.asc[pid] || 0) + 1; }, () => { this.setState({ dialog: null }); this.msg('pet', 'Ascended! ★' + this.state.model.pets.asc[pid], false); this.toast('Ascension complete.'); });
+    } else if (d.kind === 'retreat') {
+      this.setModel(m => { m.run.phase = 'results'; m.run.won = false; m.run.retreated = true; }, () => this.setState({ dialog: null }));
+    } else this.setState({ dialog: null });
+  }
+  startRun() {
+    const s = this.state;
+    this.setModel(m => {
+      m.run = { biome: s.selBiome || 'ember-meadows', difficulty: s.selDiff, phase: 'fight', room: 0, hp: this.C().player.hp, seed: Date.now() % 997, boons: {}, earned: { gold: 0, wood: 0, soulAsh: 0, shards: 0 } };
+    }, () => this.setState({ screen: 'run' }));
+  }
+  fightRoom() {
+    this.setModel(m => {
+      const run = m.run; const isElite = run.room === 5, isBoss = run.room === 6;
+      const mult = isElite ? 2 : 1;
+      run.seed = (run.seed * 31 + 7) % 997;
+      run.earned.gold += (4 + run.seed % 5) * mult; run.earned.wood += (1 + run.seed % 2) * mult; run.earned.soulAsh += 1 * mult;
+      run.hp = Math.max(20, run.hp - (4 + run.seed % 9));
+      // discovery
+      const bio = this.P().biomes.find(b => b.id === run.biome);
+      const pool = isBoss ? [bio.boss] : isElite ? bio.elites : bio.enemies;
+      pool.forEach(id => { if (m.bestiary.indexOf(id) < 0 && (run.seed + id.length) % 2 === 0) m.bestiary.push(id); });
+      if (isBoss) {
+        run.won = true; run.earned.gold += 25; run.earned.wood += 10; run.earned.soulAsh += 8; run.earned.shards += 2 + run.seed % 2;
+        m.world.completed[run.biome] = (m.world.completed[run.biome] || 0) + 1;
+        if (run.difficulty === 'Nightmare') m.world.mastered[run.biome] = true;
+        // loot queue
+        const boss = this.findBeast(bio.boss);
+        const tam = bio.tameables[run.seed % bio.tameables.length];
+        const wLocked = this.P().weapons.filter(w => m.weapons.owned.indexOf(w.id) < 0);
+        run.lootQueue = [
+          { type: 'currency', name: 'Boss hoard', icon: 'assets/na/item/chest-big.png', rarity: 'rare', desc: boss.drops, btns: [{ label: 'Collect', act: 'take', primary: true }] },
+          { type: 'shard', pet: tam, name: this.P().pets.find(p => p.id === tam) ? this.P().pets.find(p => p.id === tam).name + ' shards ×3' : 'Monster shards ×3', icon: 'assets/ebi/icon-shard.png', rarity: 'rare', desc: 'Shards tame and ascend monsters. Duplicates of tamed monsters convert automatically.', btns: [{ label: 'Collect', act: 'shard', primary: true }] },
+        ];
+        if (wLocked.length) { const w = wLocked[run.seed % wLocked.length]; run.lootQueue.push({ type: 'weapon', id: w.id, name: w.name, icon: w.icon, rarity: w.rarity, desc: w.identity + ' Trait: ' + w.stats.trait, full: m.weapons.owned.length >= 4, btns: [{ label: 'Keep', act: 'keepW', primary: true }, { label: 'Compare', act: 'cmpW' }, { label: 'Dismantle', act: 'disW' }] }); }
+        const aLocked = this.P().artifacts.filter(a => m.artifacts.owned.indexOf(a.id) < 0);
+        if (aLocked.length) { const a = aLocked[run.seed % aLocked.length]; run.lootQueue.push({ type: 'artifact', id: a.id, name: a.name, icon: 'assets/na/item/gem-purple.png', rarity: a.rarity, desc: a.slot + ' — ' + a.effect, full: m.artifacts.owned.length >= 8, btns: [{ label: 'Keep', act: 'keepA', primary: true }, { label: 'Dismantle', act: 'disLootA' }] }); }
+        run.lootIdx = 0; run.phase = 'loot';
+      } else {
+        run.offers = this.makeOffers(m); run.phase = 'boon';
+      }
+    });
+  }
+  pickBoon(id) {
+    this.setModel(m => { m.run.boons[id] = (m.run.boons[id] || 0) + 1; m.run.room++; m.run.phase = 'fight'; m.run.offers = null; }, () => this.toast('Boon taken: ' + this.C().runUpgrades.find(u => u.id === id).name + ' ×' + this.state.model.run.boons[id]));
+  }
+  lootAction(act, item) {
+    this.setModel(m => {
+      const run = m.run;
+      if (act === 'shard') { m.pets.shards[item.pet] = (m.pets.shards[item.pet] || 0) + 3; }
+      else if (act === 'keepW') { if (m.weapons.owned.indexOf(item.id) < 0) m.weapons.owned.push(item.id); }
+      else if (act === 'disW' || act === 'disLootA') { m.wallet.soulAsh += 3; m.wallet.gold += 10; }
+      else if (act === 'keepA') { if (m.artifacts.owned.indexOf(item.id) < 0) m.artifacts.owned.push(item.id); }
+      else if (act === 'cmpW') { return; } // handled below
+      run.lootIdx = (run.lootIdx || 0) + 1;
+      if (run.lootIdx >= run.lootQueue.length) run.phase = 'results';
+    }, () => { if (act === 'cmpW') { this.setState({ screen: 'camp', tab: 'arsenal', selW: item.id }); this.setModel(m => { m.run.phase = 'results'; }); this.toast('Comparing in Arsenal — run results waiting.'); } });
+  }
+  finishRun(retry) {
+    const C = this.C();
+    this.setModel(m => {
+      const run = m.run; const pct = run.won ? 100 : C.expedition.defeatBankPct;
+      m.wallet.gold += Math.floor(run.earned.gold * pct / 100);
+      m.wallet.wood += Math.floor(run.earned.wood * pct / 100);
+      m.wallet.soulAsh += Math.floor(run.earned.soulAsh * pct / 100);
+      m.run = null;
+    }, () => {
+      if (retry) { this.startRun(); } else this.setState({ screen: 'camp', tab: 'camp' });
+    });
+  }
+  demoRun() { this.setState({ selBiome: 'ember-meadows', selDiff: 'Standard' }, () => this.startRun()); }
+  demoResults() {
+    this.setModel(m => { m.run = { biome: 'ember-meadows', difficulty: 'Standard', phase: 'results', room: 6, hp: 62, seed: 41, won: true, boons: { 'split-shot': 2, 'fire-arrow': 1 }, earned: { gold: 38, wood: 9, soulAsh: 7, shards: 3 } }; }, () => this.setState({ screen: 'run' }));
+  }
+}
+</script>
+</body>
+</html>

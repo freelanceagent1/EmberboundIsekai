@@ -44,6 +44,8 @@ Camp → Expedition (rooms → level-up upgrade choices → Tutorial Dragon Lv.3
 
 See [TECHNICAL_DESIGN.md](TECHNICAL_DESIGN.md). Balance values: [BALANCE.md](BALANCE.md). Generated assets: [ASSET_MANIFEST.md](ASSET_MANIFEST.md). Test status: [TEST_REPORT.md](TEST_REPORT.md). Assumptions: [ASSUMPTIONS.md](ASSUMPTIONS.md).
 
+The reviewed mobile UI/UX target is in [Design/ClaudeDesignCompletion/Emberbound Expanded UI.dc.html](Design/ClaudeDesignCompletion/Emberbound%20Expanded%20UI.dc.html). Product decisions governing what is canonical, deferred, or rejected are recorded in [Docs/DESIGN_POLISH_REVIEW.md](Docs/DESIGN_POLISH_REVIEW.md).
+
 ## Asset pipeline
 
 `Tools/AssetGeneration/README_ComfyUI_AssetPipeline.md` documents the local ComfyUI generation pipeline (probe → generate → post-process → import to `Content/Emberbound/Generated`).

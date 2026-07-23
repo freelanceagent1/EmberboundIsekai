@@ -1,0 +1,62 @@
+// CANONICAL data — values and IDs taken directly from the Emberbound repository.
+// Sources: BALANCE.md, TECHNICAL_DESIGN.md, Source/EmberboundIsekai (DataAsset IDs), ASSET_MANIFEST.md.
+// DO NOT tune numbers here. Tuning lives in BALANCE.md / UE DataAssets.
+window.EBI_CANON = {
+  version: 'repo@2026-07-16',
+  player: { name: 'Rift Archer', hp: 100, damage: 12, attackInterval: 0.7, moveSpeed: 450, projectileSpeed: 1600, pickupRadius: 180, critChance: 0.05, critMult: 2 },
+  startingResources: { gold: 0, wood: 0, soulAsh: 0, essence: 0, embers: 0 },
+  resources: [
+    { id: 'gold', name: 'Gold', icon: 'assets/ebi/icon-gold.png', color: '#ffd97a', desc: 'Main currency. Earned in expeditions, defense, and offline production. Spent on building upgrades.' },
+    { id: 'wood', name: 'Wood', icon: 'assets/ebi/icon-wood.png', color: '#d8b58a', desc: 'Construction material. Spent on building upgrades.' },
+    { id: 'soulAsh', name: 'Soul Ash', icon: 'assets/ebi/icon-soul-ash.png', color: '#c9a0ff', desc: 'Rift residue from slain monsters. Fuels Grim Forge upgrades.' },
+    { id: 'essence', name: 'Monster Essence', icon: 'assets/ebi/icon-essence.png', color: '#9fe8a0', desc: 'Distilled by Pen keepers. Used for monster-related unlocks.' },
+    { id: 'embers', name: 'Embers', icon: 'assets/ebi/icon-embers.png', color: '#ff9e50', desc: 'Rare boss reward. Premium material for the Campfire Core.' },
+  ],
+  enemies: [
+    { id: 'green-slime', name: 'Green Slime', hp: 18, damage: '8 contact', speed: 220, drops: 'small XP, 40% 1\u20132 Gold' },
+    { id: 'red-slime', name: 'Red Slime', hp: 14, damage: '10 contact', speed: 340, drops: 'small XP, 40% 1\u20132 Gold' },
+    { id: 'goblin-stabber', name: 'Goblin Stabber', hp: 30, damage: '14 windup melee', speed: 300, drops: 'XP, Gold, 5% Wood' },
+    { id: 'goblin-archer', name: 'Goblin Archer', hp: 24, damage: '9 projectile', speed: 260, drops: 'XP, Gold' },
+    { id: 'bone-rat', name: 'Bone Rat', hp: 10, damage: '6 contact', speed: 420, drops: 'XP, 10% Bone Rat shard' },
+  ],
+  boss: { id: 'tutorial-dragon', name: 'Tutorial Dragon Lv.3', hp: 450, attacks: '20 contact / 12 fireball / 18 dash', patterns: ['FireballVolley', 'DashCharge', 'FlameRing'], enrage: 'below 30% HP', drops: '25 Gold, 10 Wood, 8 Soul Ash, 30% 1 Ember, 2\u20133 monster shards' },
+  expedition: { rooms: '5 normal \u2192 1 elite \u2192 boss', roomClear: '4\u20138 Gold, 1\u20132 Wood, 1 Soul Ash (elite \u00d72)', xpCurve: '10 \u00d7 1.35^(level\u22121)', defeatBankPct: 60, victoryBankPct: 100 },
+  runUpgrades: [
+    { id: 'split-shot', name: 'Split Shot', desc: '+1 side projectile at 60% damage.' },
+    { id: 'piercing-shot', name: 'Piercing Shot', desc: 'Arrows pierce +1 enemy.' },
+    { id: 'ricochet-shot', name: 'Ricochet Shot', desc: 'Arrows bounce to 1 extra enemy at 70% damage.' },
+    { id: 'rapid-fire', name: 'Rapid Fire', desc: '+20% attack speed.' },
+    { id: 'heavy-arrow', name: 'Heavy Arrow', desc: '+35% damage, \u221210% attack speed.' },
+    { id: 'fire-arrow', name: 'Fire Arrow', desc: 'Burn: 4 damage per second for 3s.' },
+    { id: 'poison-arrow', name: 'Poison Arrow', desc: 'Poison: 2 damage per second for 6s. Stacks.' },
+    { id: 'frost-arrow', name: 'Frost Arrow', desc: 'Chill: \u221230% move speed for 2s.' },
+    { id: 'bone-shield', name: 'Bone Shield', desc: 'Orbiting bone deals 8 damage.' },
+    { id: 'healing-wisp', name: 'Healing Wisp', desc: 'Restore 2 HP every 3 seconds.' },
+    { id: 'pickup-magnet', name: 'Pickup Magnet', desc: '+50% pickup radius.' },
+    { id: 'crit-focus', name: 'Crit Focus', desc: '+10% critical chance.' },
+    { id: 'companion-slime', name: 'Companion Slime', desc: 'Slime ally: 6 acid damage every 1.2s.' },
+    { id: 'soul-flame-trail', name: 'Soul Flame Trail', desc: 'Burning trail: 5 damage per second.' },
+    { id: 'gold-rush', name: 'Gold Rush', desc: '+25% gold this run.' },
+  ],
+  rarityRoll: '60/30/10 (Common/Rare/Epic)',
+  buildings: [
+    { id: 'campfire-core', name: 'Campfire Core', cost12: { gold: 20, wood: 5 }, effect: '+safe radius, +offline cap (4h \u00d7 level); Lv2 unlocks Monster Pen' },
+    { id: 'grim-forge', name: 'Grim Forge (Bow)', cost12: { gold: 15, soulAsh: 2 }, effect: '+15% player damage per level' },
+    { id: 'monster-pen', name: 'Monster Pen', cost12: { gold: 25, wood: 5 }, effect: '+1 assignment slot per level' },
+    { id: 'watchtower', name: 'Watchtower', cost12: { gold: 20, wood: 3 }, effect: '+10% defender damage per level' },
+  ],
+  monsters: [
+    { id: 'slime', name: 'Slime', shardsToUnlock: 5, worker: '2 Gold /min', companion: 'acid blob, 6 damage', defender: null },
+    { id: 'bone-rat', name: 'Bone Rat', shardsToUnlock: 5, worker: '1 Gold + 0.5 Soul Ash /min', companion: null, defender: '4 DPS' },
+    { id: 'skeleton-archer', name: 'Skeleton Archer', shardsToUnlock: 8, worker: null, companion: 'arrow, 8 damage', defender: '7 DPS' },
+  ],
+  offline: { formula: 'worker output/min \u00d7 minutes elapsed', cap: '4h \u00d7 Campfire Core level' },
+  titles: [
+    { id: 'former-office-drone', name: 'Former Office Drone', effect: '+5% offline production' },
+    { id: 'truck-kun-survivor', name: 'Truck-Kun Survivor', effect: '1 revive per run', note: 'ships disabled (debug flag)' },
+    { id: 'failed-chosen-one', name: 'Failed Chosen One', effect: '+10% damage below 30% HP' },
+    { id: 'spreadsheet-hero', name: 'Spreadsheet Hero', effect: '\u22125% upgrade costs' },
+    { id: 'genre-savvy-idiot', name: 'Genre-Savvy Idiot', effect: '+5% XP' },
+  ],
+  saveSlot: 'EmberboundSave',
+};
